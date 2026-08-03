@@ -34,6 +34,7 @@ export function Scanner({ onScanSuccess, isProcessing = false }: ScannerProps) {
             }}
             components={{
               audio: false,
+              // @ts-ignore
               tracker: true,
             }}
             styles={{
