@@ -9,6 +9,7 @@ async function seed() {
     const newBusiness = await db.insert(businesses).values({
       name: 'Cachito de Cielo',
       email: 'contacto@cachitodecielo.com',
+      userId: 'seed-user-123',
     }).returning();
 
     const businessId = newBusiness[0].id;

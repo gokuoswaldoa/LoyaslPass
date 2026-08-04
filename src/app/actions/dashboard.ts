@@ -80,7 +80,7 @@ export async function getCustomers() {
 
     const configArray = await db.select().from(passesConfig).where(eq(passesConfig.businessId, business.id));
     const config = configArray[0];
-    const totalStampsRequired = config ? config.totalStampsRequired : 8;
+    const totalStampsRequired = (config && config.totalStampsRequired) ? config.totalStampsRequired : 8;
 
     const customersList = await db
       .select()
