@@ -11,6 +11,7 @@ type Customer = {
   stamps: number;
   status: string;
   walletPassId: string | null;
+  totalStampsRequired?: number;
 };
 
 export default function CRMPage() {
@@ -127,7 +128,7 @@ export default function CRMPage() {
                     <td className="p-6">
                       <div className="flex items-center gap-2">
                         <div className="flex -space-x-1">
-                          {Array.from({length: 8}).map((_, i) => (
+                          {Array.from({length: client.totalStampsRequired || 8}).map((_, i) => (
                             <div key={i} className={`w-5 h-5 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center ${
                               i < client.stamps ? 'bg-emerald-500 z-10' : 'bg-slate-200 dark:bg-slate-700'
                             }`}>
@@ -135,7 +136,7 @@ export default function CRMPage() {
                             </div>
                           ))}
                         </div>
-                        <span className="text-xs font-bold text-slate-500 ml-2">{client.stamps}/8</span>
+                        <span className="text-xs font-bold text-slate-500 ml-2">{client.stamps}/{client.totalStampsRequired || 8}</span>
                       </div>
                     </td>
                     <td className="p-6">
@@ -146,10 +147,16 @@ export default function CRMPage() {
                     </td>
                     <td className="p-6 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-sm">
+                        <button 
+                          onClick={() => alert(`Próximamente: Ver detalles de ${client.name}`)}
+                          className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-sm"
+                        >
                           <ArrowUpRight className="w-4 h-4" />
                         </button>
-                        <button className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 shadow-sm">
+                        <button 
+                          onClick={() => alert("Próximamente: Más opciones")}
+                          className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 shadow-sm"
+                        >
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </div>

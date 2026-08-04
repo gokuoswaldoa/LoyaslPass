@@ -52,7 +52,7 @@ export default function EditorPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    const res = await savePassConfig(config);
+    const res = await savePassConfig({ ...config, businessName });
     if (res.success) {
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -119,6 +119,22 @@ export default function EditorPage() {
                 <Upload className="w-4 h-4" /> Subir Logo
               </button>
             </div>
+          </div>
+
+          <hr className="border-slate-100 dark:border-slate-800" />
+
+          {/* Business Name */}
+          <div>
+            <label className="block text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-3">
+              Nombre del Negocio
+            </label>
+            <input 
+              type="text" 
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Ej. Mi Cafetería"
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:outline-none font-medium text-slate-900 dark:text-white"
+            />
           </div>
 
           <hr className="border-slate-100 dark:border-slate-800" />

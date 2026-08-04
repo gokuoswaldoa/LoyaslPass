@@ -219,9 +219,9 @@ export function Step6Style({ data, updateData, onNext }: Props) {
           </div>
 
           <div className="flex flex-wrap gap-4 relative z-10 justify-start">
-            {Array.from({ length: Math.min(data.stampsCount, 5) }).map((_, i) => {
+            {Array.from({ length: data.stampsCount || 8 }).map((_, i) => {
               const isFilled = i < 3;
-              const isLast = i === Math.min(data.stampsCount, 5) - 1;
+              const isLast = i === (data.stampsCount || 8) - 1;
               const StampIcon = getBusinessIcon(data.businessType);
 
               return (
@@ -230,14 +230,14 @@ export function Step6Style({ data, updateData, onNext }: Props) {
                   className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-sm ${
                     isFilled 
                       ? `${currentStyleObj.stampBg} ${currentStyleObj.stampIcon}` 
-                      : isLast && data.stampsCount <= 5
+                      : isLast
                         ? `${currentStyleObj.rewardBg} ${currentStyleObj.rewardIcon}` 
                         : `border-2 border-dashed ${currentStyleObj.emptyBorder} ${currentStyleObj.emptyText} bg-black/5`
                   }`}
                 >
                   {isFilled ? (
                     <StampIcon className="w-6 h-6" />
-                  ) : isLast && data.stampsCount <= 5 ? (
+                  ) : isLast ? (
                     <Gift className="w-6 h-6" />
                   ) : null}
                 </div>

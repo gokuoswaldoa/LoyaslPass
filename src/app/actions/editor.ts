@@ -68,6 +68,12 @@ export async function savePassConfig(data: any) {
       })
       .where(eq(passesConfig.businessId, business.id));
 
+    if (data.businessName) {
+      await db.update(businesses)
+        .set({ name: data.businessName })
+        .where(eq(businesses.id, business.id));
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Error saving pass config:", error);

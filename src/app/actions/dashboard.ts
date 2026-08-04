@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { businesses, customers, stampsLog } from "@/db/schema";
+import { businesses, customers, stampsLog, passesConfig } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 
@@ -78,6 +78,10 @@ export async function getCustomers() {
     const business = businessArray[0];
     if (!business) return { success: false, error: "Negocio no encontrado" };
 
+    const configArray = await db.select().from(passesConfig).where(eq(passesConfig.businessId, business.id));
+    const config = configArray[0];
+    const totalStampsRequired = config ? config.totalStampsRequired : 8;
+
     const customersList = await db
       .select()
       .from(customers)
@@ -96,8 +100,9 @@ export async function getCustomers() {
         name: c.name,
         phone: c.phoneNumber,
         stamps: customerStamps.length,
-        status: customerStamps.length >= 8 ? 'VIP' : (customerStamps.length > 0 ? 'Activo' : 'Nuevo'),
+        status: customerStamps.length >= totalStampsRequired ? 'VIP' : (customerStamps.length > 0 ? 'Activo' : 'Nuevo'),
         walletPassId: c.walletPassId,
+        totalStampsRequired: totalStampsRequired,
       };
     });
 

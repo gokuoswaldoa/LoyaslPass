@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { Send, Smartphone, Zap, Sparkles, Users, MessageSquare, BellRing, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { getPassConfig } from "@/app/actions/editor";
+import { useEffect } from "react";
 
 const TEMPLATES = [
   { id: 1, label: "Oferta Flash 2x1", message: "¡Hoy es tu día de suerte! Ven y disfruta un 2x1 en toda la tienda. Solo válido hoy hasta cerrar.", icon: Zap },
@@ -15,6 +18,20 @@ export default function MarketingPage() {
   const [target, setTarget] = useState<"all" | "selected">("all");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  
+  const [businessName, setBusinessName] = useState("LoyalPass");
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadConfig() {
+      const res = await getPassConfig();
+      if (res.success) {
+        if (res.businessName) setBusinessName(res.businessName);
+        if (res.config?.logoUrl) setLogoUrl(res.config.logoUrl);
+      }
+    }
+    loadConfig();
+  }, []);
 
   const handleSend = () => {
     if (!message) return;
@@ -190,12 +207,16 @@ export default function MarketingPage() {
                   transition={{ type: "spring", bounce: 0.5 }}
                   className="w-full bg-white/90 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-2xl mx-auto flex gap-3"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl flex-shrink-0">
-                    L
+                  <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xl flex-shrink-0 relative overflow-hidden border border-slate-700">
+                    {logoUrl ? (
+                      <Image src={logoUrl} alt="Logo" fill className="object-cover" />
+                    ) : (
+                      businessName.charAt(0).toUpperCase()
+                    )}
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="font-bold text-[13px] text-slate-900">LoyalPass</span>
+                      <span className="font-bold text-[13px] text-slate-900">{businessName}</span>
                       <span className="text-[11px] text-slate-500">ahora</span>
                     </div>
                     <h4 className="font-bold text-[14px] leading-tight text-slate-800 mb-0.5">¡Aviso importante!</h4>
