@@ -29,6 +29,19 @@ export async function registerCustomer(businessId: string, name: string, phone: 
   if (!phone) return { success: false, error: "El número es obligatorio" };
 
   try {
+    // Buscar si ya existe un cliente con ese número para ese negocio
+    const existing = await db.select().from(customers).where(
+      and(
+        eq(customers.businessId, businessId),
+        eq(customers.phoneNumber, phone)
+      )
+    );
+
+    if (existing.length > 0) {
+      // Si existe, retornamos su tarjeta en lugar de crear un duplicado
+      return { success: true, walletPassId: existing[0].walletPassId };
+    }
+
     const walletPassId = "lp-" + uuidv4().split("-")[0]; // Generate short unique ID
 
     const inserted = await db.insert(customers).values({

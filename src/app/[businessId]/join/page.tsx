@@ -16,6 +16,14 @@ export default function JoinPage() {
   const [config, setConfig] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Redirección automática si ya tiene su tarjeta guardada en este dispositivo
+  useEffect(() => {
+    const savedWalletId = localStorage.getItem(`loyalpass_wallet_${businessId}`);
+    if (savedWalletId) {
+      router.push(`/${businessId}/pass/${savedWalletId}`);
+    }
+  }, [businessId, router]);
+
   // Form
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -43,6 +51,8 @@ export default function JoinPage() {
 
     const res = await registerCustomer(businessId, name, phone, email);
     if (res.success && res.walletPassId) {
+      // Guardar localmente para que no se pierda al cerrar la pestaña
+      localStorage.setItem(`loyalpass_wallet_${businessId}`, res.walletPassId);
       // Redirigir a la tarjeta del cliente
       router.push(`/${businessId}/pass/${res.walletPassId}`);
     } else {

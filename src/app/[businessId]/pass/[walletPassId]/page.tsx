@@ -155,15 +155,33 @@ export default function ClientPassPage() {
           </div>
         </div>
 
-        <button 
-          onClick={() => {
-            // Placeholder para PWA install prompt o guardar imagen
-            alert("Instrucciones: En iOS toca compartir y luego 'Agregar a Inicio'. En Android, toca los 3 puntos y 'Instalar Aplicación'.");
-          }}
-          className="mt-8 bg-black/20 hover:bg-black/30 border border-white/20 text-white font-bold py-3 px-8 rounded-full backdrop-blur-md transition-all shadow-lg"
-        >
-          Agregar a Inicio
-        </button>
+        <div className="flex flex-col gap-4 mt-8 w-full max-w-sm justify-center items-center">
+          <button 
+            onClick={() => alert("📱 En iPhone:\n\nToca el ícono de 'Compartir' en la barra inferior (el cuadrito con la flecha hacia arriba) y selecciona 'Agregar a Inicio'. \n\nEsto guardará tu tarjeta permanentemente junto a tus apps.")}
+            className="hover:scale-105 transition-transform drop-shadow-xl"
+          >
+            <Image 
+              src="/material/add-to-apple-wallet-logo.png" 
+              alt="Agregar a Apple Wallet" 
+              width={200} 
+              height={60} 
+              className="h-14 w-auto" 
+            />
+          </button>
+          
+          <button 
+            onClick={() => alert("🤖 En Android:\n\nToca los 3 puntos en la esquina superior derecha de tu navegador y selecciona 'Instalar Aplicación' o 'Agregar a la pantalla principal'. \n\nEsto guardará tu tarjeta permanentemente.")}
+            className="hover:scale-105 transition-transform drop-shadow-xl"
+          >
+            <Image 
+              src="/material/Add_to_Google_Wallet_badge.svg.webp" 
+              alt="Agregar a Google Wallet" 
+              width={200} 
+              height={60} 
+              className="h-14 w-auto" 
+            />
+          </button>
+        </div>
 
       </div>
     </div>
