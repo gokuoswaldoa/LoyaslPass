@@ -170,7 +170,7 @@ export default function ClientPassPage() {
           </button>
           
           <button 
-            onClick={() => alert("🤖 En Android:\n\nToca los 3 puntos en la esquina superior derecha de tu navegador y selecciona 'Instalar Aplicación' o 'Agregar a la pantalla principal'. \n\nEsto guardará tu tarjeta permanentemente.")}
+            onClick={() => window.open(`/api/wallet/google/${walletPassId}`, '_blank')}
             className="hover:scale-105 transition-transform drop-shadow-xl"
           >
             <Image 
