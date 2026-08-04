@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, CheckCircle2, Gift, Users, Crown, Zap, Plus, CalendarDays, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import CoffeeIcon from "@/components/ui/coffee-icon";
 
@@ -45,6 +46,8 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
 };
 
 export default function LandingPage() {
+  const { status } = useSession();
+
   return (
     <div className="flex flex-col min-h-screen selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100">
 
@@ -66,12 +69,25 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Link href="/api/auth/signin" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
-              Iniciar sesión
-            </Link>
-            <Link href="/onboarding" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
-              Empezar gratis
-            </Link>
+            {status === "authenticated" ? (
+              <>
+                <Link href="/dashboard" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
+                  Ir al Dashboard
+                </Link>
+                <Link href="/dashboard" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
+                  Volver al Panel
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
+                  Iniciar sesión
+                </Link>
+                <Link href="/onboarding" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
+                  Empezar gratis
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
