@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import QRCode from "react-qr-code";
 import { getClientWalletData } from "@/app/actions/clientFlow";
@@ -15,12 +15,19 @@ export default function ClientPassPage() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+
   useEffect(() => {
     async function loadData() {
       const res = await getClientWalletData(businessId, walletPassId);
       if (res.success) {
         setData(res);
       } else {
+        if (res.error === "Cliente no encontrado") {
+          localStorage.removeItem(`loyalpass_wallet_${businessId}`);
+          router.push(`/${businessId}/join`);
+          return;
+        }
         setError(res.error || "No pudimos cargar la tarjeta.");
       }
       setLoading(false);
