@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { walletPassId: string } }
+  { params }: { params: Promise<{ walletPassId: string }> }
 ) {
   try {
-    const { walletPassId } = params;
+    const { walletPassId } = await params;
 
     const { db } = await import("@/db");
     const { customers, businesses, passesConfig, stampsLog } = await import("@/db/schema");
@@ -18,10 +18,10 @@ export async function GET(
       return NextResponse.json({ error: "Cliente no encontrado" }, { status: 404 });
     }
 
-    const businessArray = await db.select().from(businesses).where(eq(businesses.id, customer.businessId));
+    const businessArray = await db.select().from(businesses).where(eq(businesses.id, customer.businessId as string));
     const business = businessArray[0];
 
-    const configArray = await db.select().from(passesConfig).where(eq(passesConfig.businessId, customer.businessId));
+    const configArray = await db.select().from(passesConfig).where(eq(passesConfig.businessId, customer.businessId as string));
     const config = configArray[0];
 
     const stampsArray = await db.select().from(stampsLog).where(eq(stampsLog.customerId, customer.id));
