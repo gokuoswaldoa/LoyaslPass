@@ -112,3 +112,61 @@ export async function getCustomers() {
     return { success: false, error: "Error al obtener clientes" };
   }
 }
+
+export async function deleteCustomer(customerId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "No autenticado" };
+  }
+
+  try {
+    const businessArray = await db.select().from(businesses).where(eq(businesses.userId, session.user.id));
+    const business = businessArray[0];
+    if (!business) return { success: false, error: "Negocio no encontrado" };
+
+    // Verificar que el cliente pertenezca a este negocio
+    const customerArray = await db.select().from(customers).where(eq(customers.id, customerId));
+    if (!customerArray[0] || customerArray[0].businessId !== business.id) {
+      return { success: false, error: "Cliente no válido" };
+    }
+
+    // Borrar sellos (cascada manual si es necesario)
+    await db.delete(stampsLog).where(eq(stampsLog.customerId, customerId));
+    // Borrar cliente
+    await db.delete(customers).where(eq(customers.id, customerId));
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+    return { success: false, error: "Error interno del servidor" };
+  }
+}
+
+export async function addManualStamp(customerId: string) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { success: false, error: "No autenticado" };
+  }
+
+  try {
+    const businessArray = await db.select().from(businesses).where(eq(businesses.userId, session.user.id));
+    const business = businessArray[0];
+    if (!business) return { success: false, error: "Negocio no encontrado" };
+
+    // Verificar que el cliente pertenezca a este negocio
+    const customerArray = await db.select().from(customers).where(eq(customers.id, customerId));
+    if (!customerArray[0] || customerArray[0].businessId !== business.id) {
+      return { success: false, error: "Cliente no válido" };
+    }
+
+    await db.insert(stampsLog).values({
+      businessId: business.id,
+      customerId: customerId,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error adding manual stamp:", error);
+    return { success: false, error: "Error interno del servidor" };
+  }
+}
