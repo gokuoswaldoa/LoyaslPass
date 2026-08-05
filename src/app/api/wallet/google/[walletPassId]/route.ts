@@ -45,6 +45,12 @@ export async function GET(
     const classId = `${issuerId}.${business.id.replace(/-/g, '')}`;
     const objectId = `${issuerId}.${walletPassId}`;
 
+    // Validar logo: Si es base64 (data:image), usar el icono por defecto para no romper el JWT
+    const isBase64Logo = config.logoUrl && config.logoUrl.startsWith('data:');
+    const validLogoUrl = (!config.logoUrl || isBase64Logo) 
+      ? "https://loyasl-pass.vercel.app/logo/icono.png" 
+      : config.logoUrl;
+
     // Payload de Google Wallet
     const payload = {
       iss: clientEmail,
@@ -58,7 +64,7 @@ export async function GET(
           issuerName: business.name,
           programName: `Programa de Lealtad ${business.name}`,
           programLogo: {
-            sourceUri: { uri: config.logoUrl || "https://loyasl-pass.vercel.app/logo/icono.png" }
+            sourceUri: { uri: validLogoUrl }
           },
           reviewStatus: "UNDER_REVIEW", // Cambiar a UNDER_REVIEW para permitir pruebas
           hexBackgroundColor: "#10B981" // Color de la tarjeta

@@ -67,27 +67,14 @@ export default function LandingPage() {
             <Link href="#faq" className="text-sm font-medium text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 transition-colors">FAQ</Link>
           </nav>
 
-          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
             <ThemeToggle />
-            {status === "authenticated" ? (
-              <>
-                <Link href="/dashboard" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
-                  Ir al Dashboard
-                </Link>
-                <Link href="/dashboard" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
-                  Volver al Panel
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
-                  Iniciar sesión
-                </Link>
-                <Link href="/onboarding" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
-                  Empezar gratis
-                </Link>
-              </>
-            )}
+            <Link href="/login" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
+              Iniciar sesión
+            </Link>
+            <Link href="/onboarding" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
+              Empezar gratis
+            </Link>
           </div>
         </div>
       </header>
@@ -319,7 +306,7 @@ export default function LandingPage() {
             className="flex flex-col items-center justify-center relative"
           >
             <Image 
-              src="/material/pantalla cliente.png" 
+              src="/material/pantalla%20cliente.png" 
               alt="Vista de la tarjeta en el celular" 
               width={600} 
               height={800} 
