@@ -66,7 +66,6 @@ export async function GET(
           programLogo: {
             sourceUri: { uri: validLogoUrl }
           },
-          reviewStatus: "UNDER_REVIEW", // Cambiar a UNDER_REVIEW para permitir pruebas
           hexBackgroundColor: "#10B981" // Color de la tarjeta
         }],
         loyaltyObjects: [{
