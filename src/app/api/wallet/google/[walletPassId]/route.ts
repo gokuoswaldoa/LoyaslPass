@@ -47,9 +47,13 @@ export async function GET(
 
     // Validar logo: Si es base64 (data:image), usar el icono por defecto para no romper el JWT
     const isBase64Logo = config.logoUrl && config.logoUrl.startsWith('data:');
-    const validLogoUrl = (!config.logoUrl || isBase64Logo) 
+    let validLogoUrl = (!config.logoUrl || isBase64Logo) 
       ? "https://loyasl-pass.vercel.app/logo/icono.png" 
       : config.logoUrl;
+
+    if (validLogoUrl.startsWith('/')) {
+      validLogoUrl = `https://loyasl-pass.vercel.app${validLogoUrl}`;
+    }
 
     // Payload de Google Wallet
     const payload = {
