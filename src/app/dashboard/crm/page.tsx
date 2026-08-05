@@ -37,18 +37,11 @@ export default function CRMPage() {
     (c.phone && c.phone.includes(searchQuery))
   );
 
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [selectedClient, setSelectedClient] = useState<Customer | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [actionsModalOpen, setActionsModalOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => setActiveDropdown(null);
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
 
   const handleAction = async (action: 'delete' | 'stamp') => {
     if (!selectedClient) return;
@@ -72,7 +65,7 @@ export default function CRMPage() {
     }
     
     setActionLoading(false);
-    setActiveDropdown(null);
+    setActionsModalOpen(false);
   };
 
 
@@ -187,48 +180,25 @@ export default function CRMPage() {
                       </p>
                     </td>
                     <td className="p-6 text-right">
-                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity relative">
+                      <div className="flex justify-end gap-2 relative">
                         <button 
                           onClick={() => { setSelectedClient(client); setDetailsModalOpen(true); }}
-                          className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-sm"
+                          className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-sm transition-colors"
                           title="Ver Detalles"
                         >
                           <ArrowUpRight className="w-4 h-4" />
                         </button>
                         
-                        <div className="relative">
-                          <button 
-                            onClick={(e) => { 
-                              e.stopPropagation(); 
-                              setActiveDropdown(activeDropdown === client.id ? null : client.id); 
-                              setSelectedClient(client);
-                            }}
-                            className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 shadow-sm"
-                            title="Opciones"
-                          >
-                            <MoreVertical className="w-4 h-4" />
-                          </button>
-                          
-                          {activeDropdown === client.id && (
-                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); handleAction('stamp'); }}
-                                disabled={actionLoading}
-                                className="w-full text-left px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2"
-                              >
-                                <Star className="w-4 h-4 text-emerald-500" /> Dar Sello Manual
-                              </button>
-                              <div className="h-px bg-slate-200 dark:bg-slate-700"></div>
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); setDeleteModalOpen(true); setActiveDropdown(null); }}
-                                disabled={actionLoading}
-                                className="w-full text-left px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
-                              >
-                                <Trash2 className="w-4 h-4" /> Eliminar Cliente
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                        <button 
+                          onClick={() => { 
+                            setSelectedClient(client);
+                            setActionsModalOpen(true);
+                          }}
+                          className="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 shadow-sm transition-colors"
+                          title="Opciones"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -311,6 +281,49 @@ export default function CRMPage() {
                 disabled={actionLoading}
               >
                 {actionLoading ? "Eliminando..." : "Sí, eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL ACCIONES */}
+      {actionsModalOpen && selectedClient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl relative border border-slate-200 dark:border-slate-700">
+            <button onClick={() => setActionsModalOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+              <X className="w-6 h-6" />
+            </button>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Acciones Rápidas</h3>
+            <p className="text-sm text-slate-500 mb-6">Gestionar a <strong>{selectedClient.name}</strong></p>
+            
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => handleAction('stamp')}
+                disabled={actionLoading}
+                className="w-full flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-800 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
+              >
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <Star className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <span className="block font-bold text-slate-900 dark:text-white text-sm">Dar Sello Manual</span>
+                  <span className="block text-xs text-slate-500 font-medium">Sumará +1 sello inmediatamente</span>
+                </div>
+              </button>
+
+              <button 
+                onClick={() => { setActionsModalOpen(false); setDeleteModalOpen(true); }}
+                disabled={actionLoading}
+                className="w-full flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/10 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors border border-red-200 dark:border-red-900/30"
+              >
+                <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
+                  <Trash2 className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <span className="block font-bold text-red-600 dark:text-red-400 text-sm">Eliminar Cliente</span>
+                  <span className="block text-xs text-red-500 font-medium">Borrar historial permanentemente</span>
+                </div>
               </button>
             </div>
           </div>
