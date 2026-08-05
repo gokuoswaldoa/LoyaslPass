@@ -61,7 +61,7 @@ export async function GET(
       aud: "google",
       typ: "savetowallet",
       iat: Math.floor(Date.now() / 1000),
-      origins: [],
+      origins: ["https://loyasl-pass.vercel.app"],
       payload: {
         loyaltyClasses: [{
           id: classId,
