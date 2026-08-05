@@ -42,7 +42,7 @@ export async function GET(
       privateKey = privateKey.replace(/\\n/g, '\n');
     }
 
-    const classId = `${issuerId}.${business.id.replace(/-/g, '')}`;
+    const classId = `${issuerId}.${business.id.replace(/-/g, '')}v2`;
     const objectId = `${issuerId}.${walletPassId}`;
 
     // Validar logo: Si es base64 (data:image), usar el icono por defecto para no romper el JWT
