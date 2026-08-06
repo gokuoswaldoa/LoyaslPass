@@ -176,12 +176,39 @@ export async function getCustomers() {
 
     const customersWithStats = customersList.map(c => {
       const customerStamps = stamps.filter(s => s.customerId === c.id);
+      
+      let status = 'Nuevo';
+      if (customerStamps.length > 0) {
+        if (customerStamps.length >= totalStampsRequired) {
+          status = 'VIP';
+        } else {
+          // Check if last stamp was > 30 days ago
+          // Find the latest stamp
+          let lastStampDate = new Date(0);
+          customerStamps.forEach(s => {
+            if (s.stampedAt) {
+              const d = new Date(s.stampedAt);
+              if (d > lastStampDate) lastStampDate = d;
+            }
+          });
+          
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          
+          if (lastStampDate < thirtyDaysAgo) {
+            status = 'Riesgo';
+          } else {
+            status = 'Activo';
+          }
+        }
+      }
+
       return {
         id: c.id,
         name: c.name,
         phone: c.phoneNumber,
         stamps: customerStamps.length,
-        status: customerStamps.length >= totalStampsRequired ? 'VIP' : (customerStamps.length > 0 ? 'Activo' : 'Nuevo'),
+        status,
         walletPassId: c.walletPassId,
         totalStampsRequired: totalStampsRequired,
       };

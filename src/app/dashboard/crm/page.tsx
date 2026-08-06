@@ -18,6 +18,7 @@ type Customer = {
 
 export default function CRMPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("Todos");
   const [clients, setClients] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,10 +33,14 @@ export default function CRMPage() {
     loadCustomers();
   }, []);
 
-  const filteredClients = clients.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    (c.phone && c.phone.includes(searchQuery))
-  );
+  const filteredClients = clients.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (c.phone && c.phone.includes(searchQuery));
+    if (!matchesSearch) return false;
+    
+    if (filterStatus === "Todos") return true;
+    return c.status === filterStatus;
+  });
 
   const [selectedClient, setSelectedClient] = useState<Customer | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -58,7 +63,17 @@ export default function CRMPage() {
     } else if (action === 'stamp') {
       const res = await addManualStamp(selectedClient.id);
       if (res.success) {
-        setClients(clients.map(c => c.id === selectedClient.id ? { ...c, stamps: c.stamps + 1 } : c));
+        setClients(clients.map(c => {
+          if (c.id === selectedClient.id) {
+            const newStamps = c.stamps + 1;
+            return {
+              ...c,
+              stamps: newStamps,
+              status: newStamps >= (c.totalStampsRequired || 8) ? 'VIP' : 'Activo'
+            };
+          }
+          return c;
+        }));
       } else {
         alert(res.error || "Error al dar sello");
       }
@@ -66,6 +81,27 @@ export default function CRMPage() {
     
     setActionLoading(false);
     setActionsModalOpen(false);
+  };
+
+  const exportToCSV = () => {
+    if (filteredClients.length === 0) {
+      alert("No hay clientes para exportar.");
+      return;
+    }
+
+    const headers = ["Nombre,Teléfono,Sellos,Estado,PuntosRequeridos\n"];
+    const rows = filteredClients.map(c => 
+      `${c.name},${c.phone || "Sin teléfono"},${c.stamps},${c.status},${c.totalStampsRequired || 8}\n`
+    );
+
+    const csvContent = "data:text/csv;charset=utf-8," + headers.concat(rows).join("");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "clientes_loyalpass.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
 
@@ -81,7 +117,10 @@ export default function CRMPage() {
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-emerald-500/20">
+          <button 
+            onClick={exportToCSV}
+            className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-colors shadow-lg shadow-emerald-500/20"
+          >
             Exportar CSV
           </button>
         </div>
@@ -102,13 +141,22 @@ export default function CRMPage() {
           </div>
           
           <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-            <button className="flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition-colors whitespace-nowrap">
+            <button 
+              onClick={() => setFilterStatus("Todos")}
+              className={`flex items-center gap-2 px-4 py-3 border-2 rounded-xl font-bold transition-colors whitespace-nowrap ${filterStatus === 'Todos' ? 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-500'}`}
+            >
               <Filter className="w-4 h-4" /> Todos
             </button>
-            <button className="px-4 py-3 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition-colors whitespace-nowrap">
+            <button 
+              onClick={() => setFilterStatus("VIP")}
+              className={`px-4 py-3 border-2 rounded-xl font-bold transition-colors whitespace-nowrap ${filterStatus === 'VIP' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-500'}`}
+            >
               VIP
             </button>
-            <button className="px-4 py-3 bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:border-emerald-500 transition-colors whitespace-nowrap">
+            <button 
+              onClick={() => setFilterStatus("Riesgo")}
+              className={`px-4 py-3 border-2 rounded-xl font-bold transition-colors whitespace-nowrap ${filterStatus === 'Riesgo' ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-700 dark:text-red-400' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-500'}`}
+            >
               En Riesgo
             </button>
           </div>
