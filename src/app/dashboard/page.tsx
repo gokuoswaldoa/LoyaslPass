@@ -11,6 +11,8 @@ export default function DashboardPage() {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ totalCustomers: 0, stampsToday: 0, totalStamps: 0 });
+  const [afluenciaData, setAfluenciaData] = useState<{day: string, recurrentes: number, nuevos: number}[]>([]);
+  const [horariosData, setHorariosData] = useState<{time: string, visitas: number}[]>([]);
   const [businessId, setBusinessId] = useState<string | null>(null);
 
   const [timeRange, setTimeRange] = useState<"hoy" | "semana" | "mes">("hoy");
@@ -24,6 +26,8 @@ export default function DashboardPage() {
         if (res.success && res.stats) {
           setStats(res.stats);
           if (res.businessId) setBusinessId(res.businessId);
+          if (res.chartAfluencia) setAfluenciaData(res.chartAfluencia);
+          if (res.chartHorarios) setHorariosData(res.chartHorarios);
         }
         setLoading(false);
       } else if (status === "unauthenticated") {
@@ -42,27 +46,14 @@ export default function DashboardPage() {
     );
   }
 
-  // Datos para Afluencia y Lealtad (Area Chart)
-  const afluenciaData = [
-    { day: 'Lun', recurrentes: 30, nuevos: 20 },
-    { day: 'Mar', recurrentes: 45, nuevos: 25 },
-    { day: 'Mié', recurrentes: 35, nuevos: 40 },
-    { day: 'Jue', recurrentes: 50, nuevos: 30 },
-    { day: 'Vie', recurrentes: 80, nuevos: 55 },
-    { day: 'Sáb', recurrentes: 100, nuevos: 70 },
-    { day: 'Dom', recurrentes: 90, nuevos: 60 },
-  ];
-
-  // Datos para Horarios Pico (Bar Chart)
-  const horariosData = [
-    { time: '10am', visitas: 15 },
-    { time: '12pm', visitas: 45 },
-    { time: '2pm', visitas: 85 },
-    { time: '4pm', visitas: 60 },
-    { time: '6pm', visitas: 90 },
-    { time: '8pm', visitas: 50 },
-    { time: '10pm', visitas: 20 },
-  ];
+  if (loading || status === "loading") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mb-4"></div>
+        <p className="text-slate-500 font-medium">Cargando...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-10 pb-32 w-full max-w-7xl mx-auto">

@@ -51,6 +51,85 @@ export async function getDashboardStats(timeRange: "hoy" | "semana" | "mes" = "h
       return stampDate >= thresholdDate;
     }).length;
 
+    // --- GRÁFICA 1: AFLUENCIA (Últimos 7 días) ---
+    const afluenciaData = [];
+    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    
+    // Identificar la fecha del primer sello de cada cliente para saber si son "nuevos"
+    const firstStampByCustomer: Record<string, Date> = {};
+    allStamps.forEach(s => {
+      if (!s.stampedAt) return;
+      const date = new Date(s.stampedAt);
+      if (!firstStampByCustomer[s.customerId] || date < firstStampByCustomer[s.customerId]) {
+        firstStampByCustomer[s.customerId] = date;
+      }
+    });
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(now.getDate() - i);
+      d.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(d);
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      const dayName = days[d.getDay()];
+      
+      let nuevos = 0;
+      let recurrentes = 0;
+
+      // Sellos dados en este día exacto
+      const stampsThisDay = allStamps.filter(s => {
+        if (!s.stampedAt) return false;
+        const date = new Date(s.stampedAt);
+        return date >= d && date <= endOfDay;
+      });
+
+      // Contar únicos por cliente (un cliente que viene 2 veces el mismo día cuenta 1 vez)
+      const uniqueCustomersToday = new Set(stampsThisDay.map(s => s.customerId));
+
+      uniqueCustomersToday.forEach(customerId => {
+        const firstVisit = firstStampByCustomer[customerId];
+        // Si su primera visita fue en este día, es "nuevo", sino "recurrente"
+        if (firstVisit >= d && firstVisit <= endOfDay) {
+          nuevos++;
+        } else {
+          recurrentes++;
+        }
+      });
+
+      afluenciaData.push({ day: dayName, recurrentes, nuevos });
+    }
+
+    // --- GRÁFICA 2: HORARIOS PICO (Hoy) ---
+    // Rangos: 10am (8-11), 12pm (11-13), 2pm (13-15), 4pm (15-17), 6pm (17-19), 8pm (19-21), 10pm (21-23)
+    const horariosMap = { '10am': 0, '12pm': 0, '2pm': 0, '4pm': 0, '6pm': 0, '8pm': 0, '10pm': 0 };
+    
+    const todayStart = new Date();
+    todayStart.setHours(0,0,0,0);
+
+    const stampsTodayForChart = allStamps.filter(s => {
+      if (!s.stampedAt) return false;
+      return new Date(s.stampedAt) >= todayStart;
+    });
+
+    stampsTodayForChart.forEach(s => {
+      if (!s.stampedAt) return;
+      const hour = new Date(s.stampedAt).getHours();
+      
+      if (hour < 11) horariosMap['10am']++;
+      else if (hour < 13) horariosMap['12pm']++;
+      else if (hour < 15) horariosMap['2pm']++;
+      else if (hour < 17) horariosMap['4pm']++;
+      else if (hour < 19) horariosMap['6pm']++;
+      else if (hour < 21) horariosMap['8pm']++;
+      else horariosMap['10pm']++;
+    });
+
+    const horariosData = Object.keys(horariosMap).map(time => ({
+      time,
+      visitas: horariosMap[time as keyof typeof horariosMap]
+    }));
+
     return {
       success: true,
       businessId: business.id,
@@ -58,7 +137,9 @@ export async function getDashboardStats(timeRange: "hoy" | "semana" | "mes" = "h
         totalCustomers,
         stampsToday: stampsInRange,
         totalStamps: allStamps.length,
-      }
+      },
+      chartAfluencia: afluenciaData,
+      chartHorarios: horariosData
     };
 
   } catch (error) {
