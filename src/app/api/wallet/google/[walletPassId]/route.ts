@@ -55,6 +55,16 @@ export async function GET(
       validLogoUrl = `https://loyasl-pass.vercel.app${validLogoUrl}`;
     }
 
+    const THEMES_HEX: Record<string, string> = {
+      "emerald": "#10B981",
+      "midnight": "#1E293B",
+      "purple": "#8B5CF6",
+      "sunset": "#F97316",
+      "ocean": "#3B82F6"
+    };
+    
+    const cardColor = THEMES_HEX[config.styleTheme || "emerald"] || "#10B981";
+
     // Payload de Google Wallet
     const payload = {
       iss: clientEmail,
@@ -71,7 +81,7 @@ export async function GET(
             sourceUri: { uri: validLogoUrl }
           },
           reviewStatus: "UNDER_REVIEW",
-          hexBackgroundColor: "#10B981" // Color de la tarjeta
+          hexBackgroundColor: cardColor
         }],
         loyaltyObjects: [{
           id: objectId,
