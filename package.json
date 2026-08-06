@@ -19,7 +19,6 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "framer-motion": "^12.43.0",
-    "google-auth-library": "^11.0.0",
     "js-cookie": "^3.0.8",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.28.0",
