@@ -15,7 +15,7 @@ const TEMPLATES = [
 
 export default function MarketingPage() {
   const [message, setMessage] = useState("");
-  const [target, setTarget] = useState<"all" | "selected">("all");
+  const [target, setTarget] = useState<"all" | "riesgo">("all");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   
@@ -121,23 +121,23 @@ export default function MarketingPage() {
             </button>
 
             <button 
-              onClick={() => setTarget("selected")}
+              onClick={() => setTarget("riesgo")}
               className={`p-6 rounded-2xl border-2 text-left transition-all ${
-                target === "selected" 
+                target === "riesgo" 
                 ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 shadow-md ring-4 ring-emerald-500/10" 
                 : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
               }`}
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${
-                target === "selected" ? "bg-emerald-500 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-400"
+                target === "riesgo" ? "bg-emerald-500 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-400"
               }`}>
                 <Filter className="w-5 h-5" />
               </div>
-              <h4 className={`font-black text-lg mb-1 ${target === "selected" ? "text-emerald-700 dark:text-emerald-400" : "text-slate-900 dark:text-white"}`}>
-                Clientes Específicos
+              <h4 className={`font-black text-lg mb-1 ${target === "riesgo" ? "text-emerald-700 dark:text-emerald-400" : "text-slate-900 dark:text-white"}`}>
+                Clientes En Riesgo
               </h4>
-              <p className={`text-sm font-medium ${target === "selected" ? "text-emerald-600/80 dark:text-emerald-400/80" : "text-slate-500"}`}>
-                Filtrar por VIP, en riesgo, etc.
+              <p className={`text-sm font-medium ${target === "riesgo" ? "text-emerald-600/80 dark:text-emerald-400/80" : "text-slate-500"}`}>
+                Reconecta con quienes no han venido.
               </p>
             </button>
           </div>
