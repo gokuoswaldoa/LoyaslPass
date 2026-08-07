@@ -138,59 +138,86 @@ export default function DashboardPage() {
         
         {/* Gráfica 1: Afluencia (AreaChart) */}
         <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-[420px]">
-          <div className="mb-8">
-            <h3 className="font-black text-lg text-slate-900 dark:text-white">Afluencia y Lealtad</h3>
-            <p className="text-sm font-medium text-slate-500">Nuevos vs Recurrentes (Semana)</p>
+          <div className="mb-8 flex justify-between items-start">
+            <div>
+              <h3 className="font-black text-lg text-slate-900 dark:text-white">Afluencia y Lealtad</h3>
+              <p className="text-sm font-medium text-slate-500">Nuevos vs Recurrentes (Tiempo Real)</p>
+            </div>
+            {stats.totalStamps === 0 && (
+              <span className="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded-md">Sin datos reales aún</span>
+            )}
           </div>
           
           <div className="flex-1 w-full relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={afluenciaData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorRecurrentes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorNuevos" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#94a3b8" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
-                <RechartsTooltip 
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
-                  cursor={{ stroke: '#10b981', strokeWidth: 2, strokeDasharray: '4 4' }}
-                />
-                <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '14px', fontWeight: 600, color: '#64748b' }} />
-                <Area type="monotone" name="Recurrentes" dataKey="recurrentes" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRecurrentes)" />
-                <Area type="monotone" name="Nuevos" dataKey="nuevos" stroke="#94a3b8" strokeWidth={3} fillOpacity={1} fill="url(#colorNuevos)" />
-              </AreaChart>
-            </ResponsiveContainer>
+            {stats.totalStamps === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center opacity-60">
+                <div className="w-16 h-16 mb-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                </div>
+                <h4 className="font-bold text-slate-900 dark:text-white">Aún no hay visitas</h4>
+                <p className="text-sm text-slate-500 max-w-[200px] mt-1">Comparte tu código QR para comenzar a ver datos aquí.</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={afluenciaData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorRecurrentes" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="colorNuevos" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#94a3b8" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
+                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
+                  <RechartsTooltip 
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
+                    cursor={{ stroke: '#10b981', strokeWidth: 2, strokeDasharray: '4 4' }}
+                  />
+                  <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '14px', fontWeight: 600, color: '#64748b' }} />
+                  <Area type="monotone" name="Recurrentes" dataKey="recurrentes" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRecurrentes)" />
+                  <Area type="monotone" name="Nuevos" dataKey="nuevos" stroke="#94a3b8" strokeWidth={3} fillOpacity={1} fill="url(#colorNuevos)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
         {/* Gráfica 2: Horarios Pico (BarChart) */}
         <div className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col h-[420px]">
-          <div className="mb-8">
-            <h3 className="font-black text-lg text-slate-900 dark:text-white">Horarios Pico</h3>
-            <p className="text-sm font-medium text-slate-500">Actividad por hora (Hoy)</p>
+          <div className="mb-8 flex justify-between items-start">
+            <div>
+              <h3 className="font-black text-lg text-slate-900 dark:text-white">Horarios Pico</h3>
+              <p className="text-sm font-medium text-slate-500">Actividad por hora (Tiempo Real)</p>
+            </div>
           </div>
           
           <div className="flex-1 w-full relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={horariosData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
-                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
-                <RechartsTooltip 
-                  cursor={{fill: '#f1f5f9'}}
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
-                />
-                <Bar name="Visitas" dataKey="visitas" fill="#10b981" radius={[6, 6, 0, 0]} barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
+            {stats.stampsToday === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center opacity-60">
+                <div className="w-16 h-16 mb-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h4 className="font-bold text-slate-900 dark:text-white">Aún no hay visitas hoy</h4>
+                <p className="text-sm text-slate-500 max-w-[200px] mt-1">Aquí verás qué horas son las más activas.</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={horariosData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-800" />
+                  <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 600}} />
+                  <RechartsTooltip 
+                    cursor={{fill: '#f1f5f9'}}
+                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', fontWeight: 'bold' }}
+                  />
+                  <Bar name="Visitas" dataKey="visitas" fill="#10b981" radius={[6, 6, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 

@@ -117,6 +117,7 @@ export const customers = pgTable("customers", {
   name: varchar("name").notNull(),
   phoneNumber: varchar("phone_number"),
   email: varchar("email"),
+  birthdate: varchar("birthdate"),
   walletPassId: varchar("wallet_pass_id").unique(),
 });
 

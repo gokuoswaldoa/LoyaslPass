@@ -24,9 +24,10 @@ export async function getBusinessOnboardingData(businessId: string) {
   }
 }
 
-export async function registerCustomer(businessId: string, name: string, phone: string, email: string) {
+export async function registerCustomer(businessId: string, name: string, phone: string, email: string, birthdate: string = "") {
   if (!name) return { success: false, error: "El nombre es obligatorio" };
   if (!phone) return { success: false, error: "El número es obligatorio" };
+  if (!birthdate) return { success: false, error: "La fecha de nacimiento es obligatoria" };
 
   try {
     // Buscar si ya existe un cliente con ese número para ese negocio
@@ -49,6 +50,7 @@ export async function registerCustomer(businessId: string, name: string, phone: 
       name,
       phoneNumber: phone,
       email: email || null,
+      birthdate: birthdate || null,
       walletPassId,
     }).returning();
 

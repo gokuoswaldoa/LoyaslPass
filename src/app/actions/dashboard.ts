@@ -210,6 +210,7 @@ export async function getCustomers() {
         stamps: customerStamps.length,
         status,
         walletPassId: c.walletPassId,
+        birthdate: c.birthdate,
         totalStampsRequired: totalStampsRequired,
       };
     });

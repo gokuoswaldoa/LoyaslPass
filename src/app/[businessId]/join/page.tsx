@@ -28,6 +28,7 @@ export default function JoinPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [birthdate, setBirthdate] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function JoinPage() {
     setError(null);
     setIsSubmitting(true);
 
-    const res = await registerCustomer(businessId, name, phone, email);
+    const res = await registerCustomer(businessId, name, phone, email, birthdate);
     if (res.success && res.walletPassId) {
       // Guardar localmente para que no se pierda al cerrar la pestaña
       localStorage.setItem(`loyalpass_wallet_${businessId}`, res.walletPassId);
@@ -138,6 +139,20 @@ export default function JoinPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all"
+            />
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              <User size={20} className="text-white/60" />
+            </div>
+            <input 
+              type="date" 
+              placeholder="Fecha de Nacimiento" 
+              required
+              value={birthdate}
+              onChange={(e) => setBirthdate(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all [color-scheme:dark]"
             />
           </div>
 

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Send, Smartphone, Zap, Sparkles, Users, MessageSquare, BellRing, Filter } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Send, Smartphone, Zap, Sparkles, Users, MessageSquare, BellRing, Filter, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { getPassConfig } from "@/app/actions/editor";
-import { useEffect } from "react";
+import { getCustomers } from "@/app/actions/dashboard";
 
 const TEMPLATES = [
   { id: 1, label: "Oferta Flash 2x1", message: "¡Hoy es tu día de suerte! Ven y disfruta un 2x1 en toda la tienda. Solo válido hoy hasta cerrar.", icon: Zap },
@@ -15,23 +15,51 @@ const TEMPLATES = [
 
 export default function MarketingPage() {
   const [message, setMessage] = useState("");
-  const [target, setTarget] = useState<"all" | "riesgo">("all");
+  const [target, setTarget] = useState<"all" | "riesgo" | "vip" | "cumple">("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   
   const [businessName, setBusinessName] = useState("LoyalPass");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [customers, setCustomers] = useState<any[]>([]);
 
   useEffect(() => {
-    async function loadConfig() {
-      const res = await getPassConfig();
-      if (res.success) {
-        if (res.businessName) setBusinessName(res.businessName);
-        if (res.config?.logoUrl) setLogoUrl(res.config.logoUrl);
+    async function loadData() {
+      const resConfig = await getPassConfig();
+      if (resConfig.success) {
+        if (resConfig.businessName) setBusinessName(resConfig.businessName);
+        if (resConfig.config?.logoUrl) setLogoUrl(resConfig.config.logoUrl);
+      }
+      
+      const resCustomers = await getCustomers();
+      if (resCustomers.success && resCustomers.customers) {
+        setCustomers(resCustomers.customers);
       }
     }
-    loadConfig();
+    loadData();
   }, []);
+
+  // Filter customers
+  const filteredCustomers = customers.filter(c => {
+    // 1. Text Search Filter
+    if (searchQuery && !c.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
+    // 2. Status Filter
+    if (target === "riesgo" && c.status !== "Riesgo") return false;
+    if (target === "vip" && c.status !== "VIP") return false;
+    if (target === "cumple") {
+      if (!c.birthdate) return false;
+      // Check if birthdate month matches current month
+      const birthDateObj = new Date(c.birthdate + "T00:00:00");
+      const currentMonth = new Date().getMonth();
+      if (birthDateObj.getMonth() !== currentMonth) return false;
+    }
+    
+    return true;
+  });
 
   const handleSend = () => {
     if (!message) return;
@@ -95,51 +123,53 @@ export default function MarketingPage() {
           </div>
         </div>
 
-        {/* Target Selection */}
+        {/* Target Selection & Filters */}
         <div className="mb-10">
           <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">¿A quién se lo enviamos?</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button 
-              onClick={() => setTarget("all")}
-              className={`p-6 rounded-2xl border-2 text-left transition-all ${
-                target === "all" 
-                ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 shadow-md ring-4 ring-emerald-500/10" 
-                : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
-              }`}
-            >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${
-                target === "all" ? "bg-emerald-500 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-400"
-              }`}>
-                <Users className="w-5 h-5" />
+          
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex-1 relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Search className="w-5 h-5 text-slate-400" />
               </div>
-              <h4 className={`font-black text-lg mb-1 ${target === "all" ? "text-emerald-700 dark:text-emerald-400" : "text-slate-900 dark:text-white"}`}>
-                Todos los Clientes
-              </h4>
-              <p className={`text-sm font-medium ${target === "all" ? "text-emerald-600/80 dark:text-emerald-400/80" : "text-slate-500"}`}>
-                Llega a tus 1,248 clientes actuales.
-              </p>
-            </button>
+              <input 
+                type="text" 
+                placeholder="Buscar por nombre..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-900 dark:text-white font-medium"
+              />
+            </div>
+            <select 
+              value={target}
+              onChange={(e) => setTarget(e.target.value as any)}
+              className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-900 dark:text-white font-medium cursor-pointer"
+            >
+              <option value="all">Todos los clientes</option>
+              <option value="riesgo">En Riesgo (30+ días sin visita)</option>
+              <option value="vip">VIP (Tarjeta llena)</option>
+              <option value="cumple">Cumpleañeros (Este mes)</option>
+            </select>
+          </div>
 
-            <button 
-              onClick={() => setTarget("riesgo")}
-              className={`p-6 rounded-2xl border-2 text-left transition-all ${
-                target === "riesgo" 
-                ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 shadow-md ring-4 ring-emerald-500/10" 
-                : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
-              }`}
-            >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${
-                target === "riesgo" ? "bg-emerald-500 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-400"
-              }`}>
-                <Filter className="w-5 h-5" />
+          {/* Target Summary */}
+          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <Users className="w-6 h-6" />
               </div>
-              <h4 className={`font-black text-lg mb-1 ${target === "riesgo" ? "text-emerald-700 dark:text-emerald-400" : "text-slate-900 dark:text-white"}`}>
-                Clientes En Riesgo
-              </h4>
-              <p className={`text-sm font-medium ${target === "riesgo" ? "text-emerald-600/80 dark:text-emerald-400/80" : "text-slate-500"}`}>
-                Reconecta con quienes no han venido.
-              </p>
-            </button>
+              <div>
+                <h4 className="font-bold text-slate-900 dark:text-white text-lg">
+                  {filteredCustomers.length} {filteredCustomers.length === 1 ? "Cliente seleccionado" : "Clientes seleccionados"}
+                </h4>
+                <p className="text-sm text-slate-500 font-medium line-clamp-1">
+                  {filteredCustomers.length > 0 
+                    ? `Ej: ${filteredCustomers.slice(0, 3).map(c => c.name).join(', ')}${filteredCustomers.length > 3 ? '...' : ''}`
+                    : "Ningún cliente coincide con los filtros."}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
