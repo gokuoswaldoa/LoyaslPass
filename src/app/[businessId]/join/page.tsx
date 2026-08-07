@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { getBusinessOnboardingData, registerCustomer } from "@/app/actions/clientFlow";
-import { User, Phone, Mail, ArrowRight } from "lucide-react";
+import { User, Phone, Mail, ArrowRight, Calendar } from "lucide-react";
 
 export default function JoinPage() {
   const params = useParams();
@@ -144,15 +144,17 @@ export default function JoinPage() {
 
           <div className="relative">
             <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <User size={20} className="text-white/60" />
+              <Calendar size={20} className="text-white/60" />
             </div>
             <input 
-              type="date" 
+              type="text" 
               placeholder="Fecha de Nacimiento" 
               required
               value={birthdate}
+              onFocus={(e) => (e.target.type = "date")}
+              onBlur={(e) => { if (!e.target.value) e.target.type = "text"; }}
               onChange={(e) => setBirthdate(e.target.value)}
-              className="w-full min-w-0 max-w-full pl-12 pr-2 md:pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all [color-scheme:dark]"
+              className="w-full min-w-0 max-w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all [color-scheme:dark]"
             />
           </div>
 
