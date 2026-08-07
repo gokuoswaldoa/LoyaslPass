@@ -60,6 +60,7 @@ export async function getDashboardStats(timeRange: "hoy" | "semana" | "mes" = "h
     allStamps.forEach(s => {
       if (!s.stampedAt) return;
       const date = new Date(s.stampedAt);
+      if (!s.customerId) return;
       if (!firstStampByCustomer[s.customerId] || date < firstStampByCustomer[s.customerId]) {
         firstStampByCustomer[s.customerId] = date;
       }
@@ -88,6 +89,7 @@ export async function getDashboardStats(timeRange: "hoy" | "semana" | "mes" = "h
       const uniqueCustomersToday = new Set(stampsThisDay.map(s => s.customerId));
 
       uniqueCustomersToday.forEach(customerId => {
+        if (!customerId) return;
         const firstVisit = firstStampByCustomer[customerId];
         // Si su primera visita fue en este día, es "nuevo", sino "recurrente"
         if (firstVisit >= d && firstVisit <= endOfDay) {
