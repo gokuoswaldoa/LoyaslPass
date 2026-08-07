@@ -152,7 +152,7 @@ export default function JoinPage() {
               required
               value={birthdate}
               onChange={(e) => setBirthdate(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all [color-scheme:dark]"
+              className="w-full min-w-0 max-w-full pl-12 pr-2 md:pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all [color-scheme:dark]"
             />
           </div>
 
