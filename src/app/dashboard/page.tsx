@@ -46,14 +46,6 @@ export default function DashboardPage() {
     );
   }
 
-  if (loading || status === "loading") {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500 mb-4"></div>
-        <p className="text-slate-500 font-medium">Cargando...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 md:p-10 pb-32 w-full max-w-7xl mx-auto">
