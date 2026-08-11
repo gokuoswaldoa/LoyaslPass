@@ -94,9 +94,11 @@ export async function savePassConfig(data: any) {
         const cardColor = THEMES_HEX[themeKey] || "#10B981";
 
         const isBase64Logo = data.logoUrl && data.logoUrl.startsWith('data:');
-        let validLogoUrl = (!data.logoUrl || isBase64Logo) 
+        let validLogoUrl = (!data.logoUrl) 
           ? "https://loyasl-pass.vercel.app/logo/icono.png" 
-          : data.logoUrl;
+          : isBase64Logo 
+            ? `https://loyasl-pass.vercel.app/api/logo/${business.id}`
+            : data.logoUrl;
 
         if (validLogoUrl.startsWith('/')) {
           validLogoUrl = `https://loyasl-pass.vercel.app${validLogoUrl}`;
