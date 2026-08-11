@@ -74,6 +74,54 @@ export async function savePassConfig(data: any) {
         .where(eq(businesses.id, business.id));
     }
 
+    // Google Wallet Sync
+    try {
+      const { getGoogleWalletClient } = await import("@/lib/googleWalletClient");
+      const client = getGoogleWalletClient();
+      const issuerId = process.env.GOOGLE_WALLET_ISSUER_ID;
+      
+      if (issuerId) {
+        const classId = `${issuerId}.${business.id.replace(/-/g, '')}v2`;
+        
+        const THEMES_HEX: Record<string, string> = {
+          "emerald": "#10B981",
+          "midnight": "#1E293B",
+          "purple": "#8B5CF6",
+          "sunset": "#F97316",
+          "ocean": "#3B82F6"
+        };
+        const themeKey = data.styleTheme?.replace("gradient-", "") || "emerald";
+        const cardColor = THEMES_HEX[themeKey] || "#10B981";
+
+        const isBase64Logo = data.logoUrl && data.logoUrl.startsWith('data:');
+        let validLogoUrl = (!data.logoUrl || isBase64Logo) 
+          ? "https://loyasl-pass.vercel.app/logo/icono.png" 
+          : data.logoUrl;
+
+        if (validLogoUrl.startsWith('/')) {
+          validLogoUrl = `https://loyasl-pass.vercel.app${validLogoUrl}`;
+        }
+
+        const businessName = data.businessName || business.name;
+
+        await client.request({
+          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyClass/${classId}`,
+          method: "PATCH",
+          data: {
+            issuerName: businessName,
+            programName: `Programa de Lealtad ${businessName}`,
+            programLogo: {
+              sourceUri: { uri: validLogoUrl }
+            },
+            hexBackgroundColor: cardColor
+          }
+        });
+      }
+    } catch (gwError) {
+      console.error("Error updating Google Wallet class:", gwError);
+      // We don't block the save if Google Wallet fails
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Error saving pass config:", error);

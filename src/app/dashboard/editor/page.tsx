@@ -99,25 +99,24 @@ export default function EditorPage() {
           {/* Logo Upload */}
           <div>
             <label className="block text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-3">
-              Logotipo del Negocio
+              Logotipo del Negocio (Enlace Público)
             </label>
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 overflow-hidden relative">
-                <Image src={config.logoUrl} alt="Logo" fill className="object-contain" />
+              <div className="w-16 h-16 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex flex-shrink-0 items-center justify-center p-2 overflow-hidden relative">
+                <Image src={config.logoUrl || "/logo/icono.png"} alt="Logo" fill className="object-contain" />
               </div>
-              <input 
-                type="file" 
-                accept="image/*"
-                className="hidden" 
-                ref={fileInputRef}
-                onChange={handleLogoUpload}
-              />
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-4 py-2 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-emerald-500 hover:text-emerald-500 transition-colors"
-              >
-                <Upload className="w-4 h-4" /> Subir Logo
-              </button>
+              <div className="flex-1">
+                <input 
+                  type="url" 
+                  value={config.logoUrl}
+                  onChange={(e) => setConfig({ ...config, logoUrl: e.target.value })}
+                  placeholder="https://tusitio.com/logo.png"
+                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:outline-none font-medium text-slate-900 dark:text-white text-sm"
+                />
+                <p className="text-xs text-slate-500 mt-2">
+                  * Google Wallet requiere un enlace web público que termine en .png o .jpg.
+                </p>
+              </div>
             </div>
           </div>
 
