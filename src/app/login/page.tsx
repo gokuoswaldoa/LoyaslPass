@@ -42,7 +42,7 @@ function LoginContent() {
           <div className="w-20 h-20 bg-white dark:bg-slate-900 rounded-[1.5rem] shadow-xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-100 dark:border-slate-800 flex items-center justify-center p-4 mb-6 relative group">
             <div className="absolute inset-0 bg-emerald-500/10 rounded-[1.5rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <Image 
-              src="/logo/icono.png" 
+              src="/logo/nuevoLogo.svg" 
               alt="LoyalPass Logo" 
               width={64} 
               height={64} 
