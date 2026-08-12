@@ -19,18 +19,15 @@ export function GlobalHeader() {
         
         {/* BRAND LOGO */}
         <Link href="/" className="flex items-center gap-3 group transition-opacity hover:opacity-80">
-          <div className="relative h-10 w-10 flex-shrink-0">
+          <div className="relative h-10 md:h-12 w-48 flex-shrink-0">
             <Image 
-              src="/logo/nuevoLogo.svg" 
-              alt="LoyalPass Icon" 
+              src="/logo/loyalpass-logo-full.svg" 
+              alt="LoyalPass" 
               fill 
-              className="object-contain dark:invert" 
+              className="object-contain object-left dark:invert" 
               priority
             />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center">
-            Loyal<span className="text-emerald-500">Pass</span>
-          </span>
         </Link>
         
         <div className="flex items-center gap-6">

@@ -149,10 +149,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* --- MOBILE TOPBAR --- */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 relative rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-1">
-            <Image src="/logo/nuevoLogo.svg" alt="LoyalPass" fill className="object-contain dark:invert" />
+          <div className="w-32 h-8 relative flex items-center justify-start p-1">
+            <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
           </div>
-          <span className="font-bold text-lg tracking-tight">LoyalPass</span>
         </div>
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -180,10 +179,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             {/* Logo Area */}
             <div className="hidden md:flex items-center gap-3 p-6 border-b border-slate-100 dark:border-slate-800/50">
-              <div className="w-10 h-10 relative rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-1.5 shadow-sm">
-                <Image src="/logo/nuevoLogo.svg" alt="LoyalPass" fill className="object-contain dark:invert" />
+              <div className="h-10 relative w-48 flex items-center justify-start p-1.5 shadow-sm">
+                <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
               </div>
-              <span className="font-black text-2xl tracking-tight">LoyalPass</span>
             </div>
 
             {/* User Profile */}
