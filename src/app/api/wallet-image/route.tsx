@@ -79,11 +79,21 @@ export async function GET(request: Request) {
             backgroundColor: bg,
             alignItems: 'center',
             justifyContent: 'center',
-            flexDirection: 'row',
-            gap: \`\${gapSize}px\`,
-            padding: '40px',
+            flexDirection: 'column',
           }}
         >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: gapSize + 'px',
+              padding: '40px',
+              maxWidth: '960px',
+            }}
+          >
           {stamps.map((index) => {
             const isFilled = index < current;
             const isLast = index === total - 1;
@@ -93,8 +103,8 @@ export async function GET(request: Request) {
             
             // Colores
             const backgroundColor = isFilled ? color : 'transparent';
-            const borderColor = isFilled ? color : \`\${color}4D\`; // 30% opacidad
-            const iconColor = isFilled ? bg : \`\${color}80\`; // 50% opacidad
+            const borderColor = isFilled ? color : color + '4D'; // 30% opacidad
+            const iconColor = isFilled ? bg : color + '80'; // 50% opacidad
             
             return (
               <div
@@ -103,11 +113,11 @@ export async function GET(request: Request) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: \`\${circleSize}px\`,
-                  height: \`\${circleSize}px\`,
+                  width: circleSize + 'px',
+                  height: circleSize + 'px',
                   borderRadius: '50%',
                   backgroundColor: backgroundColor,
-                  border: \`6px solid \${borderColor}\`,
+                  border: '6px solid ' + borderColor,
                 }}
               >
                 <svg
@@ -125,6 +135,7 @@ export async function GET(request: Request) {
               </div>
             );
           })}
+          </div>
         </div>
       ),
       {
