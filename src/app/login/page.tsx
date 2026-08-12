@@ -39,7 +39,7 @@ function LoginContent() {
         
         {/* Logo and Brand */}
         <div className="flex flex-col items-center mb-10">
-          <div className="w-full max-w-xs h-20 bg-white/50 dark:bg-slate-900/50 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 flex items-center justify-center p-4 mb-4 relative group">
+          <div className="w-full max-w-sm h-24 md:h-28 bg-white/50 dark:bg-slate-900/50 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 flex items-center justify-center p-4 mb-4 relative group">
             <div className="absolute inset-0 bg-emerald-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <Image 
               src="/logo/loyalpass-logo-full.svg" 
