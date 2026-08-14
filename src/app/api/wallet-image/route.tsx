@@ -5,16 +5,7 @@ import { ICONS } from './icons';
 // Remover runtime='edge' para evitar el límite de 1MB de Vercel (Satori y Base64 pesan bastante)
 // export const runtime = 'edge';
 
-// Ícono de regalo en JSX puro (Satori lo soporta bien sin Fragmentos)
-const giftIconPath = (
-  <g>
-    <polyline points="20 12 20 22 4 22 4 12" />
-    <rect width="20" height="5" x="2" y="7" />
-    <line x1="12" x2="12" y1="22" y2="7" />
-    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
-  </g>
-);
+
 
 export async function GET(request: Request) {
   try {
@@ -84,9 +75,10 @@ export async function GET(request: Request) {
               const isFilled = index < current;
               const isLast = index === total - 1;
               
-              const backgroundColor = isFilled ? color + '1A' : 'transparent'; // Ligero fondo si está lleno
-              const borderColor = isFilled ? color : color + '4D'; 
-              const iconColor = isFilled ? color : color + '80'; // Solo para el regalo
+              const backgroundColor = isFilled ? color + '0D' : 'transparent'; 
+              const borderStyle = isFilled ? `3px solid ${color}` : `3px dashed ${color}33`; 
+              
+              const currentB64 = isLast ? ICONS['regalo'] : businessIconB64;
               
               return (
                 <div
@@ -99,33 +91,17 @@ export async function GET(request: Request) {
                     height: circleSize + 'px',
                     borderRadius: '50%',
                     backgroundColor: backgroundColor,
-                    border: '6px solid ' + borderColor,
+                    border: borderStyle,
                   }}
                 >
-                  {isLast ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={circleSize * 0.5}
-                      height={circleSize * 0.5}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke={iconColor}
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {giftIconPath}
-                    </svg>
-                  ) : (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img 
-                      src={businessIconB64} 
-                      width={circleSize * 0.6}
-                      height={circleSize * 0.6}
-                      style={{ opacity: isFilled ? 1 : 0.3 }}
-                      alt="Stamp"
-                    />
-                  )}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={currentB64} 
+                    width={circleSize * 0.6}
+                    height={circleSize * 0.6}
+                    style={{ opacity: isFilled ? 1 : 0.3 }}
+                    alt="Stamp"
+                  />
                 </div>
               );
             })}
