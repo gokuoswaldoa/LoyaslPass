@@ -57,8 +57,47 @@ export async function GET(request: Request) {
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
+          {/* Capa de color pastel basada en el color principal */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0, left: 0, right: 0, bottom: 0,
+              backgroundColor: color + '0A',
+            }}
+          />
+
+          {/* Marca de agua decorativa Izquierda */}
+          <img 
+            src={businessIconB64}
+            style={{
+              position: 'absolute',
+              left: '-10%',
+              top: '-20%',
+              width: '500px',
+              height: '500px',
+              opacity: 0.04,
+              transform: 'rotate(-15deg)'
+            }}
+          />
+
+          {/* Marca de agua decorativa Derecha */}
+          <img 
+            src={businessIconB64}
+            style={{
+              position: 'absolute',
+              right: '-10%',
+              bottom: '-20%',
+              width: '500px',
+              height: '500px',
+              opacity: 0.04,
+              transform: 'rotate(15deg)'
+            }}
+          />
+
           <div
             style={{
               display: 'flex',
@@ -69,6 +108,7 @@ export async function GET(request: Request) {
               gap: gapSize + 'px',
               padding: '40px',
               maxWidth: '960px',
+              zIndex: 10,
             }}
           >
             {stamps.map((index) => {
@@ -79,6 +119,7 @@ export async function GET(request: Request) {
               const borderStyle = isFilled ? `3px solid ${color}` : `3px dashed ${color}33`; 
               
               const currentB64 = isLast ? ICONS['regalo'] : businessIconB64;
+              const iconSize = isLast ? circleSize * 0.75 : circleSize * 0.55;
               
               return (
                 <div
@@ -97,8 +138,8 @@ export async function GET(request: Request) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={currentB64} 
-                    width={circleSize * 0.6}
-                    height={circleSize * 0.6}
+                    width={iconSize}
+                    height={iconSize}
                     style={{ opacity: isFilled ? 1 : 0.3 }}
                     alt="Stamp"
                   />
