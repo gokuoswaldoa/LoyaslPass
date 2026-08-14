@@ -1,106 +1,19 @@
 import { ImageResponse } from 'next/og';
 import React from 'react';
+import { ICONS } from './icons';
 
 export const runtime = 'edge';
 
-// Diccionario de íconos
-const ICONS: Record<string, React.ReactNode> = {
-  cafeteria: (
-    <g>
-      <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-      <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-      <line x1="6" x2="6" y1="2" y2="4" />
-      <line x1="10" x2="10" y1="2" y2="4" />
-      <line x1="14" x2="14" y1="2" y2="4" />
-    </g>
-  ),
-  restaurante: (
-    <g>
-      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-      <path d="M7 2v20" />
-      <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
-    </g>
-  ),
-  postres: (
-    <g>
-      <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8" />
-      <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1" />
-      <path d="M2 21h20" />
-      <path d="M7 8v3" />
-      <path d="M12 8v3" />
-      <path d="M17 8v3" />
-      <path d="M7 4h.01" />
-      <path d="M12 4h.01" />
-      <path d="M17 4h.01" />
-    </g>
-  ),
-  barberia: (
-    <g>
-      <circle cx="6" cy="6" r="3" />
-      <circle cx="6" cy="18" r="3" />
-      <line x1="20" x2="8.12" y1="4" y2="15.88" />
-      <line x1="14.47" x2="20" y1="14.48" y2="20" />
-      <line x1="8.12" x2="12" y1="8.12" y2="12" />
-    </g>
-  ),
-  bar: (
-    <g>
-      <path d="M8 22h8" />
-      <path d="M12 15v7" />
-      <path d="M12 15a7.9 7.9 0 0 1-8-8 8.5 8.5 0 0 1 16 0 7.9 7.9 0 0 1-8 8Z" />
-      <path d="M4 7h16" />
-    </g>
-  ),
-  spa: (
-    <g>
-      <path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V12m0 0a4.5 4.5 0 1 0 4.5 4.5M12 12a4.5 4.5 0 1 1-4.5 4.5M12 12v4.5" />
-    </g>
-  ),
-  tienda: (
-    <g>
-      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-      <line x1="3" x2="21" y1="6" y2="6" />
-      <path d="M16 10a4 4 0 0 1-8 0" />
-    </g>
-  ),
-  fitness: (
-    <g>
-      <path d="m6.5 6.5 11 11" />
-      <path d="m21 21-1-1" />
-      <path d="m3 3-1-1" />
-      <path d="m18 22 4-4" />
-      <path d="m2 6 4-4" />
-      <path d="m3 10 7-7" />
-      <path d="m14 21 7-7" />
-    </g>
-  ),
-  mascotas: (
-    <g>
-      <path d="M11 11.424V12a1 1 0 0 0 1 1h0a1 1 0 0 0 1-1v-.576" />
-      <path d="M14 6c0 1.5-1 3-2 3s-2-1.5-2-3 1-3 2-3 2 1.5 2 3Z" />
-      <path d="M19.5 8.5c0 1.5-1 3-2 3s-2-1.5-2-3 1-3 2-3 2 1.5 2 3Z" />
-      <path d="M8.5 8.5c0 1.5-1 3-2 3s-2-1.5-2-3 1-3 2-3 2 1.5 2 3Z" />
-      <path d="M12.96 17c.54-.53.96-1.2.96-2 0-1.5-1-3-2-3s-2 1.5-2 3c0 .8.42 1.47.96 2" />
-      <path d="M4 14.5c0-1.5 1-3 2-3s2 1.5 2 3-1 3-2 3-2-1.5-2-3Z" />
-      <path d="M20 14.5c0-1.5-1-3-2-3s-2 1.5-2 3 1 3 2 3 2-1.5 2-3Z" />
-      <path d="M12 21c-2.5 0-4.5-1-4.5-2.5S9.5 16 12 16s4.5 1 4.5 2.5S14.5 21 12 21Z" />
-    </g>
-  ),
-  otro: (
-    <g>
-      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-    </g>
-  ),
-  regalo: (
-    <g>
-      <polyline points="20 12 20 22 4 22 4 12" />
-      <rect width="20" height="5" x="2" y="7" />
-      <line x1="12" x2="12" y1="22" y2="7" />
-      <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-      <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
-    </g>
-  )
-};
+// Ícono de regalo en JSX puro (Satori lo soporta bien sin Fragmentos)
+const giftIconPath = (
+  <g>
+    <polyline points="20 12 20 22 4 22 4 12" />
+    <rect width="20" height="5" x="2" y="7" />
+    <line x1="12" x2="12" y1="22" y2="7" />
+    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+  </g>
+);
 
 export async function GET(request: Request) {
   try {
@@ -122,8 +35,8 @@ export async function GET(request: Request) {
 
     iconType = iconType.toLowerCase();
     
-    const businessIconPath = ICONS[iconType] || ICONS['otro'];
-    const giftIconPath = ICONS['regalo'];
+    // Obtener la imagen Base64 generada, o un fallback
+    const businessIconB64 = ICONS[iconType] || ICONS['otro'];
 
     let circleSize = 120;
     let gapSize = 24;
@@ -170,11 +83,9 @@ export async function GET(request: Request) {
               const isFilled = index < current;
               const isLast = index === total - 1;
               
-              const svgPath = isLast ? giftIconPath : businessIconPath;
-              
-              const backgroundColor = isFilled ? color : 'transparent';
+              const backgroundColor = isFilled ? color + '1A' : 'transparent'; // Ligero fondo si está lleno
               const borderColor = isFilled ? color : color + '4D'; 
-              const iconColor = isFilled ? bg : color + '80'; 
+              const iconColor = isFilled ? color : color + '80'; // Solo para el regalo
               
               return (
                 <div
@@ -190,19 +101,30 @@ export async function GET(request: Request) {
                     border: '6px solid ' + borderColor,
                   }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={circleSize * 0.5}
-                    height={circleSize * 0.5}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={iconColor}
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    {svgPath}
-                  </svg>
+                  {isLast ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width={circleSize * 0.5}
+                      height={circleSize * 0.5}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke={iconColor}
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {giftIconPath}
+                    </svg>
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img 
+                      src={businessIconB64} 
+                      width={circleSize * 0.6}
+                      height={circleSize * 0.6}
+                      style={{ opacity: isFilled ? 1 : 0.3 }}
+                      alt="Stamp"
+                    />
+                  )}
                 </div>
               );
             })}
