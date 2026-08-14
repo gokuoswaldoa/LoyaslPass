@@ -24,8 +24,6 @@ for f in files:
             b64 = base64.b64encode(svg_text.encode('utf-8')).decode('utf-8')
             name = f.replace('.svg', '').lower().strip()
             if name == 'otro negocio': name = 'otro'
-            elif name == 'panaderia y postres': name = 'postres'
-            elif name == 'tienda y boutique': name = 'tienda'
             
             icons[name] = 'data:image/svg+xml;base64,' + b64
 
