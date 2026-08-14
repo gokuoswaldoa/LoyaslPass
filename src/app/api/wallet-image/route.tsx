@@ -93,8 +93,8 @@ export async function GET(request: Request) {
               const isFilled = index < current;
               const isLast = index === total - 1;
               
-              const backgroundColor = isFilled ? color + '0D' : 'transparent'; 
-              const borderStyle = isFilled ? `3px solid ${color}` : `3px dashed ${color}33`; 
+              const backgroundColor = isFilled ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'; 
+              const borderStyle = isFilled ? `2px solid rgba(255, 255, 255, 0.9)` : `2px dashed rgba(255, 255, 255, 0.3)`; 
               
               const currentB64 = isLast ? ICONS['regalo'] : businessIconB64;
               const iconSize = isLast ? circleSize * 0.75 : circleSize * 0.55;
@@ -118,7 +118,7 @@ export async function GET(request: Request) {
                     src={currentB64} 
                     width={iconSize}
                     height={iconSize}
-                    style={{ opacity: isFilled ? 1 : 0.3 }}
+                    style={{ opacity: isFilled ? 1 : 0.4 }}
                     alt="Stamp"
                   />
                 </div>
