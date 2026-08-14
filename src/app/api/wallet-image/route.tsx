@@ -117,7 +117,7 @@ export async function GET(request: Request) {
                       {giftIconPath}
                     </svg>
                   ) : (
-                    // eslint-disable-next-line @next/next/no-img-element
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img 
                       src={businessIconB64} 
                       width={circleSize * 0.6}
@@ -137,7 +137,7 @@ export async function GET(request: Request) {
         height: 336,
       }
     );
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error(e);
     return new Response('Failed to generate image', {
       status: 500,
