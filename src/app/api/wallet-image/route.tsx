@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import React from 'react';
 import { ICONS } from './icons';
+import { BACKGROUNDS } from './backgrounds';
 
 // Remover runtime='edge' para evitar el límite de 1MB de Vercel (Satori y Base64 pesan bastante)
 // export const runtime = 'edge';
@@ -29,6 +30,7 @@ export async function GET(request: Request) {
     
     // Obtener la imagen Base64 generada, o un fallback
     const businessIconB64 = ICONS[iconType] || ICONS['otro'];
+    const backgroundImg = BACKGROUNDS[iconType] || BACKGROUNDS['otro'];
 
     let circleSize = 120;
     let gapSize = 24;
@@ -53,7 +55,6 @@ export async function GET(request: Request) {
             display: 'flex',
             width: '100%',
             height: '100%',
-            backgroundColor: bg,
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
@@ -61,41 +62,18 @@ export async function GET(request: Request) {
             overflow: 'hidden',
           }}
         >
-          {/* Capa de color pastel basada en el color principal */}
-          <div
+          {/* Fondo Fotorealista Base64 */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={backgroundImg}
             style={{
               position: 'absolute',
               top: 0, left: 0, right: 0, bottom: 0,
-              backgroundColor: color + '0A',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
             }}
-          />
-
-          {/* Marca de agua decorativa Izquierda */}
-          <img 
-            src={businessIconB64}
-            style={{
-              position: 'absolute',
-              left: '-10%',
-              top: '-20%',
-              width: '500px',
-              height: '500px',
-              opacity: 0.04,
-              transform: 'rotate(-15deg)'
-            }}
-          />
-
-          {/* Marca de agua decorativa Derecha */}
-          <img 
-            src={businessIconB64}
-            style={{
-              position: 'absolute',
-              right: '-10%',
-              bottom: '-20%',
-              width: '500px',
-              height: '500px',
-              opacity: 0.04,
-              transform: 'rotate(15deg)'
-            }}
+            alt="Background"
           />
 
           <div
