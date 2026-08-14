@@ -2,7 +2,8 @@ import { ImageResponse } from 'next/og';
 import React from 'react';
 import { ICONS } from './icons';
 
-export const runtime = 'edge';
+// Remover runtime='edge' para evitar el límite de 1MB de Vercel (Satori y Base64 pesan bastante)
+// export const runtime = 'edge';
 
 // Ícono de regalo en JSX puro (Satori lo soporta bien sin Fragmentos)
 const giftIconPath = (
