@@ -124,6 +124,9 @@ export async function savePassConfig(data: any) {
       // We don't block the save if Google Wallet fails
     }
 
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/", "layout"); // Revalida todo el sitio para limpiar la caché de las vistas públicas y del dashboard
+
     return { success: true };
   } catch (error) {
     console.error("Error saving pass config:", error);
