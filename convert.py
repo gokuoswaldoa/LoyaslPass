@@ -22,20 +22,31 @@ for f in files:
                     svg_text = svg_text.replace('<svg ', f'<svg viewBox="0 0 {w} {h}" ', 1)
             
             # Convert ALL colors to pure white to contrast with dark backgrounds
-            svg_text = re.sub(r'#[0-9a-fA-F]{3,6}', '#FFFFFF', svg_text)
-            svg_text = svg_text.replace('fill="black"', 'fill="#FFFFFF"')
-            svg_text = svg_text.replace('stroke="black"', 'stroke="#FFFFFF"')
+            # EXCEPT for pasteles which has a white background
+            target_color = '#000000' if f.replace('.svg', '').lower().strip() == 'panaderia y postres' else '#FFFFFF'
+            
+            svg_text = re.sub(r'#[0-9a-fA-F]{3,6}', target_color, svg_text)
+            svg_text = svg_text.replace('fill="black"', f'fill="{target_color}"')
+            svg_text = svg_text.replace('stroke="black"', f'stroke="{target_color}"')
             
             # El icono de regalo no tiene atributo fill, por defecto es negro.
-            # Inyectamos fill="#FFFFFF" en la etiqueta svg principal para que hereden el blanco
+            # Inyectamos fill para que hereden el color
             if '<svg' in svg_text and 'fill=' not in svg_text[:svg_text.find('>')]:
-                svg_text = svg_text.replace('<svg ', '<svg fill="#FFFFFF" ', 1)
+                svg_text = svg_text.replace('<svg ', f'<svg fill="{target_color}" ', 1)
+            
             
             b64 = base64.b64encode(svg_text.encode('utf-8')).decode('utf-8')
             name = f.replace('.svg', '').lower().strip()
             if name == 'otro negocio': name = 'otro'
             
             icons[name] = 'data:image/svg+xml;base64,' + b64
+            
+            # Si es el regalo, creamos una copia en negro para pastelería
+            if name == 'regalo':
+                # Reemplazamos blanco por negro en nuestro texto ya procesado
+                svg_black = svg_text.replace('#FFFFFF', '#000000')
+                b64_black = base64.b64encode(svg_black.encode('utf-8')).decode('utf-8')
+                icons['regalo_black'] = 'data:image/svg+xml;base64,' + b64_black
 
 ts_content = f'export const ICONS: Record<string, string> = {json.dumps(icons, indent=2)};\n'
 

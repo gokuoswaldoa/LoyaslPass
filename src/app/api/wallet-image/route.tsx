@@ -92,14 +92,23 @@ export async function GET(request: Request) {
             {stamps.map((index) => {
               const isFilled = index < current;
               const isLast = index === total - 1;
+              const isPasteles = iconType === 'panaderia y postres';
               
-              const backgroundColor = isFilled ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'; 
-              const borderStyle = isFilled ? `2px solid rgba(255, 255, 255, 0.9)` : `2px dashed rgba(255, 255, 255, 0.3)`; 
+              const backgroundColor = isFilled 
+                ? (isPasteles ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.15)') 
+                : (isPasteles ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)'); 
+                
+              const borderStyle = isFilled 
+                ? (isPasteles ? `2px solid rgba(0, 0, 0, 0.8)` : `2px solid rgba(255, 255, 255, 0.9)`) 
+                : (isPasteles ? `2px dashed rgba(0, 0, 0, 0.3)` : `2px dashed rgba(255, 255, 255, 0.3)`); 
               
-              const currentB64 = isLast ? ICONS['regalo'] : businessIconB64;
+              const currentB64 = isLast 
+                ? (isPasteles ? ICONS['regalo_black'] : ICONS['regalo']) 
+                : businessIconB64;
+                
               let iconSize = isLast ? circleSize * 0.75 : circleSize * 0.55;
               
-              if (iconType === 'fitness' && !isLast) {
+              if ((iconType === 'fitness' || iconType === 'mascotas') && !isLast) {
                 iconSize *= 1.25;
               }
               
