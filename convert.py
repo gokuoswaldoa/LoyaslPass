@@ -23,6 +23,13 @@ for f in files:
             
             # Convert ALL colors to pure white to contrast with dark backgrounds
             svg_text = re.sub(r'#[0-9a-fA-F]{3,6}', '#FFFFFF', svg_text)
+            svg_text = svg_text.replace('fill="black"', 'fill="#FFFFFF"')
+            svg_text = svg_text.replace('stroke="black"', 'stroke="#FFFFFF"')
+            
+            # El icono de regalo no tiene atributo fill, por defecto es negro.
+            # Inyectamos fill="#FFFFFF" en la etiqueta svg principal para que hereden el blanco
+            if '<svg' in svg_text and 'fill=' not in svg_text[:svg_text.find('>')]:
+                svg_text = svg_text.replace('<svg ', '<svg fill="#FFFFFF" ', 1)
             
             b64 = base64.b64encode(svg_text.encode('utf-8')).decode('utf-8')
             name = f.replace('.svg', '').lower().strip()

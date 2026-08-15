@@ -97,7 +97,11 @@ export async function GET(request: Request) {
               const borderStyle = isFilled ? `2px solid rgba(255, 255, 255, 0.9)` : `2px dashed rgba(255, 255, 255, 0.3)`; 
               
               const currentB64 = isLast ? ICONS['regalo'] : businessIconB64;
-              const iconSize = isLast ? circleSize * 0.75 : circleSize * 0.55;
+              let iconSize = isLast ? circleSize * 0.75 : circleSize * 0.55;
+              
+              if (iconType === 'fitness' && !isLast) {
+                iconSize *= 1.25;
+              }
               
               return (
                 <div
