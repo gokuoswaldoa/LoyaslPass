@@ -93,7 +93,11 @@ export async function GET(
           accountName: customer.name,
           loyaltyPoints: {
             label: "Sellos",
-            balance: { int: stampsCount }
+            balance: { string: `${stampsCount} / ${config.totalStampsRequired || 8}` }
+          },
+          heroImage: {
+            sourceUri: { uri: `https://loyasl-pass.vercel.app/api/wallet-image?total=${config.totalStampsRequired || 8}&current=${stampsCount}&iconType=${encodeURIComponent(config.businessType || 'otro')}&t=${Date.now()}` },
+            contentDescription: { defaultValue: { language: "es-419", value: "Tus Sellos" } }
           },
           barcode: {
             type: "QR_CODE",

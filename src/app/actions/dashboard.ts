@@ -275,6 +275,14 @@ export async function addManualStamp(customerId: string) {
       customerId: customerId,
     });
 
+    // Sincronización con Google Wallet
+    try {
+      const { syncCustomerWalletPass } = await import("@/lib/syncGoogleWallet");
+      await syncCustomerWalletPass(customerId);
+    } catch (gwError) {
+      console.error("Error syncing manual stamp with Google Wallet:", gwError);
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Error adding manual stamp:", error);

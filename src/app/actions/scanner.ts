@@ -88,37 +88,8 @@ export async function addStampToClient(customerId: string) {
 
     // Sincronización con Google Wallet
     try {
-      const customerArray = await db.select().from(customers).where(eq(customers.id, customerId));
-      const customer = customerArray[0];
-      
-      const configArray = await db.select().from(passesConfig).where(eq(passesConfig.businessId, businessId));
-      const config = configArray[0];
-
-      if (customer && customer.walletPassId) {
-        const stamps = await db.select().from(stampsLog).where(eq(stampsLog.customerId, customerId));
-        const stampsCount = stamps.length;
-        const totalRequired = config ? config.totalStampsRequired : 8;
-
-        const { getGoogleWalletClient } = await import("@/lib/googleWalletClient");
-        const client = getGoogleWalletClient();
-        const issuerId = process.env.GOOGLE_WALLET_ISSUER_ID;
-
-        if (issuerId) {
-          const objectId = `${issuerId}.${customer.walletPassId}`;
-          await client.request({
-            url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`,
-            method: "PATCH",
-            data: {
-              loyaltyPoints: {
-                label: "Sellos",
-                balance: { 
-                  string: `${stampsCount} / ${totalRequired}` 
-                }
-              }
-            }
-          });
-        }
-      }
+      const { syncCustomerWalletPass } = await import("@/lib/syncGoogleWallet");
+      await syncCustomerWalletPass(customerId);
     } catch (gwError) {
       console.error("Error syncing stamp with Google Wallet:", gwError);
       // We do not fail the transaction if GW sync fails
