@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { businesses, passesConfig } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function getPassConfig() {
   const session = await auth();
@@ -124,8 +125,7 @@ export async function savePassConfig(data: any) {
       // We don't block the save if Google Wallet fails
     }
 
-    const { revalidatePath } = await import("next/cache");
-    revalidatePath("/", "layout"); // Revalida todo el sitio para limpiar la caché de las vistas públicas y del dashboard
+    revalidatePath("/", "layout"); // Revalida todo el sitio para limpiar la caché
 
     return { success: true };
   } catch (error) {

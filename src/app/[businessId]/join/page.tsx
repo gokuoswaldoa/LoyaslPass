@@ -79,8 +79,18 @@ export default function JoinPage() {
     );
   }
 
+  const THEMES_HEX: Record<string, string> = {
+    "emerald": "#10B981",
+    "midnight": "#1E293B",
+    "purple": "#8B5CF6",
+    "sunset": "#F97316",
+    "ocean": "#3B82F6",
+    "lujo": "#000000"
+  };
+  const bgColor = THEMES_HEX[config.styleTheme || "emerald"] || "#10B981";
+
   return (
-    <div className={`min-h-screen ${config.colorBackground} flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden transition-colors duration-1000`}>
+    <div className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden transition-colors duration-1000`} style={{ backgroundColor: bgColor }}>
       {/* Ambient background blur */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-white/10 blur-[100px] rounded-full"></div>
