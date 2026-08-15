@@ -55,6 +55,16 @@ export default function ClientPassPage() {
   const { customer, business, config, stampsCount } = data;
   const isRewardReady = stampsCount >= config.totalStampsRequired;
 
+  const THEMES_HEX: Record<string, string> = {
+    "emerald": "#10B981",
+    "midnight": "#1E293B",
+    "purple": "#8B5CF6",
+    "sunset": "#F97316",
+    "ocean": "#3B82F6",
+    "lujo": "#000000" // as a fallback for old 'lujo' theme
+  };
+  const bgColor = THEMES_HEX[config.styleTheme || "emerald"] || "#10B981";
+
   // Generamos los huecos para sellos
   const renderStamps = () => {
     const stamps = [];
@@ -89,7 +99,7 @@ export default function ClientPassPage() {
   };
 
   return (
-    <div className={`min-h-screen ${config.colorBackground} flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden`}>
+    <div style={{ backgroundColor: bgColor }} className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden">
       {/* Ambient background blur */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[10%] left-[-20%] w-[500px] h-[500px] bg-white/10 blur-[120px] rounded-full"></div>

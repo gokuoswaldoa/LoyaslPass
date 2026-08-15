@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, CheckCircle2, Gift, Users, Crown, Zap, Plus, CalendarDays, MessageCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Gift, Users, Crown, Zap, Plus, CalendarDays, MessageCircle, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -48,6 +48,8 @@ const FAQItem = ({ question, answer }: { question: string; answer: string }) => 
 export default function LandingPage() {
   const { status } = useSession();
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen selection:bg-emerald-500/30 selection:text-emerald-900 dark:selection:text-emerald-100">
 
@@ -55,7 +57,7 @@ export default function LandingPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="h-12 md:h-16 relative w-56 md:w-64 flex items-center justify-start transform group-hover:scale-105 transition-transform duration-300">
+            <div className="h-12 md:h-16 relative w-48 md:w-64 flex items-center justify-start transform group-hover:scale-105 transition-transform duration-300">
               <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left" />
             </div>
           </Link>
@@ -66,16 +68,51 @@ export default function LandingPage() {
             <Link href="#faq" className="text-sm font-medium text-slate-600 hover:text-emerald-500 dark:text-slate-300 dark:hover:text-emerald-400 transition-colors">FAQ</Link>
           </nav>
 
-            <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             <ThemeToggle />
-            <Link href="/login" className="hidden md:block text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
+            <Link href="/login" className="text-sm font-semibold text-slate-900 hover:text-emerald-500 dark:text-white transition-colors">
               Iniciar sesión
             </Link>
             <Link href="/onboarding" className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-500 dark:hover:bg-emerald-500 hover:text-white dark:hover:text-white transition-colors shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20">
               Empezar gratis
             </Link>
           </div>
+
+          <div className="flex md:hidden items-center gap-4">
+            <ThemeToggle />
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-slate-900 dark:text-white p-2"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-white/10 overflow-hidden"
+            >
+              <div className="flex flex-col px-6 py-4 gap-4">
+                <Link href="#como-funciona" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-slate-600 dark:text-slate-300">Cómo funciona</Link>
+                <Link href="#precios" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-slate-600 dark:text-slate-300">Precios</Link>
+                <Link href="#faq" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-medium text-slate-600 dark:text-slate-300">FAQ</Link>
+                <div className="h-px bg-slate-200 dark:bg-white/10 w-full my-2"></div>
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Iniciar sesión
+                </Link>
+                <Link href="/onboarding" onClick={() => setIsMobileMenuOpen(false)} className="text-center bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-lg text-sm font-bold w-full">
+                  Empezar gratis
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* 2. HERO SECTION */}
@@ -226,32 +263,32 @@ export default function LandingPage() {
                 num: "01",
                 title: "Creas tu tarjeta al momento",
                 desc: <><strong>Nombre, recompensa, tu logo.</strong> Listo. Sin diseñador, sin ayuda técnica.</>,
-                image: "/imagenes pasos/paso 1.jpeg"
+                image: "/imagenes-pasos/paso1.jpeg"
               },
               {
                 num: "02",
                 title: "Tu cliente la guarda con un QR",
                 desc: <><strong>Un toque y queda en su wallet.</strong> Sin apps que descargar, sin registros largos.</>,
-                image: "/imagenes pasos/paso2.png"
+                image: "/imagenes-pasos/paso2.png"
               },
               {
                 num: "03",
                 title: "Le das sellos en segundos",
                 desc: <><strong>Escaneas su tarjeta con tu cámara</strong> — o lo buscas por su nombre. Cada sello lo acerca a su premio y lo motiva a volver.</>,
-                image: "/imagenes pasos/paso 3.png"
+                image: "/imagenes-pasos/paso3.png"
               },
               {
                 num: "04",
                 title: "Y una notificación lo hace volver",
                 desc: <><strong>Le llega un mensaje a la pantalla del celular</strong> cuando pasa cerca de tu negocio o cuando tú quieras.</>,
-                image: "/imagenes pasos/paso 4.png"
+                image: "/imagenes-pasos/paso4.png"
               }
             ].map((step, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, margin: "0px" }}
                 transition={{
                   delay: 0.1,
                   ...springConfig
@@ -300,7 +337,7 @@ export default function LandingPage() {
           <motion.div 
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "0px" }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="flex flex-col items-center justify-center relative"
           >
@@ -342,7 +379,7 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "0px" }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
               className="flex flex-col gap-6 order-2 lg:order-1"
             >
@@ -377,7 +414,7 @@ export default function LandingPage() {
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "0px" }}
               transition={{ duration: 0.7, ease: "easeOut" }}
               className="flex justify-center order-1 lg:order-2"
             >
@@ -576,7 +613,7 @@ export default function LandingPage() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: true, margin: "0px" }}
               transition={{ duration: 0.5 }}
               className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl flex flex-col h-full border border-slate-200 dark:border-white/10 group hover:-translate-y-1 transition-transform"
             >
@@ -601,7 +638,7 @@ export default function LandingPage() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: true, margin: "0px" }}
               transition={{ duration: 0.5, delay: 0.1 }}
               className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl flex flex-col h-full border border-slate-200 dark:border-white/10 group hover:-translate-y-1 transition-transform"
             >

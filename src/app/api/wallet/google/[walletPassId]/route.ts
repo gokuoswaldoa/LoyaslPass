@@ -42,9 +42,6 @@ export async function GET(
       privateKey = privateKey.replace(/\\n/g, '\n');
     }
 
-    const classId = `${issuerId}.${business.id.replace(/-/g, '')}v2`;
-    const objectId = `${issuerId}.${walletPassId}`;
-
     // Validar logo: Si es base64 (data:image), usar el icono por defecto para no romper el JWT
     const isBase64Logo = config.logoUrl && config.logoUrl.startsWith('data:');
     let validLogoUrl = (!config.logoUrl) 
@@ -62,10 +59,17 @@ export async function GET(
       "midnight": "#1E293B",
       "purple": "#8B5CF6",
       "sunset": "#F97316",
-      "ocean": "#3B82F6"
+      "ocean": "#3B82F6",
+      "lujo": "#000000"
     };
     
     const cardColor = THEMES_HEX[config.styleTheme || "emerald"] || "#10B981";
+
+    // Generar un hash simple para forzar actualización en Google Wallet cuando cambian el logo, color o nombre
+    const hashCode = (s: string) => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+    const configHash = Math.abs(hashCode(business.name + validLogoUrl + cardColor)).toString(16);
+    const classId = `${issuerId}.${business.id.replace(/-/g, '')}v3_${configHash}`;
+    const objectId = `${issuerId}.${walletPassId}`;
 
     // Payload de Google Wallet
     const payload = {

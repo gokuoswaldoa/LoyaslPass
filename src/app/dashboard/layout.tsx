@@ -147,7 +147,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row">
       
       {/* --- MOBILE TOPBAR --- */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+      <div className={`md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 ${mobileMenuOpen ? 'hidden' : ''}`}>
         <div className="flex items-center gap-2">
           <div className="w-40 h-10 relative flex items-center justify-start p-1">
             <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
@@ -261,7 +261,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </main>
 
       {/* --- FLOATING ACTION BUTTON (SCANNER) --- */}
-      <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50">
+      <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-50">
         <button
           onClick={() => {
             resetScanner();

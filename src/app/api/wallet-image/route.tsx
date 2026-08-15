@@ -32,17 +32,17 @@ export async function GET(request: Request) {
     const businessIconB64 = ICONS[iconType] || ICONS['otro'];
     const backgroundImg = BACKGROUNDS[iconType] || BACKGROUNDS['otro'];
 
-    let circleSize = 120;
+    let circleSize = 140;
     let gapSize = 24;
     
     if (total > 10) {
-      circleSize = 64;
+      circleSize = 72;
       gapSize = 12;
     } else if (total > 8) {
-      circleSize = 72;
+      circleSize = 90;
       gapSize = 16;
     } else if (total > 6) {
-      circleSize = 90;
+      circleSize = 110;
       gapSize = 20;
     }
     
@@ -141,8 +141,8 @@ export async function GET(request: Request) {
         </div>
       ),
       {
-        width: 1032,
-        height: 336,
+        width: 1080,
+        height: 360,
       }
     );
   } catch (e: unknown) {
