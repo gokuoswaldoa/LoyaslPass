@@ -7,11 +7,11 @@ import Image from "next/image";
 
 // Predefined Themes for the Wallet Pass
 const THEMES = [
-  { id: "emerald", name: "Esmeralda", classes: "bg-gradient-to-br from-emerald-400 to-teal-700" },
-  { id: "midnight", name: "Midnight", classes: "bg-gradient-to-br from-slate-800 to-black" },
-  { id: "purple", name: "Ultra Violeta", classes: "bg-gradient-to-br from-violet-500 to-fuchsia-700" },
-  { id: "sunset", name: "Atardecer", classes: "bg-gradient-to-br from-orange-400 to-rose-600" },
-  { id: "ocean", name: "Océano Profundo", classes: "bg-gradient-to-br from-blue-500 to-indigo-800" },
+  { id: "emerald", name: "Esmeralda", classes: "bg-[#10B981]" },
+  { id: "midnight", name: "Midnight", classes: "bg-[#1E293B]" },
+  { id: "purple", name: "Ultra Violeta", classes: "bg-[#8B5CF6]" },
+  { id: "sunset", name: "Atardecer", classes: "bg-[#F97316]" },
+  { id: "ocean", name: "Océano Profundo", classes: "bg-[#3B82F6]" },
 ];
 
 export default function EditorPage() {
@@ -52,12 +52,20 @@ export default function EditorPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    const res = await savePassConfig({ ...config, businessName });
-    if (res.success) {
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
+    try {
+      const res = await savePassConfig({ ...config, businessName });
+      if (res.success) {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } else {
+        alert("Ocurrió un error al guardar los cambios: " + res.error);
+      }
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      alert("Error al guardar. La imagen podría ser muy pesada o hubo un problema de red.");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +73,35 @@ export default function EditorPage() {
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
-        setConfig({ ...config, logoUrl: reader.result as string });
+        const img = new window.Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 500;
+          const MAX_HEIGHT = 500;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+          setConfig({ ...config, logoUrl: compressedBase64 });
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
