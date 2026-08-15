@@ -54,8 +54,8 @@ export default function JoinPage() {
     if (res.success && res.walletPassId) {
       // Guardar localmente para que no se pierda al cerrar la pestaña
       localStorage.setItem(`loyalpass_wallet_${businessId}`, res.walletPassId);
-      // Redirigir a la tarjeta del cliente
-      router.push(`/${businessId}/pass/${res.walletPassId}`);
+      // Redirigir a la tarjeta del cliente (usamos window.location.href para bypasear el Next.js Client Router Cache)
+      window.location.href = `/${businessId}/pass/${res.walletPassId}`;
     } else {
       setError(res.error || "Hubo un problema al registrarte.");
       setIsSubmitting(false);
