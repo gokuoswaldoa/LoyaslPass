@@ -99,8 +99,8 @@ export default function JoinPage() {
 
       <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2.5rem] shadow-2xl p-8 relative z-10">
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-24 h-24 bg-white/20 rounded-3xl p-3 flex items-center justify-center mb-6 shadow-xl border border-white/30 relative overflow-hidden">
-            <Image src={config.logoUrl || "/logo/icono.png"} alt="Logo" fill className="object-contain drop-shadow-md p-2" />
+          <div className="w-24 h-24 bg-white rounded-full mb-6 shadow-xl border-4 border-white/20 relative overflow-hidden shrink-0">
+            <Image src={config.logoUrl || "/logo/icono.png"} alt="Logo" fill className="object-cover" />
           </div>
           <h1 className="text-3xl font-black text-white drop-shadow-sm leading-tight mb-2">
             Únete a {businessData.name}
