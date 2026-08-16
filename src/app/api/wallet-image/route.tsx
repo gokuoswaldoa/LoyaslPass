@@ -32,18 +32,18 @@ export async function GET(request: Request) {
     const businessIconB64 = ICONS[iconType] || ICONS['otro'];
     const backgroundImg = BACKGROUNDS[iconType] || BACKGROUNDS['otro'];
 
-    let circleSize = 140;
-    let gapSize = 24;
+    let circleSize = 170;
+    let gapSize = 20;
     
     if (total > 10) {
-      circleSize = 72;
+      circleSize = 100;
       gapSize = 12;
     } else if (total > 8) {
-      circleSize = 90;
-      gapSize = 16;
+      circleSize = 125;
+      gapSize = 14;
     } else if (total > 6) {
-      circleSize = 110;
-      gapSize = 20;
+      circleSize = 145;
+      gapSize = 16;
     }
     
     const stamps = Array.from({ length: total }, (_, i) => i);
