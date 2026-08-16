@@ -13,6 +13,7 @@ type Customer = {
   stamps: number;
   status: string;
   walletPassId: string | null;
+  businessId?: string | null;
   totalStampsRequired?: number;
 };
 
@@ -293,7 +294,7 @@ export default function CRMPage() {
 
             {selectedClient.walletPassId && (
               <a 
-                href={`/${window.location.hostname.includes('localhost') ? 'demo' : ''}/pass/${selectedClient.walletPassId}`}
+                href={`/${selectedClient.businessId}/pass/${selectedClient.walletPassId}`}
                 target="_blank"
                 className="w-full flex items-center justify-center gap-2 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20"
               >

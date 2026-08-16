@@ -212,6 +212,7 @@ export async function getCustomers() {
         stamps: customerStamps.length,
         status,
         walletPassId: c.walletPassId,
+        businessId: c.businessId,
         birthdate: c.birthdate,
         totalStampsRequired: totalStampsRequired,
       };
