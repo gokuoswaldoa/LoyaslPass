@@ -100,13 +100,34 @@ export async function GET(
             balance: { string: `${stampsCount} / ${config.totalStampsRequired || 8}` }
           },
           heroImage: {
-            sourceUri: { uri: `https://loyasl-pass.vercel.app/api/wallet-image?total=${config.totalStampsRequired || 8}&current=${stampsCount}&iconType=${encodeURIComponent(config.businessType || 'otro')}&t=${Date.now()}` },
+            sourceUri: { uri: `https://loyasl-pass.vercel.app/api/wallet-image?total=${config.totalStampsRequired || 8}&current=${stampsCount}&iconType=${encodeURIComponent(config.businessType || 'otro')}&color=${encodeURIComponent(cardColor)}&bg=${encodeURIComponent(cardColor)}&t=${Date.now()}` },
             contentDescription: { defaultValue: { language: "es-419", value: "Tus Sellos" } }
           },
           barcode: {
             type: "QR_CODE",
             value: customer.walletPassId,
             alternateText: customer.walletPassId
+          },
+          textModulesData: [
+            {
+              header: "Tu Recompensa",
+              body: config.rewardText || "Completa tus sellos para obtener tu premio.",
+              id: "reward_text"
+            },
+            {
+              header: "Cliente",
+              body: customer.name,
+              id: "customer_name"
+            }
+          ],
+          linksModuleData: {
+            uris: [
+              {
+                uri: `https://loyasl-pass.vercel.app/${walletPassId}`,
+                description: "Abrir Billetera Web",
+                id: "web_link"
+              }
+            ]
           }
         }]
       }
