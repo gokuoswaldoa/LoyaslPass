@@ -39,7 +39,7 @@ export async function GET(
       status: 200,
       headers: {
         "Content-Type": mimeType,
-        "Cache-Control": "public, max-age=86400", // Cache for 24 hours
+        "Cache-Control": "no-store, max-age=0", // Never cache so logo updates instantly
       },
     });
 
