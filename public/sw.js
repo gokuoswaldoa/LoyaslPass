@@ -1,21 +1,26 @@
+// sw.js version 1.0.1
 self.addEventListener('push', function (event) {
+  let data = {};
   if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body,
-      icon: data.icon || '/logo/cafe-happy-logo.png', // Fallback icon
-      badge: '/logo/cafe-happy-logo.png', // Small icon
-      vibrate: [200, 100, 200, 100, 200, 100, 200],
-      data: {
-        dateOfArrival: Date.now(),
-        primaryKey: '2'
-      },
-      requireInteraction: true
-    };
-    event.waitUntil(
-      self.registration.showNotification(data.title, options)
-    );
+    try {
+      data = event.data.json();
+    } catch(e) {
+      data = { title: "LoyalPass", body: event.data.text() };
+    }
   }
+
+  const title = data.title || "Notificación";
+  const options = {
+    body: data.body || "Tienes un nuevo mensaje.",
+    icon: data.icon || '/logo/cafe-happy-logo.png',
+    badge: '/logo/cafe-happy-logo.png',
+    data: data.data || { url: '/' },
+    requireInteraction: true
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
 });
 
 self.addEventListener('notificationclick', function (event) {
