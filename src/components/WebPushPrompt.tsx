@@ -50,12 +50,16 @@ export default function WebPushPrompt({ walletPassId, businessName }: { walletPa
       if ('Notification' in window) {
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
-          console.error("Permiso de notificaciones denegado");
+          alert("Permiso de notificaciones denegado por el navegador.");
           return;
         }
       }
 
       const reg = await navigator.serviceWorker.ready;
+      if (!reg.pushManager) {
+        alert("Tu navegador no soporta PushManager (o estás en modo incógnito).");
+        return;
+      }
       
       const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
       if (!publicVapidKey) {

@@ -1,4 +1,4 @@
-// sw.js version 1.0.1
+// sw.js version 1.0.2
 self.addEventListener('push', function (event) {
   let data = {};
   if (event.data) {
@@ -10,10 +10,12 @@ self.addEventListener('push', function (event) {
   }
 
   const title = data.title || "Notificación";
+  const iconUrl = data.icon ? new URL(data.icon, self.location.origin).href : new URL('/logo/cafe-happy-logo.png', self.location.origin).href;
+  
   const options = {
     body: data.body || "Tienes un nuevo mensaje.",
-    icon: data.icon || '/logo/cafe-happy-logo.png',
-    badge: '/logo/cafe-happy-logo.png',
+    icon: iconUrl,
+    badge: iconUrl,
     data: data.data || { url: '/' },
     requireInteraction: true
   };
