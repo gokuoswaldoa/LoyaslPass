@@ -121,6 +121,7 @@ export const customers = pgTable("customers", {
   email: varchar("email"),
   birthdate: varchar("birthdate"),
   walletPassId: varchar("wallet_pass_id").unique(),
+  webPushSub: text("web_push_sub"),
 });
 
 export const stampsLog = pgTable("stamps_log", {

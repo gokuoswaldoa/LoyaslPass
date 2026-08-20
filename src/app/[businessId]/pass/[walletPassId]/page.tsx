@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import QRCode from "react-qr-code";
 import { getClientWalletData } from "@/app/actions/clientFlow";
+import WebPushPrompt from "@/components/WebPushPrompt";
 
 export default function ClientPassPage() {
   const params = useParams();
@@ -100,6 +101,8 @@ export default function ClientPassPage() {
 
   return (
     <div style={{ backgroundColor: bgColor }} className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden">
+      <WebPushPrompt walletPassId={walletPassId} businessName={business.name} />
+      
       {/* Ambient background blur */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-[10%] left-[-20%] w-[500px] h-[500px] bg-white/10 blur-[120px] rounded-full"></div>

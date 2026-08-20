@@ -5,6 +5,14 @@ import { businesses, customers, passesConfig, stampsLog } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { GoogleAuth } from "google-auth-library";
+import webpush from "web-push";
+
+// Configurar Web Push
+webpush.setVapidDetails(
+  'mailto:soporte@loyalpass.com',
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
+  process.env.VAPID_PRIVATE_KEY || ''
+);
 
 // 1. Guardar y activar Geolocalización
 export async function updateBusinessLocation(latitude: string, longitude: string) {
@@ -120,37 +128,55 @@ export async function sendPushNotification(messageText: string, target: string) 
 
     const client = await authClient.getClient();
 
-    let enviosExitosos = 0;
+    let enviosGoogleWallet = 0;
+    let enviosWebPush = 0;
     
     const notifPromises = targetCustomers.map(async (c) => {
-      const objectId = `${issuerId}.${c.walletPassId}`;
-      
-      const payload = {
-        message: {
-          header: "Mensaje de " + business.name,
-          body: messageText,
-          id: crypto.randomUUID(),
-          messageType: "TEXT_AND_NOTIFY"
+      // 1. --- WEB PUSH (PWA) ---
+      if (c.webPushSub) {
+        try {
+          const sub = JSON.parse(c.webPushSub);
+          await webpush.sendNotification(sub, JSON.stringify({
+            title: business.name,
+            body: messageText,
+            icon: '/logo/cafe-happy-logo.png' // TODO: usar business logo
+          }));
+          enviosWebPush++;
+        } catch (err) {
+          console.error(`Error enviando Web Push a ${c.id}:`, err);
         }
-      };
+      }
 
-      try {
-        // 1. Limpiar historial
-        await client.request({
-          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`,
-          method: 'PATCH',
-          data: { messages: [] }
-        });
+      // 2. --- GOOGLE WALLET PUSH ---
+      if (c.walletPassId) {
+        const objectId = `${issuerId}.${c.walletPassId}`;
+        const payload = {
+          message: {
+            header: "Mensaje de " + business.name,
+            body: messageText,
+            id: crypto.randomUUID(),
+            messageType: "TEXT_AND_NOTIFY"
+          }
+        };
 
-        // 2. Disparar el Push oficial
-        await client.request({
-          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}/addMessage`,
-          method: 'POST',
-          data: payload
-        });
-        enviosExitosos++;
-      } catch (err: any) {
-        console.error(`Error enviando push a ${c.walletPassId}:`, err?.response?.data || err);
+        try {
+          // Limpiar historial
+          await client.request({
+            url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`,
+            method: 'PATCH',
+            data: { messages: [] }
+          });
+
+          // Disparar Push oficial
+          await client.request({
+            url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}/addMessage`,
+            method: 'POST',
+            data: payload
+          });
+          enviosGoogleWallet++;
+        } catch (err: any) {
+          console.error(`Error enviando Google Push a ${c.walletPassId}:`, err?.response?.data || err);
+        }
       }
     });
 
@@ -158,10 +184,10 @@ export async function sendPushNotification(messageText: string, target: string) 
 
     return { 
       success: true, 
-      sent: enviosExitosos, 
-      total: targetCustomers.length 
+      sent: enviosWebPush + enviosGoogleWallet,
+      total: targetCustomers.length,
+      message: `Enviados: ${enviosWebPush} Web Push y ${enviosGoogleWallet} G-Wallet.`
     };
-
   } catch (error) {
     console.error("Error en sendPushNotification:", error);
     return { success: false, error: "Error interno del servidor" };
