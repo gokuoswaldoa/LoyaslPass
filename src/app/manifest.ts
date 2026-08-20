@@ -5,7 +5,6 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'LoyalPass - Tu Tarjeta de Lealtad',
     short_name: 'LoyalPass',
     description: 'Guarda tus tarjetas de lealtad y recibe promociones',
-    start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#10B981',
