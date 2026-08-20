@@ -98,25 +98,27 @@ export async function sendPushNotification(messageText: string, target: string) 
       return { success: false, error: "No hay clientes en esta audiencia con tarjeta de Google Wallet" };
     }
 
-    const credentialsRaw = process.env.GOOGLE_WALLET_CREDENTIALS;
-    let authClient;
-    
-    if (credentialsRaw) {
-      const credentials = JSON.parse(credentialsRaw);
-      authClient = new GoogleAuth({
-        credentials,
-        scopes: ['https://www.googleapis.com/auth/wallet_object.issuer']
-      });
-    } else {
+    const clientEmail = process.env.GOOGLE_WALLET_CLIENT_EMAIL;
+    let privateKey = process.env.GOOGLE_WALLET_PRIVATE_KEY;
+    const issuerId = process.env.GOOGLE_WALLET_ISSUER_ID;
+
+    if (!issuerId || !clientEmail || !privateKey) {
       return { success: false, error: "Credenciales de Google Wallet no configuradas en el servidor" };
     }
 
-    const client = await authClient.getClient();
-    const issuerId = process.env.GOOGLE_WALLET_ISSUER_ID;
-
-    if (!issuerId) {
-      return { success: false, error: "Issuer ID no configurado" };
+    if (privateKey.includes('\\n')) {
+      privateKey = privateKey.replace(/\\n/g, '\n');
     }
+
+    const authClient = new GoogleAuth({
+      credentials: {
+        client_email: clientEmail,
+        private_key: privateKey
+      },
+      scopes: ['https://www.googleapis.com/auth/wallet_object.issuer']
+    });
+
+    const client = await authClient.getClient();
 
     let enviosExitosos = 0;
     
