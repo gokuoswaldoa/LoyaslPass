@@ -126,21 +126,22 @@ export async function sendPushNotification(messageText: string, target: string) 
       const objectId = `${issuerId}.${c.walletPassId}`;
       
       const payload = {
-        messages: [{
-          header: "¡Nueva Alerta!",
-          body: messageText
-        }]
+        message: {
+          header: "¡Nueva Alerta de " + business.name + "!",
+          body: messageText,
+          id: crypto.randomUUID()
+        }
       };
 
       try {
         await client.request({
-          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`,
-          method: 'PATCH',
+          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}/addMessage`,
+          method: 'POST',
           data: payload
         });
         enviosExitosos++;
-      } catch (err) {
-        console.error(`Error enviando push a ${c.walletPassId}:`, err);
+      } catch (err: any) {
+        console.error(`Error enviando push a ${c.walletPassId}:`, err?.response?.data || err);
       }
     });
 
