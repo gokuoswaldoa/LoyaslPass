@@ -157,7 +157,7 @@ export async function sendPushNotification(messageText: string, target: string) 
           enviosWebPush++;
         } catch (err: any) {
           console.error(`Error enviando Web Push a ${c.id}:`, err);
-          pushErrors.push(err?.body || err?.message || "Error desconocido");
+          pushErrors.push(`Code ${err?.statusCode || '?'}: ${err?.body || err?.message || "Error desconocido"}`);
         }
       }
 
