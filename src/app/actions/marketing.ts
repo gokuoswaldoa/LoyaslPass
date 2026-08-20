@@ -135,6 +135,14 @@ export async function sendPushNotification(messageText: string, target: string) 
       };
 
       try {
+        // 1. Limpiar historial de mensajes para que no se amontonen en la tarjeta
+        await client.request({
+          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`,
+          method: 'PATCH',
+          data: { messages: [] }
+        });
+
+        // 2. Insertar el mensaje nuevo con notificación Push
         await client.request({
           url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}/addMessage`,
           method: 'POST',
