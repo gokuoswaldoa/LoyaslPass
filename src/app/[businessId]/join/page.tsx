@@ -157,14 +157,12 @@ export default function JoinPage() {
               <Calendar size={20} className="text-white/60" />
             </div>
             <input 
-              type="text" 
-              placeholder="Fecha de Nacimiento" 
+              type="date" 
               required
               value={birthdate}
-              onFocus={(e) => (e.target.type = "date")}
-              onBlur={(e) => { if (!e.target.value) e.target.type = "text"; }}
               onChange={(e) => setBirthdate(e.target.value)}
-              className="w-full min-w-0 max-w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all [color-scheme:dark]"
+              className="w-full pl-12 pr-4 py-4 bg-black/20 border border-white/10 rounded-2xl focus:outline-none focus:border-white/40 focus:bg-black/30 text-white placeholder:text-white/50 font-bold transition-all appearance-none min-h-[56px] [color-scheme:dark]"
+              style={{ color: birthdate ? 'white' : 'rgba(255,255,255,0.5)' }}
             />
           </div>
 

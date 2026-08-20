@@ -47,11 +47,20 @@ export default function WebPushPrompt({ walletPassId, businessName }: { walletPa
     setShowPrompt(false);
     
     try {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          console.error("Permiso de notificaciones denegado");
+          return;
+        }
+      }
+
       const reg = await navigator.serviceWorker.ready;
       
       const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
       if (!publicVapidKey) {
         console.error("VAPID public key not found");
+        alert("Falta la configuración de notificaciones en el servidor.");
         return;
       }
 
@@ -60,10 +69,16 @@ export default function WebPushPrompt({ walletPassId, businessName }: { walletPa
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
       });
 
-      await saveWebPushSubscription(walletPassId, subscription);
+      const res = await saveWebPushSubscription(walletPassId, subscription);
+      if (res.success) {
+        alert("¡Alertas activadas exitosamente!");
+      } else {
+        alert("Error: " + res.error);
+      }
       
     } catch (e) {
       console.error("Error subscribing to push:", e);
+      alert("No se pudo activar las alertas. ¿El navegador las bloquea?");
     }
   };
 
