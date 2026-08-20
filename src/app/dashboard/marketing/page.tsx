@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Send, Smartphone, Zap, Sparkles, Users, MessageSquare, BellRing, Filter, Search } from "lucide-react";
+import { Send, Smartphone, Zap, Sparkles, Users, MessageSquare, BellRing, Filter, Search, MapPin, Navigation } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { getPassConfig } from "@/app/actions/editor";
 import { getCustomers } from "@/app/actions/dashboard";
+import { sendPushNotification, updateBusinessLocation } from "@/app/actions/marketing";
 
 const TEMPLATES = [
   { id: 1, label: "Oferta Flash 2x1", message: "¡Hoy es tu día de suerte! Ven y disfruta un 2x1 en toda la tienda. Solo válido hoy hasta cerrar.", icon: Zap },
@@ -23,6 +24,52 @@ export default function MarketingPage() {
   const [businessName, setBusinessName] = useState("LoyalPass");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [customers, setCustomers] = useState<any[]>([]);
+
+  const [address, setAddress] = useState("");
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  const handleGetCurrentLocation = () => {
+    if ("geolocation" in navigator) {
+      setLocationLoading(true);
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const res = await updateBusinessLocation(position.coords.latitude.toString(), position.coords.longitude.toString());
+        setLocationLoading(false);
+        if (res.success) {
+          alert("¡Ubicación GPS guardada! Tus clientes recibirán alertas al pasar cerca.");
+        } else {
+          alert("Error al guardar la ubicación");
+        }
+      }, () => {
+        setLocationLoading(false);
+        alert("Por favor habilita los permisos de ubicación en tu navegador.");
+      });
+    } else {
+      alert("Tu navegador no soporta geolocalización.");
+    }
+  };
+
+  const handleSearchAddress = async () => {
+    if (!address) return;
+    setLocationLoading(true);
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        const res = await updateBusinessLocation(lat, lon);
+        if (res.success) {
+          alert("¡Dirección encontrada y guardada con éxito!");
+        } else {
+          alert("Error al guardar la ubicación.");
+        }
+      } else {
+        alert("No pudimos encontrar esta dirección, por favor sé más específico.");
+      }
+    } catch (err) {
+      alert("Error al buscar la dirección.");
+    }
+    setLocationLoading(false);
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -61,15 +108,20 @@ export default function MarketingPage() {
     return true;
   });
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!message) return;
     setSending(true);
-    setTimeout(() => {
-      setSending(false);
+    const res = await sendPushNotification(message, target);
+    setSending(false);
+    
+    if (res.success) {
       setSent(true);
       setTimeout(() => setSent(false), 3000);
       setMessage("");
-    }, 1500);
+      alert(`¡Mensaje enviado a ${res.sent} dispositivos exitosamente!`);
+    } else {
+      alert("Error al enviar notificación: " + res.error);
+    }
   };
 
   return (
@@ -192,6 +244,54 @@ export default function MarketingPage() {
             </>
           )}
         </button>
+
+        {/* Panel Inteligente de Ubicación (Geolocalización) */}
+        <div className="mt-12 mb-10 bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
+            <MapPin className="w-32 h-32 text-emerald-500" />
+          </div>
+          
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+            <Navigation className="w-5 h-5 text-emerald-500" /> Alertas Automáticas (GPS)
+          </h3>
+          <p className="text-slate-500 dark:text-slate-400 font-medium mb-6">
+            Ingresa la ubicación de tu local. Cuando un cliente pase cerca, su celular vibrará automáticamente recordándole que te visite.
+          </p>
+          
+          <div className="flex flex-col gap-4 relative z-10">
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="Ej. Insurgentes Sur 253, CDMX"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-900 dark:text-white font-medium"
+              />
+              <button 
+                onClick={handleSearchAddress}
+                disabled={locationLoading || !address}
+                className="px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:bg-slate-800 disabled:opacity-50 transition-colors"
+              >
+                Buscar
+              </button>
+            </div>
+            
+            <div className="flex items-center gap-4 my-2">
+              <div className="h-[1px] flex-1 bg-slate-200 dark:bg-slate-800"></div>
+              <span className="text-sm font-bold text-slate-400 uppercase">O usa el GPS de tu equipo</span>
+              <div className="h-[1px] flex-1 bg-slate-200 dark:bg-slate-800"></div>
+            </div>
+
+            <button 
+              onClick={handleGetCurrentLocation}
+              disabled={locationLoading}
+              className="w-full py-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 font-bold rounded-xl border-2 border-emerald-200 dark:border-emerald-800 hover:border-emerald-500 transition-colors flex justify-center items-center gap-2"
+            >
+              <Navigation className="w-5 h-5" />
+              Obtener mi ubicación actual
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* --- PREVIEW IPHONE --- */}

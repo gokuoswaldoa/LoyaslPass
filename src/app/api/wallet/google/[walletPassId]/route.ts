@@ -87,7 +87,13 @@ export async function GET(
             sourceUri: { uri: validLogoUrl }
           },
           reviewStatus: "UNDER_REVIEW",
-          hexBackgroundColor: cardColor
+          hexBackgroundColor: cardColor,
+          ...(config.latitude && config.longitude ? {
+            locations: [{
+              latitude: parseFloat(config.latitude),
+              longitude: parseFloat(config.longitude)
+            }]
+          } : {})
         }],
         loyaltyObjects: [{
           id: objectId,

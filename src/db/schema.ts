@@ -109,6 +109,8 @@ export const passesConfig = pgTable("passes_config", {
   colorText: varchar("color_text").default("#1F2937"),
   totalStampsRequired: integer("total_stamps_required").default(8),
   rewardText: varchar("reward_text"),
+  latitude: varchar("latitude"),
+  longitude: varchar("longitude"),
 });
 
 export const customers = pgTable("customers", {
