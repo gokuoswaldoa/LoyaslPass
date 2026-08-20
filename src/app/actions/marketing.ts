@@ -127,7 +127,7 @@ export async function sendPushNotification(messageText: string, target: string) 
       
       const payload = {
         message: {
-          header: "¡Nueva Alerta de " + business.name + "!",
+          header: business.name,
           body: messageText,
           id: crypto.randomUUID(),
           messageType: "TEXT_AND_NOTIFY"
