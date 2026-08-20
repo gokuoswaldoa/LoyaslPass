@@ -53,7 +53,8 @@ export async function sendPushNotification(messageText: string, target: string) 
     if (!business) return { success: false, error: "Negocio no encontrado" };
 
     const configArray = await db.select().from(passesConfig).where(eq(passesConfig.businessId, business.id));
-    const totalStampsRequired = configArray[0]?.totalStampsRequired || 8;
+    const config = configArray[0];
+    const totalStampsRequired = config?.totalStampsRequired || 8;
 
     const allCustomers = await db.select().from(customers).where(eq(customers.businessId, business.id));
     const allStamps = await db.select().from(stampsLog).where(eq(stampsLog.businessId, business.id));
@@ -137,10 +138,15 @@ export async function sendPushNotification(messageText: string, target: string) 
       if (c.webPushSub) {
         try {
           const sub = JSON.parse(c.webPushSub);
+          const logoUrl = config?.logoUrl || '/logo/cafe-happy-logo.png';
+          
           await webpush.sendNotification(sub, JSON.stringify({
             title: business.name,
             body: messageText,
-            icon: '/logo/cafe-happy-logo.png' // TODO: usar business logo
+            icon: logoUrl,
+            data: {
+              url: `/${business.id}/pass/${c.walletPassId}`
+            }
           }));
           enviosWebPush++;
         } catch (err) {
