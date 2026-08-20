@@ -7,13 +7,6 @@ import { auth } from "@/auth";
 import { GoogleAuth } from "google-auth-library";
 import webpush from "web-push";
 
-// Configurar Web Push
-webpush.setVapidDetails(
-  'mailto:soporte@loyalpass.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
-  process.env.VAPID_PRIVATE_KEY || ''
-);
-
 // 1. Guardar y activar Geolocalización
 export async function updateBusinessLocation(latitude: string, longitude: string) {
   const session = await auth();
@@ -66,7 +59,7 @@ export async function sendPushNotification(messageText: string, target: string) 
     const allStamps = await db.select().from(stampsLog).where(eq(stampsLog.businessId, business.id));
 
     const targetCustomers = allCustomers.filter(c => {
-      if (!c.walletPassId) return false;
+      if (!c.walletPassId && !c.webPushSub) return false;
 
       const customerStamps = allStamps.filter(s => s.customerId === c.id);
       
@@ -130,6 +123,14 @@ export async function sendPushNotification(messageText: string, target: string) 
 
     let enviosGoogleWallet = 0;
     let enviosWebPush = 0;
+
+    if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+      webpush.setVapidDetails(
+        'mailto:soporte@loyalpass.com',
+        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        process.env.VAPID_PRIVATE_KEY
+      );
+    }
     
     const notifPromises = targetCustomers.map(async (c) => {
       // 1. --- WEB PUSH (PWA) ---

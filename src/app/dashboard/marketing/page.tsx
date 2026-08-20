@@ -111,16 +111,21 @@ export default function MarketingPage() {
   const handleSend = async () => {
     if (!message) return;
     setSending(true);
-    const res = await sendPushNotification(message, target);
-    setSending(false);
-    
-    if (res.success) {
-      setSent(true);
-      setTimeout(() => setSent(false), 3000);
-      setMessage("");
-      alert(`¡Mensaje enviado a ${res.sent} dispositivos exitosamente!`);
-    } else {
-      alert("Error al enviar notificación: " + res.error);
+    try {
+      const res = await sendPushNotification(message, target);
+      setSending(false);
+      
+      if (res.success) {
+        setSent(true);
+        setTimeout(() => setSent(false), 3000);
+        setMessage("");
+        alert(`¡Mensaje enviado a ${res.sent} dispositivos exitosamente!`);
+      } else {
+        alert("Error al enviar notificación: " + res.error);
+      }
+    } catch (err) {
+      setSending(false);
+      alert("Error de conexión con el servidor. Intenta de nuevo.");
     }
   };
 
