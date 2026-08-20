@@ -133,10 +133,16 @@ export async function sendPushNotification(messageText: string, target: string) 
       );
     }
     
+    let pushErrors: string[] = [];
+
     const notifPromises = targetCustomers.map(async (c) => {
       // 1. --- WEB PUSH (PWA) ---
       if (c.webPushSub) {
         try {
+          if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+             throw new Error("Las VAPID keys no están configuradas en Vercel");
+          }
+
           const sub = JSON.parse(c.webPushSub);
           const logoUrl = config?.logoUrl || '/logo/cafe-happy-logo.png';
           
@@ -145,12 +151,13 @@ export async function sendPushNotification(messageText: string, target: string) 
             body: messageText,
             icon: logoUrl,
             data: {
-              url: `/${business.id}/pass/${c.walletPassId}`
+              url: `/${business.id}/pass/${c.walletPassId || ''}`
             }
           }));
           enviosWebPush++;
-        } catch (err) {
+        } catch (err: any) {
           console.error(`Error enviando Web Push a ${c.id}:`, err);
+          pushErrors.push(err?.body || err?.message || "Error desconocido");
         }
       }
 
@@ -188,6 +195,13 @@ export async function sendPushNotification(messageText: string, target: string) 
     });
 
     await Promise.allSettled(notifPromises);
+
+    if (enviosWebPush === 0 && enviosGoogleWallet === 0 && pushErrors.length > 0) {
+      return { 
+        success: false, 
+        error: `Fallaron los envíos. Detalles: ${pushErrors[0]}` 
+      };
+    }
 
     return { 
       success: true, 
