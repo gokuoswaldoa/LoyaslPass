@@ -144,12 +144,16 @@ export async function sendPushNotification(messageText: string, target: string) 
           }
 
           const sub = JSON.parse(c.webPushSub);
-          const logoUrl = config?.logoUrl || '/logo/cafe-happy-logo.png';
+          
+          // La URL del logo suele ser Base64 y pesa ~50KB. El payload de push tiene un límite estricto de 4KB.
+          // Si mandamos el logo en Base64, Apple/Google devuelven "413 Payload Too Large".
+          // En iOS, el ícono real de la notificación lo toma de la PWA instalada, no de este campo.
+          const safeIcon = '/logo/cafe-happy-logo.png';
           
           await webpush.sendNotification(sub, JSON.stringify({
             title: business.name,
             body: messageText,
-            icon: logoUrl,
+            icon: safeIcon,
             data: {
               url: `/${business.id}/pass/${c.walletPassId || ''}`
             }
