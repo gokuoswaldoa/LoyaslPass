@@ -126,19 +126,26 @@ export async function sendPushNotification(messageText: string, target: string) 
       const objectId = `${issuerId}.${c.walletPassId}`;
       
       const payload = {
-        messages: [{
+        message: {
           header: "Mensaje de " + business.name,
           body: messageText,
-          id: crypto.randomUUID()
-        }],
-        notifyPreference: "NOTIFY_ON_UPDATE"
+          id: crypto.randomUUID(),
+          messageType: "TEXT_AND_NOTIFY"
+        }
       };
 
       try {
-        // Enviar actualización con NOTIFY_ON_UPDATE
+        // 1. Limpiar historial
         await client.request({
           url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}`,
           method: 'PATCH',
+          data: { messages: [] }
+        });
+
+        // 2. Disparar el Push oficial
+        await client.request({
+          url: `https://walletobjects.googleapis.com/walletobjects/v1/loyaltyObject/${objectId}/addMessage`,
+          method: 'POST',
           data: payload
         });
         enviosExitosos++;
