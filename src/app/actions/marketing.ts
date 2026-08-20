@@ -129,7 +129,8 @@ export async function sendPushNotification(messageText: string, target: string) 
         message: {
           header: "¡Nueva Alerta de " + business.name + "!",
           body: messageText,
-          id: crypto.randomUUID()
+          id: crypto.randomUUID(),
+          messageType: "TEXT_AND_NOTIFY"
         }
       };
 
