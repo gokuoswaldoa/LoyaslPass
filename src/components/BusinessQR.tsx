@@ -17,6 +17,7 @@ export default function BusinessQR({ businessId }: BusinessQRProps) {
     // Generate URL dynamically based on where we are hosted
     if (typeof window !== 'undefined') {
       const origin = window.location.origin;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setQrUrl(`${origin}/${businessId}/join`);
     }
   }, [businessId]);

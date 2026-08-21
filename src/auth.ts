@@ -11,7 +11,7 @@ console.error = (...args) => {
       return `Error: ${arg.message}\nStack: ${arg.stack}`;
     }
     if (arg && typeof arg === 'object' && arg.name === 'NeonDbError') {
-      return `NeonDbError: ${(arg as any).message}`;
+      return `NeonDbError: ${(arg as {message: string}).message}`;
     }
     return arg;
   });

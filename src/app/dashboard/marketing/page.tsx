@@ -23,7 +23,7 @@ export default function MarketingPage() {
   
   const [businessName, setBusinessName] = useState("LoyalPass");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<Record<string, unknown>[]>([]);
 
   const [address, setAddress] = useState("");
   const [locationLoading, setLocationLoading] = useState(false);
@@ -200,7 +200,7 @@ export default function MarketingPage() {
             </div>
             <select 
               value={target}
-              onChange={(e) => setTarget(e.target.value as any)}
+              onChange={(e) => setTarget(e.target.value as "all" | "riesgo" | "vip" | "cumple")}
               className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-emerald-500 text-slate-900 dark:text-white font-medium cursor-pointer"
             >
               <option value="all">Todos los clientes</option>

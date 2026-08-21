@@ -65,7 +65,7 @@ export default async function BusinessesPage() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={badgeVariant as any} className={isExpired ? "opacity-50" : ""}>
+                      <Badge variant={badgeVariant as "default" | "secondary" | "destructive" | "outline"} className={isExpired ? "opacity-50" : ""}>
                         {statusLabel}
                       </Badge>
                       {isExpired && <Badge variant="destructive" className="ml-2 text-[10px]">Expirado</Badge>}
