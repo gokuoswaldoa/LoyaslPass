@@ -21,7 +21,7 @@ export function GlobalHeader() {
         <Link href="/" className="flex items-center gap-3 group transition-opacity hover:opacity-80">
           <div className="relative h-12 md:h-14 w-56 md:w-64 flex-shrink-0">
             <Image 
-              src="/logo/loyalpass-logo-full.svg" 
+              src="/logo/color%20definitivo%20con%20titutlo.svg" 
               alt="LoyalPass" 
               fill 
               className="object-contain object-left dark:invert" 

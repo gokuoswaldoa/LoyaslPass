@@ -58,7 +58,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="h-12 md:h-16 relative w-48 md:w-64 flex items-center justify-start transform group-hover:scale-105 transition-transform duration-300">
-              <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left" />
+              <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left" />
             </div>
           </Link>
 
@@ -702,7 +702,7 @@ export default function LandingPage() {
             <div className="flex flex-col items-center md:items-start">
               <Link href="/" className="flex items-center gap-2 mb-4 group">
                 <div className="h-10 md:h-12 relative w-48 flex items-center justify-center md:justify-start transform group-hover:scale-105 transition-transform">
-                  <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain md:object-left" />
+                  <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain md:object-left" />
                 </div>
               </Link>
               <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs text-center md:text-left">
