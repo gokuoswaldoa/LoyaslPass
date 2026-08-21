@@ -25,11 +25,9 @@ export function ActionsMenu({ businessId, currentStatus }: { businessId: string,
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0" disabled={loading}>
-          <span className="sr-only">Abrir menú</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
+      <DropdownMenuTrigger className="h-8 w-8 p-0 inline-flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md" disabled={loading}>
+        <span className="sr-only">Abrir menú</span>
+        <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
