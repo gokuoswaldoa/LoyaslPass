@@ -23,7 +23,7 @@ export default function MarketingPage() {
   
   const [businessName, setBusinessName] = useState("LoyalPass");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [customers, setCustomers] = useState<Record<string, unknown>[]>([]);
+  const [customers, setCustomers] = useState<{ id: string; name: string; phone: string | null; stamps: number; status: string; walletPassId: string | null; businessId: string | null; birthdate: string | null; totalStampsRequired: number; }[]>([]);
 
   const [address, setAddress] = useState("");
   const [locationLoading, setLocationLoading] = useState(false);
