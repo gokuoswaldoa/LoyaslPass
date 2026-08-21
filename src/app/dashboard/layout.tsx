@@ -11,6 +11,7 @@ import { Scanner } from "@/components/scanner";
 import { verifyClientQR, addStampToClient, getFrequentCustomers, searchCustomers } from "@/app/actions/scanner";
 import { getUserRoleInfo } from "@/app/actions/settings";
 import { Search, Star } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -28,6 +29,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isSearching, setIsSearching] = useState(false);
   
   const [userRole, setUserRole] = useState<"owner" | "staff" | "loading">("loading");
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [lockScreen, setLockScreen] = useState<"none" | "trial_expired" | "subscription_expired" | "suspended">("none");
 
   useEffect(() => {
     async function checkRole() {
@@ -35,6 +38,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         const res = await getUserRoleInfo();
         if (res.success && res.role) {
           setUserRole(res.role as "owner" | "staff");
+          if (res.superadmin) setIsSuperAdmin(true);
+
+          // Lógica de expiración (solo para owners)
+          if (res.role === "owner") {
+            const now = new Date();
+            if (res.businessStatus === "suspended") {
+              setLockScreen("suspended");
+            } else if (res.businessStatus === "trial" && res.trialEndsAt && new Date(res.trialEndsAt) < now) {
+              setLockScreen("trial_expired");
+            } else if (res.businessStatus === "active" && res.subscriptionEndsAt && new Date(res.subscriptionEndsAt) < now) {
+              setLockScreen("subscription_expired");
+            }
+          }
+
         } else {
           // If no role, might just be starting onboarding, but let's default to owner for the layout until onboarding finishes
           setUserRole("owner");
@@ -153,12 +170,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
           </div>
         </div>
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-        >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* --- SIDEBAR (Desktop) & MOBILE MENU --- */}
@@ -178,10 +198,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             `}
           >
             {/* Logo Area */}
-            <div className="hidden md:flex items-center gap-3 p-6 border-b border-slate-100 dark:border-slate-800/50">
-              <div className="h-12 relative w-56 flex items-center justify-start p-1.5 shadow-sm">
+            <div className="hidden md:flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800/50">
+              <div className="h-12 relative w-40 flex items-center justify-start p-1.5 shadow-sm">
                 <Image src="/logo/loyalpass-logo-full.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
               </div>
+              <NotificationBell />
             </div>
 
             {/* User Profile */}
@@ -200,7 +221,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Navigation */}
             <nav className="flex-1 px-4 pb-6 space-y-1.5 overflow-y-auto">
               <p className="px-4 text-xs font-black uppercase tracking-widest text-slate-400 mb-3 mt-2">Menú Principal</p>
-              {navItems.map((item) => {
+              {lockScreen === "none" && navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link 
@@ -217,6 +238,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </Link>
                 );
               })}
+              
+              {isSuperAdmin && (
+                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
+                  <Link 
+                    href="/superadmin"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold transition-all hover:bg-purple-100 dark:hover:bg-purple-500/20"
+                  >
+                    <Star size={20} className="text-purple-600 dark:text-purple-400" />
+                    Panel Super Admin
+                  </Link>
+                </div>
+              )}
             </nav>
 
             {/* Logout */}
@@ -255,30 +288,68 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <LogOut size={20} /> Salir
             </button>
           </div>
+        ) : lockScreen === "trial_expired" ? (
+          <div className="flex flex-col items-center justify-center h-full p-6 text-center mt-20 md:mt-40">
+            <div className="w-24 h-24 bg-red-100 dark:bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mb-6">
+              <LogOut size={48} />
+            </div>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Tu prueba ha finalizado</h1>
+            <p className="text-slate-500 text-lg max-w-md mb-10">
+              Si decides continuar con nuestros servicios para impulsar tus ventas, por favor contacta a Oswaldo directamente vía telefónica para activar tu plan.
+            </p>
+            <a href="https://wa.me/5211234567890" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-colors">
+              Contactar por WhatsApp
+            </a>
+          </div>
+        ) : lockScreen === "subscription_expired" ? (
+          <div className="flex flex-col items-center justify-center h-full p-6 text-center mt-20 md:mt-40">
+            <div className="w-24 h-24 bg-amber-100 dark:bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center mb-6">
+              <LogOut size={48} />
+            </div>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Mensualidad terminada</h1>
+            <p className="text-slate-500 text-lg max-w-md mb-10">
+              ¿Quieres renovar tu plan? Contacta a soporte para reactivar tu cuenta inmediatamente y seguir premiando a tus clientes.
+            </p>
+            <a href="https://wa.me/5211234567890" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors">
+              Renovar Plan
+            </a>
+          </div>
+        ) : lockScreen === "suspended" ? (
+          <div className="flex flex-col items-center justify-center h-full p-6 text-center mt-20 md:mt-40">
+            <div className="w-24 h-24 bg-slate-200 dark:bg-slate-800 text-slate-500 rounded-full flex items-center justify-center mb-6">
+              <LogOut size={48} />
+            </div>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Cuenta Suspendida</h1>
+            <p className="text-slate-500 text-lg max-w-md mb-10">
+              Tu cuenta ha sido suspendida por falta de pago o incumplimiento de términos. Por favor contacta a soporte para más detalles.
+            </p>
+          </div>
         ) : (
           children
         )}
       </main>
 
       {/* --- FLOATING ACTION BUTTON (SCANNER) --- */}
-      <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-50">
-        <button
-          onClick={() => {
-            resetScanner();
-            setShowScanner(true);
-          }}
-          className="group relative flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-emerald-600 text-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl shadow-emerald-500/40 hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95"
-        >
-          <div className="absolute inset-0 rounded-[2rem] md:rounded-[2.5rem] border-2 border-white/20"></div>
-          <ScanLine className="w-8 h-8 md:w-10 md:h-10 group-hover:scale-110 transition-transform" />
-          
-          {/* Ping effect */}
-          <span className="absolute -top-1 -right-1 flex h-4 w-4">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
-          </span>
-        </button>
-      </div>
+      {lockScreen === "none" && (
+        <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-50">
+          <button
+            onClick={() => {
+              resetScanner();
+              setShowScanner(true);
+            }}
+            className="group relative flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-emerald-600 text-white rounded-[2rem] md:rounded-[2.5rem] shadow-2xl shadow-emerald-500/40 hover:bg-emerald-500 transition-all hover:scale-105 active:scale-95"
+          >
+            <div className="absolute inset-0 rounded-[2rem] md:rounded-[2.5rem] border-2 border-white/20"></div>
+            <ScanLine className="w-8 h-8 md:w-10 md:h-10 group-hover:scale-110 transition-transform" />
+            
+            {/* Ping effect */}
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white"></span>
+            </span>
+          </button>
+        </div>
+      )}
 
       {/* --- SCANNER MODAL (SIMULATED) --- */}
       <AnimatePresence>

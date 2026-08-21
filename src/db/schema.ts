@@ -20,6 +20,7 @@ export const users = pgTable("user", {
   email: text("email").unique(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
+  role: varchar("role").default("user"),
 });
 
 export const accounts = pgTable(
@@ -96,6 +97,10 @@ export const businesses = pgTable("businesses", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   name: varchar("name").notNull(),
   email: varchar("email").notNull(), // can be different from user email, but typically same initially
+  whatsapp: varchar("whatsapp"),
+  status: varchar("status").default("trial"), // "trial", "active", "suspended"
+  trialEndsAt: timestamp("trial_ends_at"),
+  subscriptionEndsAt: timestamp("subscription_ends_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -136,4 +141,13 @@ export const businessStaff = pgTable("business_staff", {
   businessId: uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" }),
   email: varchar("email").notNull(),
   addedAt: timestamp("added_at").defaultNow(),
+});
+
+export const systemNotifications = pgTable("system_notifications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  businessId: uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" }),
+  title: varchar("title").notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
 });

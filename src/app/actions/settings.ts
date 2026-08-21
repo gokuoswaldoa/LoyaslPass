@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { businesses, businessStaff, passesConfig } from "@/db/schema";
+import { businesses, businessStaff, passesConfig, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { auth } from "@/auth";
 
@@ -12,12 +12,24 @@ export async function getUserRoleInfo() {
   }
 
   try {
+    // Fetch user to check if superadmin
+    const userArray = await db.select().from(users).where(eq(users.id, session.user.id));
+    const dbUser = userArray[0];
+
     // Check if user is owner
     const businessArray = await db.select().from(businesses).where(eq(businesses.userId, session.user.id));
     const business = businessArray[0];
 
     if (business) {
-      return { success: true, role: "owner", businessId: business.id };
+      return { 
+        success: true, 
+        role: "owner", 
+        superadmin: dbUser?.role === "superadmin" || session.user.email === process.env.SUPER_ADMIN_EMAIL,
+        businessId: business.id,
+        businessStatus: business.status,
+        trialEndsAt: business.trialEndsAt,
+        subscriptionEndsAt: business.subscriptionEndsAt
+      };
     }
 
     // Check if user is staff (by their google email)

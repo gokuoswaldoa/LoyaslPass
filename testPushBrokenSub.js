@@ -1,0 +1,19 @@
+require('dotenv').config({ path: '.env' });
+const webpush = require('web-push');
+
+webpush.setVapidDetails(
+  'mailto:soporte@loyalpass.com',
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
+
+// Changed the endpoint slightly to break it
+const sub = {"endpoint":"https://web.push.apple.com/QLWIFeTI12rD90l_NMTXXhC9cbS9XvdEtiAdezWb27IgYKAsMNXyxecTTzII5YbIYzDZ4fCUiILMD_WgDqQsTzL8jljMPdBvZqHq7cNwoGYH2OpVNtuaSWnXl0W0_dNvTBzgd58OyGFyW5GaYxOA-dqC4uIUf4ny2Q2ceH0jwR","keys":{"p256dh":"BNG2WqaaNrDsqwomvRs75ajoHXPScQYvwFLTeMRCJ38PIoDtgJVUqRzFfQN9zn37_IzGyq0yA9GVK9ri1yDWz94","auth":"dubPdsyzoLsaIMrI3i6yXg"}};
+
+webpush.sendNotification(sub, JSON.stringify({ title: 'Test' }))
+  .then(res => console.log('Success:', res.statusCode))
+  .catch(err => {
+    console.log('Error message:', err.message);
+    console.log('Error body:', err.body);
+    console.log('Error statusCode:', err.statusCode);
+  });

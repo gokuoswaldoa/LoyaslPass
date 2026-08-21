@@ -22,11 +22,16 @@ export async function processOnboardingData() {
   try {
     const data = JSON.parse(onboardingCookie.value);
 
+    // Calcular fecha de fin de prueba (15 días)
+    const trialDate = new Date();
+    trialDate.setDate(trialDate.getDate() + 15);
+
     // 1. Crear el negocio enlazado al usuario
     const [business] = await db.insert(businesses).values({
       userId: session.user.id,
       name: data.businessName,
       email: session.user.email || "", // Fallback to user email
+      trialEndsAt: trialDate,
     }).returning();
 
     // 2. Crear la configuración del pase (LoyalPass)
