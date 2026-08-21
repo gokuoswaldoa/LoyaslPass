@@ -20,6 +20,14 @@ export async function processOnboardingData() {
   }
 
   try {
+    // Check if user already has a business
+    const existingBusiness = await db.select().from(businesses).where(eq(businesses.userId, session.user.id));
+    if (existingBusiness.length > 0) {
+      // Clear cookie and return existing business
+      cookieStore.delete("loyalpass_onboarding");
+      return { success: true, businessId: existingBusiness[0].id, message: "User already has a business" };
+    }
+
     const data = JSON.parse(onboardingCookie.value);
 
     // Calcular fecha de fin de prueba (15 días)
