@@ -11,7 +11,7 @@ export async function generateMetadata(
   let logoUrl = "/logo/cafe-happy-logo.png"; // fallback
 
   if (res.success && res.business && res.config) {
-    title = `Tarjeta de ${res.business.name}`;
+    title = res.business.name;
     if (res.config.logoUrl) {
       logoUrl = res.config.logoUrl;
     }
