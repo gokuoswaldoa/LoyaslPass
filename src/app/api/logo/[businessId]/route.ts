@@ -5,10 +5,11 @@ import { eq } from "drizzle-orm";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { businessId: string } }
+  { params }: { params: Promise<{ businessId: string }> }
 ) {
   try {
-    const { businessId } = await params;
+    const resolvedParams = await params;
+    const businessId = resolvedParams.businessId;
     
     const configArray = await db
       .select()
