@@ -13,6 +13,7 @@ import { getUserRoleInfo } from "@/app/actions/settings";
 import { Search, Star } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OnboardingTour } from "@/components/onboarding-tour";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -154,15 +155,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const navItems = [
-    { label: "Vista General", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Clientes (CRM)", href: "/dashboard/crm", icon: Users },
-    { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone },
-    { label: "Diseño de Tarjeta", href: "/dashboard/editor", icon: WalletCards },
-    { label: "Configuración", href: "/dashboard/settings", icon: Settings },
+    { label: "Vista General", href: "/dashboard", icon: LayoutDashboard, id: "tour-vista-general" },
+    { label: "Clientes (CRM)", href: "/dashboard/crm", icon: Users, id: "tour-clientes" },
+    { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone, id: "tour-marketing" },
+    { label: "Diseño de Tarjeta", href: "/dashboard/editor", icon: WalletCards, id: "tour-diseno" },
+    { label: "Configuración", href: "/dashboard/settings", icon: Settings, id: "tour-configuracion" },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row">
+      <OnboardingTour />
       
       {/* --- MOBILE TOPBAR --- */}
       <div className={`md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 ${mobileMenuOpen ? 'hidden' : ''}`}>
@@ -232,6 +234,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <Link 
                     key={item.href} 
                     href={item.href}
+                    id={item.id}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-semibold ${
                       isActive 
                         ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" 

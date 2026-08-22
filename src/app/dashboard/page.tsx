@@ -82,7 +82,7 @@ export default function DashboardPage() {
 
       {/* --- QR DEL NEGOCIO --- */}
       {businessId && (
-        <div className="mb-10">
+        <div id="tour-qr-registro" className="mb-10">
           <BusinessQR businessId={businessId} />
         </div>
       )}
