@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit, Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -14,9 +14,26 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "LoyalPass - Digital Loyalty",
   description: "Premium Digital Loyalty Cards for Apple and Google Wallet",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "LoyalPass",
+  },
+  icons: {
+    apple: "/logo/icono.png",
+  },
 };
 
 export default function RootLayout({

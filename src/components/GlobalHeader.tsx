@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation";
 export function GlobalHeader() {
   const pathname = usePathname();
 
-  // Ocultar el GlobalHeader si estamos dentro del dashboard
-  if (pathname.startsWith("/dashboard")) {
+  // Ocultar el GlobalHeader si estamos dentro del dashboard o superadmin
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/superadmin")) {
     return null;
   }
 
