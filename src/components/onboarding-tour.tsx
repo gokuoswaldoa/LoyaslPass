@@ -5,7 +5,7 @@ import { Joyride, EventData, STATUS, Step, TooltipRenderProps } from "react-joyr
 import { usePathname } from "next/navigation";
 import { CheckCircle, X, ChevronRight, Sparkles } from "lucide-react";
 
-export function OnboardingTour() {
+export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (open: boolean) => void }) {
   const [run, setRun] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
@@ -24,16 +24,26 @@ export function OnboardingTour() {
   }, [pathname]);
 
   const handleJoyrideCallback = (data: EventData) => {
-    const { status } = data;
+    const { status, type, index, action } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
+
+    if (isMobile && type === "step:after") {
+      if (action === "next" && index === 1) {
+        setMobileMenuOpen?.(true);
+      }
+      if (action === "prev" && index === 2) {
+        setMobileMenuOpen?.(false);
+      }
+    }
 
     if (finishedStatuses.includes(status)) {
       setRun(false);
+      if (isMobile) setMobileMenuOpen?.(false);
       localStorage.setItem("loyalpass_tour_completed", "true");
     }
   };
 
-  const desktopSteps: Step[] = [
+  const steps: Step[] = [
     {
       target: "body",
       placement: "center",
@@ -50,50 +60,27 @@ export function OnboardingTour() {
       target: "#tour-diseno",
       title: "Personaliza tu Tarjeta",
       content: "Aquí podrás subir tu logo, elegir tus colores y configurar las recompensas que le darás a tus clientes.",
-      placement: "right",
+      placement: isMobile ? "bottom" : "right",
     },
     {
       target: "#tour-clientes",
       title: "Conoce a tus Clientes",
       content: "Tu base de datos de clientes. Observa cuántas visitas tienen, dales sellos manualmente y averigua quiénes han dejado de venir.",
-      placement: "right",
+      placement: isMobile ? "bottom" : "right",
     },
     {
       target: "#tour-marketing",
       title: "Atrae a tus Clientes",
       content: "Envía notificaciones push directamente al celular de tus clientes (Ej: '¡Hoy 2x1 en toda la tienda!') para que regresen más seguido.",
-      placement: "right",
+      placement: isMobile ? "bottom" : "right",
     },
     {
       target: "#tour-configuracion",
       title: "Configuración y Equipo",
       content: "Administra los detalles de tu cuenta y, en el futuro, podrás dar acceso a tus empleados para que escaneen desde sus celulares.",
-      placement: "right",
+      placement: isMobile ? "bottom" : "right",
     },
   ];
-
-  const mobileSteps: Step[] = [
-    {
-      target: "body",
-      placement: "center",
-      title: "¡Bienvenido a LoyalPass!",
-      content: "Vamos a darte un recorrido rápido por tu panel de control para que comiences a fidelizar a tus clientes hoy mismo."
-    },
-    {
-      target: "#tour-qr-registro",
-      title: "El Corazón de tu Negocio",
-      content: "Muestra este QR a tus clientes para que descarguen su tarjeta. Toca 'Probar Flujo' para ver cómo funciona.",
-      placement: "bottom",
-    },
-    {
-      target: "#tour-mobile-menu",
-      title: "Explora tu Menú",
-      content: "Desde este menú podrás abrir tu Diseñador de Tarjetas, el CRM de tus clientes y configurar todas tus recompensas.",
-      placement: "bottom",
-    }
-  ];
-
-  const activeSteps = isMobile ? mobileSteps : desktopSteps;
 
   // Componente Tooltip Personalizado con efecto Glassmorphism
   const Tooltip = ({
@@ -129,7 +116,7 @@ export function OnboardingTour() {
 
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-1">
-            {activeSteps.map((_, i) => (
+            {steps.map((_, i) => (
               <div
                 key={i}
                 className={`h-2 rounded-full transition-all ${
@@ -167,7 +154,7 @@ export function OnboardingTour() {
 
   return (
     <Joyride
-      steps={activeSteps}
+      steps={steps}
       run={run}
       continuous
       scrollToFirstStep
