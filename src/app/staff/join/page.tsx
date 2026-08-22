@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loginStaff } from "@/app/actions/staff";
+import { Suspense } from "react";
 import { Loader2, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function StaffJoinPage() {
+function StaffJoinContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
@@ -76,5 +77,13 @@ export default function StaffJoinPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function StaffJoinPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-emerald-500" size={32} /></div>}>
+      <StaffJoinContent />
+    </Suspense>
   );
 }
