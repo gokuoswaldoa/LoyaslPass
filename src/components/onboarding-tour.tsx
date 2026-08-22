@@ -32,14 +32,14 @@ export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (ope
       if (action === "next") {
         if (isMobile && index === 1) {
           setMobileMenuOpen?.(true);
-          setTimeout(() => setStepIndex(index + 1), 350); // wait for animation
+          setTimeout(() => setStepIndex(index + 1), 500); // Wait 500ms for Framer Motion to settle
         } else {
           setStepIndex(index + 1);
         }
       } else if (action === "prev") {
         if (isMobile && index === 2) {
           setMobileMenuOpen?.(false);
-          setTimeout(() => setStepIndex(index - 1), 350);
+          setTimeout(() => setStepIndex(index - 1), 500);
         } else {
           setStepIndex(index - 1);
         }
