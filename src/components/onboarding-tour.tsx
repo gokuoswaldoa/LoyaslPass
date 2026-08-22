@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Joyride, { CallBackProps, STATUS, Step, TooltipRenderProps } from "react-joyride";
+import { Joyride, CallBackProps, STATUS, Step, TooltipRenderProps } from "react-joyride";
 import { usePathname } from "next/navigation";
 import { CheckCircle, X, ChevronRight, ChevronLeft } from "lucide-react";
 
