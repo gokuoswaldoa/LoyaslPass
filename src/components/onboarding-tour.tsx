@@ -7,6 +7,7 @@ import { CheckCircle, X, ChevronRight, Sparkles } from "lucide-react";
 
 export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (open: boolean) => void }) {
   const [run, setRun] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
@@ -27,12 +28,21 @@ export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (ope
     const { status, type, index, action } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 
-    if (isMobile && type === "step:after") {
-      if (action === "next" && index === 1) {
-        setMobileMenuOpen?.(true);
-      }
-      if (action === "prev" && index === 2) {
-        setMobileMenuOpen?.(false);
+    if (type === "step:after") {
+      if (action === "next") {
+        if (isMobile && index === 1) {
+          setMobileMenuOpen?.(true);
+          setTimeout(() => setStepIndex(index + 1), 350); // wait for animation
+        } else {
+          setStepIndex(index + 1);
+        }
+      } else if (action === "prev") {
+        if (isMobile && index === 2) {
+          setMobileMenuOpen?.(false);
+          setTimeout(() => setStepIndex(index - 1), 350);
+        } else {
+          setStepIndex(index - 1);
+        }
       }
     }
 
@@ -155,6 +165,7 @@ export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (ope
   return (
     <Joyride
       steps={steps}
+      stepIndex={stepIndex}
       run={run}
       continuous
       scrollToFirstStep
