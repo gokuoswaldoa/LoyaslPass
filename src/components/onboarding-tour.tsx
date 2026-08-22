@@ -3,13 +3,16 @@
 import { useEffect, useState } from "react";
 import { Joyride, EventData, STATUS, Step, TooltipRenderProps } from "react-joyride";
 import { usePathname } from "next/navigation";
-import { CheckCircle, X, ChevronRight, ChevronLeft } from "lucide-react";
+import { CheckCircle, X, ChevronRight, Sparkles } from "lucide-react";
 
 export function OnboardingTour() {
   const [run, setRun] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    
     if (pathname !== "/dashboard") return;
     const tourCompleted = localStorage.getItem("loyalpass_tour_completed");
     if (!tourCompleted) {
@@ -30,11 +33,11 @@ export function OnboardingTour() {
     }
   };
 
-  const steps: Step[] = [
+  const desktopSteps: Step[] = [
     {
       target: "body",
       placement: "center",
-      title: "¡Bienvenido a LoyalPass! 🎉",
+      title: "¡Bienvenido a LoyalPass!",
       content: "Vamos a darte un recorrido rápido por tu panel de control para que comiences a fidelizar a tus clientes hoy mismo."
     },
     {
@@ -69,9 +72,31 @@ export function OnboardingTour() {
     },
   ];
 
+  const mobileSteps: Step[] = [
+    {
+      target: "body",
+      placement: "center",
+      title: "¡Bienvenido a LoyalPass!",
+      content: "Vamos a darte un recorrido rápido por tu panel de control para que comiences a fidelizar a tus clientes hoy mismo."
+    },
+    {
+      target: "#tour-qr-registro",
+      title: "El Corazón de tu Negocio",
+      content: "Muestra este QR a tus clientes para que descarguen su tarjeta. Toca 'Probar Flujo' para ver cómo funciona.",
+      placement: "bottom",
+    },
+    {
+      target: "#tour-mobile-menu",
+      title: "Explora tu Menú",
+      content: "Desde este menú podrás abrir tu Diseñador de Tarjetas, el CRM de tus clientes y configurar todas tus recompensas.",
+      placement: "bottom",
+    }
+  ];
+
+  const activeSteps = isMobile ? mobileSteps : desktopSteps;
+
   // Componente Tooltip Personalizado con efecto Glassmorphism
   const Tooltip = ({
-    continuous,
     index,
     step,
     backProps,
@@ -83,7 +108,7 @@ export function OnboardingTour() {
     return (
       <div
         {...tooltipProps}
-        className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-6 max-w-sm w-full font-sans relative"
+        className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-6 max-w-sm w-[90vw] md:w-full font-sans relative"
       >
         <button
           {...closeProps}
@@ -93,7 +118,8 @@ export function OnboardingTour() {
           <X size={20} />
         </button>
 
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 pr-6">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 pr-6 flex items-center gap-2">
+          {index === 0 && <Sparkles className="text-emerald-500" size={20} />}
           {step.title}
         </h3>
         
@@ -103,7 +129,7 @@ export function OnboardingTour() {
 
         <div className="flex items-center justify-between mt-4">
           <div className="flex space-x-1">
-            {steps.map((_, i) => (
+            {activeSteps.map((_, i) => (
               <div
                 key={i}
                 className={`h-2 rounded-full transition-all ${
@@ -141,7 +167,7 @@ export function OnboardingTour() {
 
   return (
     <Joyride
-      steps={steps}
+      steps={activeSteps}
       run={run}
       continuous
       scrollToFirstStep

@@ -177,6 +177,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <ThemeToggle />
           <NotificationBell />
           <button 
+            id="tour-mobile-menu"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
           >
