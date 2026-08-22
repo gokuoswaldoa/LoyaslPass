@@ -133,13 +133,15 @@ export const stampsLog = pgTable("stamps_log", {
   id: uuid("id").primaryKey().defaultRandom(),
   customerId: uuid("customer_id").references(() => customers.id, { onDelete: "cascade" }),
   businessId: uuid("business_id").references(() => businesses.id, { onDelete: "cascade" }),
+  staffId: uuid("staff_id").references(() => businessStaff.id, { onDelete: "set null" }),
   stampedAt: timestamp("stamped_at").defaultNow(),
 });
 
 export const businessStaff = pgTable("business_staff", {
   id: uuid("id").primaryKey().defaultRandom(),
   businessId: uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" }),
-  email: varchar("email").notNull(),
+  name: varchar("name").notNull(),
+  loginToken: varchar("login_token").unique(),
   addedAt: timestamp("added_at").defaultNow(),
 });
 

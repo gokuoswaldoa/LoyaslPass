@@ -4,12 +4,13 @@ import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, Users, Megaphone, Settings, LogOut, ScanLine, Menu, X, WalletCards, CheckCircle2 } from "lucide-react";
+import { LayoutDashboard, Users, Megaphone, Settings, LogOut, ScanLine, Menu, X, WalletCards, CheckCircle2, IdCard } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Scanner } from "@/components/scanner";
 import { verifyClientQR, addStampToClient, getFrequentCustomers, searchCustomers } from "@/app/actions/scanner";
 import { getUserRoleInfo } from "@/app/actions/settings";
+import { logoutStaff } from "@/app/actions/staff";
 import { Search, Star } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -37,27 +38,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     async function checkRole() {
-      if (status === "authenticated") {
-        const res = await getUserRoleInfo();
-        if (res.success && res.role) {
-          setUserRole(res.role as "owner" | "staff");
-          if (res.superadmin) setIsSuperAdmin(true);
+      if (status === "loading") return;
+      
+      const res = await getUserRoleInfo();
+      if (res.success && res.role) {
+        setUserRole(res.role as "owner" | "staff");
+        if (res.superadmin) setIsSuperAdmin(true);
 
-          // Lógica de expiración (solo para owners)
-          if (res.role === "owner") {
-            const now = new Date();
-            if (res.businessStatus === "suspended") {
-              setLockScreen("suspended");
-            } else if (res.businessStatus === "trial" && res.trialEndsAt && new Date(res.trialEndsAt) < now) {
-              setLockScreen("trial_expired");
-            } else if (res.businessStatus === "active" && res.subscriptionEndsAt && new Date(res.subscriptionEndsAt) < now) {
-              setLockScreen("subscription_expired");
-            }
+        // Lógica de expiración (solo para owners)
+        if (res.role === "owner") {
+          const now = new Date();
+          if (res.businessStatus === "suspended") {
+            setLockScreen("suspended");
+          } else if (res.businessStatus === "trial" && res.trialEndsAt && new Date(res.trialEndsAt) < now) {
+            setLockScreen("trial_expired");
+          } else if (res.businessStatus === "active" && res.subscriptionEndsAt && new Date(res.subscriptionEndsAt) < now) {
+            setLockScreen("subscription_expired");
           }
+        }
 
-        } else {
+      } else {
+        if (status === "authenticated") {
           // If no role, might just be starting onboarding, but let's default to owner for the layout until onboarding finishes
           setUserRole("owner");
+        } else {
+          // Not authenticated at all, redirect to home
+          window.location.href = "/";
         }
       }
     }
@@ -68,6 +74,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
+
+  const handleLogout = async () => {
+    if (userRole === "staff") {
+      await logoutStaff();
+      window.location.href = "/";
+    } else {
+      signOut({ callbackUrl: "/" });
+    }
+  };
 
   // Load frequent customers when scanner opens
   useEffect(() => {
@@ -160,6 +175,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Clientes (CRM)", href: "/dashboard/crm", icon: Users, id: "tour-clientes" },
     { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone, id: "tour-marketing" },
     { label: "Diseño de Tarjeta", href: "/dashboard/editor", icon: WalletCards, id: "tour-diseno" },
+    { label: "Empleados", href: "/dashboard/staff", icon: IdCard, id: "tour-empleados" },
     { label: "Configuración", href: "/dashboard/settings", icon: Settings, id: "tour-configuracion" },
   ];
 
@@ -170,7 +186,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* --- MOBILE TOPBAR --- */}
       <div className={`md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 ${mobileMenuOpen ? 'hidden' : ''}`}>
         <div className="flex items-center gap-2">
-          <div className="w-40 h-10 relative flex items-center justify-start p-1">
+          <div className="w-40 h-10 relative flex items-center justify-start">
             <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left" />
           </div>
         </div>
@@ -205,7 +221,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             {/* Logo Area */}
             <div className="hidden md:flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800/50">
-              <div className="h-12 relative w-40 flex items-center justify-start p-1.5 shadow-sm">
+              <div className="h-12 relative w-40 flex items-center justify-start">
                 <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left" />
               </div>
               <div className="flex items-center gap-1">
@@ -265,7 +281,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Logout */}
             <div className="p-4 mt-auto border-t border-slate-100 dark:border-slate-800/50">
               <button 
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={handleLogout}
                 className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-slate-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-colors font-semibold"
               >
                 <LogOut size={20} />
@@ -292,7 +308,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Modo Escáner</h1>
             <p className="text-slate-500 text-lg max-w-sm mb-10">Has iniciado sesión como Empleado. Usa el botón inferior para dar sellos a los clientes.</p>
             <button 
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={handleLogout}
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
             >
               <LogOut size={20} /> Salir

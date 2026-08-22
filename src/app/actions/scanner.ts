@@ -5,32 +5,14 @@ import { customers, stampsLog, businesses, businessStaff, passesConfig } from "@
 import { eq, and, desc, sql, ilike, or } from "drizzle-orm";
 import { auth } from "@/auth";
 
-async function getAuthorizedBusinessId(userId: string, email: string | null | undefined) {
-  // 1. Check if owner
-  const businessArray = await db.select().from(businesses).where(eq(businesses.userId, userId));
-  const business = businessArray[0];
-  if (business) return business.id;
-
-  // 2. Check if staff
-  if (email) {
-    const staffArray = await db.select().from(businessStaff).where(eq(businessStaff.email, email));
-    const staff = staffArray[0];
-    if (staff) return staff.businessId;
-  }
-
-  return null;
-}
+import { getUserRoleInfo } from "@/app/actions/settings";
 
 export async function verifyClientQR(qrData: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "No autenticado" };
+  const roleInfo = await getUserRoleInfo();
+  if (!roleInfo.success || !roleInfo.businessId) {
+    return { success: false, error: roleInfo.error || "No autenticado o sin permisos" };
   }
-
-  const businessId = await getAuthorizedBusinessId(session.user.id, session.user.email);
-  if (!businessId) {
-    return { success: false, error: "Negocio no encontrado o sin permisos" };
-  }
+  const businessId = roleInfo.businessId;
 
   // qrData will be the wallet_pass_id or customer ID
   // Let's assume it's wallet_pass_id for now
@@ -70,20 +52,18 @@ export async function verifyClientQR(qrData: string) {
 }
 
 export async function addStampToClient(customerId: string) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return { success: false, error: "No autenticado" };
+  const roleInfo = await getUserRoleInfo();
+  if (!roleInfo.success || !roleInfo.businessId) {
+    return { success: false, error: roleInfo.error || "No autenticado o sin permisos" };
   }
-
-  const businessId = await getAuthorizedBusinessId(session.user.id, session.user.email);
-  if (!businessId) {
-    return { success: false, error: "Negocio no encontrado o sin permisos" };
-  }
+  const businessId = roleInfo.businessId;
+  const staffId = roleInfo.staffId || null;
 
   try {
     await db.insert(stampsLog).values({
       customerId,
       businessId: businessId,
+      staffId: staffId,
     });
 
     // Sincronización con Google Wallet
@@ -103,11 +83,11 @@ export async function addStampToClient(customerId: string) {
 }
 
 export async function getFrequentCustomers() {
-  const session = await auth();
-  if (!session?.user?.id) return { success: false, error: "No autenticado" };
-
-  const businessId = await getAuthorizedBusinessId(session.user.id, session.user.email);
-  if (!businessId) return { success: false, error: "Sin permisos" };
+  const roleInfo = await getUserRoleInfo();
+  if (!roleInfo.success || !roleInfo.businessId) {
+    return { success: false, error: roleInfo.error || "Sin permisos" };
+  }
+  const businessId = roleInfo.businessId;
 
   try {
     const clients = await db.select().from(customers).where(eq(customers.businessId, businessId));
@@ -133,11 +113,11 @@ export async function getFrequentCustomers() {
 }
 
 export async function searchCustomers(query: string) {
-  const session = await auth();
-  if (!session?.user?.id) return { success: false, error: "No autenticado" };
-
-  const businessId = await getAuthorizedBusinessId(session.user.id, session.user.email);
-  if (!businessId) return { success: false, error: "Sin permisos" };
+  const roleInfo = await getUserRoleInfo();
+  if (!roleInfo.success || !roleInfo.businessId) {
+    return { success: false, error: roleInfo.error || "Sin permisos" };
+  }
+  const businessId = roleInfo.businessId;
 
   if (!query || query.trim().length < 2) return { success: true, customers: [] };
 
