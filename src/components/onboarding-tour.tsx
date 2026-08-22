@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Joyride, CallBackProps, STATUS, Step, TooltipRenderProps } from "react-joyride";
+import { Joyride, EventData, STATUS, Step, TooltipRenderProps } from "react-joyride";
 import { usePathname } from "next/navigation";
 import { CheckCircle, X, ChevronRight, ChevronLeft } from "lucide-react";
 
@@ -10,13 +10,8 @@ export function OnboardingTour() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Solo ejecutamos el tour en la página principal del dashboard
     if (pathname !== "/dashboard") return;
-
-    // Revisamos si ya completó el tour
     const tourCompleted = localStorage.getItem("loyalpass_tour_completed");
-    
-    // Esperamos un momento para que cargue la interfaz antes de iniciar
     if (!tourCompleted) {
       const timer = setTimeout(() => {
         setRun(true);
@@ -25,7 +20,7 @@ export function OnboardingTour() {
     }
   }, [pathname]);
 
-  const handleJoyrideCallback = (data: CallBackProps) => {
+  const handleJoyrideCallback = (data: EventData) => {
     const { status } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 
@@ -40,8 +35,7 @@ export function OnboardingTour() {
       target: "body",
       placement: "center",
       title: "¡Bienvenido a LoyalPass! 🎉",
-      content: "Vamos a darte un recorrido rápido por tu panel de control para que comiences a fidelizar a tus clientes hoy mismo.",
-      disableBeacon: true,
+      content: "Vamos a darte un recorrido rápido por tu panel de control para que comiences a fidelizar a tus clientes hoy mismo."
     },
     {
       target: "#tour-qr-registro",
@@ -151,19 +145,8 @@ export function OnboardingTour() {
       run={run}
       continuous
       scrollToFirstStep
-      showProgress
-      showSkipButton
-      callback={handleJoyrideCallback}
+      onEvent={handleJoyrideCallback}
       tooltipComponent={Tooltip}
-      styles={{
-        options: {
-          zIndex: 10000,
-          arrowColor: 'transparent',
-        },
-        overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        },
-      }}
     />
   );
 }
