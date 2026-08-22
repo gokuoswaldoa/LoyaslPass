@@ -1,45 +1,64 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
-import { getStaff, createStaff, deleteStaff } from "@/app/actions/staff";
+import { getStaff, createStaff, deleteStaff, regenerateStaffToken, getStaffAnalytics } from "@/app/actions/staff";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Users, Plus, Trash2, QrCode, AlertTriangle } from "lucide-react";
+import { Users, Plus, Trash2, QrCode, AlertTriangle, Activity, RefreshCw, Clock, Trophy, UserMinus } from "lucide-react";
 import QRCode from "react-qr-code";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
+type StaffType = {
+  id: string;
+  name: string;
+  loginToken: string | null;
+  addedAt: Date | null;
+  isActive: boolean | null;
+};
+
+type AnalyticsType = {
+  performance: { id: string; name: string; isActive: boolean | null; totalStamps: number; recentStamps: any[] }[];
+  churnRisk: { customerId: string; customerName: string; lastSeen: Date; lastStaffId: string; lastStaffName: string }[];
+  recentActivity: { id: string; stampedAt: Date | null; customerName: string; staffName: string }[];
+};
+
 export default function StaffPage() {
-  const [staffList, setStaffList] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"gestion" | "analiticas">("gestion");
+  const [staffList, setStaffList] = useState<StaffType[]>([]);
+  const [analytics, setAnalytics] = useState<AnalyticsType | null>(null);
   
-  // Add Staff Modal
+  const [isLoading, setIsLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [newStaffName, setNewStaffName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Show QR Modal
-  const [showQRFor, setShowQRFor] = useState<{name: string, token: string} | null>(null);
-
-  // Delete Confirm Modal
+  const [showQRFor, setShowQRFor] = useState<{ name: string; token: string } | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [regenerateId, setRegenerateId] = useState<string | null>(null);
 
   useEffect(() => {
-    loadStaff();
+    loadData();
   }, []);
 
-  const loadStaff = async () => {
+  async function loadData() {
+    setIsLoading(true);
     try {
-      const data = await getStaff();
-      setStaffList(data);
+      const staffRes = await getStaff();
+      setStaffList(staffRes as StaffType[]);
+      
+      const metrics = await getStaffAnalytics();
+      if (metrics.success) {
+        setAnalytics(metrics as AnalyticsType);
+      }
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,11 +67,11 @@ export default function StaffPage() {
     setIsSubmitting(true);
     try {
       const newStaff = await createStaff(newStaffName);
-      setStaffList([newStaff, ...staffList]);
+      setStaffList([newStaff as StaffType, ...staffList]);
       setIsAddOpen(false);
       setNewStaffName("");
-      // Immediately show QR
       setShowQRFor({ name: newStaff.name, token: newStaff.loginToken as string });
+      loadData();
     } catch (error) {
       console.error(error);
     } finally {
@@ -64,10 +83,28 @@ export default function StaffPage() {
     if (!deleteId) return;
     try {
       await deleteStaff(deleteId);
-      setStaffList(staffList.filter(s => s.id !== deleteId));
+      setStaffList(staffList.map(s => s.id === deleteId ? { ...s, isActive: false, loginToken: null } : s));
       setDeleteId(null);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleRegenerate = async () => {
+    if (!regenerateId) return;
+    try {
+      setIsSubmitting(true);
+      const res = await regenerateStaffToken(regenerateId);
+      if (res.success) {
+        setStaffList(staffList.map(s => s.id === regenerateId ? { ...s, loginToken: res.token, isActive: true } : s));
+        const staffName = staffList.find(s => s.id === regenerateId)?.name || "Empleado";
+        setRegenerateId(null);
+        setShowQRFor({ name: staffName, token: res.token as string });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -78,83 +115,247 @@ export default function StaffPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Users className="text-emerald-500" /> Empleados
+            <Users className="text-emerald-500" /> Mi Equipo
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Crea cuentas de acceso rápido para que tu equipo pueda escanear tarjetas sin compartir contraseñas.
+            Administra los accesos de tu equipo y analiza su desempeno.
           </p>
         </div>
-        <Button onClick={() => setIsAddOpen(true)} className="bg-emerald-500 hover:bg-emerald-600 text-white w-full sm:w-auto">
-          <Plus size={18} className="mr-2" /> Nuevo Empleado
-        </Button>
+        
+        <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
+          <button 
+            onClick={() => setActiveTab("gestion")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${activeTab === "gestion" ? "bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
+          >
+            Gestion
+          </button>
+          <button 
+            onClick={() => setActiveTab("analiticas")}
+            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2 ${activeTab === "analiticas" ? "bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
+          >
+            <Activity size={16} /> Analiticas
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map(i => (
-            <Card key={i} className="animate-pulse bg-slate-100 dark:bg-slate-800 border-none h-40" />
-          ))}
+        <div className="flex justify-center py-20">
+          <RefreshCw className="animate-spin text-emerald-500" size={32} />
         </div>
-      ) : staffList.length === 0 ? (
-        <Card className="text-center py-16 bg-white dark:bg-slate-900 border-dashed border-2 border-slate-200 dark:border-slate-800">
-          <CardContent>
-            <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users size={32} />
-            </div>
-            <h3 className="text-xl font-bold mb-2">Aún no tienes empleados</h3>
-            <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
-              Registra a tus meseros, cajeros o staff. Ellos escanearán un código QR especial para entrar a la app y dar sellos a nombre de tu negocio.
-            </p>
-            <Button onClick={() => setIsAddOpen(true)} className="bg-emerald-500 hover:bg-emerald-600">
-              <Plus size={18} className="mr-2" /> Crear el Primero
+      ) : activeTab === "gestion" ? (
+        
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="flex justify-end">
+            <Button onClick={() => setIsAddOpen(true)} className="bg-emerald-500 hover:bg-emerald-600 text-white w-full sm:w-auto">
+              <Plus size={18} className="mr-2" /> Nuevo Empleado
             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {staffList.map((staff) => (
-            <Card key={staff.id} className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center font-bold text-xl uppercase">
-                    {staff.name.substring(0, 2)}
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    onClick={() => setDeleteId(staff.id)}
-                  >
-                    <Trash2 size={18} />
-                  </Button>
+          </div>
+
+          {staffList.length === 0 ? (
+            <Card className="text-center py-16 bg-white dark:bg-slate-900 border-dashed border-2 border-slate-200 dark:border-slate-800">
+              <CardContent>
+                <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users size={32} />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 truncate">{staff.name}</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-                  Agregado el {format(new Date(staff.addedAt), "d 'de' MMMM, yyyy", { locale: es })}
+                <h3 className="text-xl font-bold mb-2">Aun no tienes empleados</h3>
+                <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+                  Registra a tus meseros o cajeros. Ellos escanearan un QR especial para entrar a la app y dar sellos a nombre de tu negocio.
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => setShowQRFor({ name: staff.name, token: staff.loginToken })}
-                >
-                  <QrCode size={16} className="mr-2" /> Mostrar QR de Acceso
+                <Button onClick={() => setIsAddOpen(true)} className="bg-emerald-500 hover:bg-emerald-600">
+                  <Plus size={18} className="mr-2" /> Crear el Primero
                 </Button>
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {staffList.map((staff) => (
+                <Card key={staff.id} className={`bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 transition-shadow ${!staff.isActive ? 'opacity-60 grayscale' : 'hover:shadow-lg'}`}>
+                  <CardContent className="p-6 relative">
+                    {!staff.isActive && (
+                      <div className="absolute top-4 right-4 bg-slate-200 dark:bg-slate-800 text-slate-500 text-xs font-bold px-2 py-1 rounded-md">
+                        Inactivo
+                      </div>
+                    )}
+                    <div className="flex justify-between items-start mb-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl uppercase ${staff.isActive ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}`}>
+                        {staff.name.substring(0, 2)}
+                      </div>
+                      
+                      {staff.isActive && (
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          onClick={() => setDeleteId(staff.id)}
+                          title="Revocar acceso"
+                        >
+                          <Trash2 size={18} />
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <h3 className={`text-lg font-bold truncate mb-1 ${staff.isActive ? 'text-slate-900 dark:text-white' : 'text-slate-500 line-through'}`}>
+                      {staff.name}
+                    </h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                      Agregado el {format(new Date(staff.addedAt!), "d 'de' MMMM, yyyy", { locale: es })}
+                    </p>
+                    
+                    {staff.isActive ? (
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => setShowQRFor({ name: staff.name, token: staff.loginToken! })}
+                        >
+                          <QrCode size={16} className="mr-2" /> Ver QR
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          className="px-3"
+                          onClick={() => setRegenerateId(staff.id)}
+                          title="Regenerar Token / Codigo"
+                        >
+                          <RefreshCw size={16} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button variant="secondary" className="w-full" disabled>
+                        Acceso Revocado
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Trophy className="text-amber-500" size={20} /> Empleados Destacados
+                </CardTitle>
+                <CardDescription>Rendimiento historico de tu personal.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {analytics?.performance.length === 0 ? (
+                  <p className="text-sm text-slate-500">No hay datos aun.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {analytics?.performance.sort((a,b) => b.totalStamps - a.totalStamps).slice(0, 5).map((staff, i) => (
+                      <div key={staff.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${i === 0 ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}`}>
+                            #{i + 1}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900 dark:text-white leading-tight">
+                              {staff.name} {!staff.isActive && <span className="text-xs font-normal text-slate-400">(Inactivo)</span>}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">{staff.totalStamps}</p>
+                          <p className="text-[10px] font-medium text-slate-500 uppercase">Sellos</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserMinus className="text-red-500" size={20} /> Clientes en Riesgo
+                </CardTitle>
+                <CardDescription>Clientes inactivos (+60 dias) y quien los atendio.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {analytics?.churnRisk.length === 0 ? (
+                  <div className="py-8 text-center">
+                    <p className="text-emerald-500 font-medium">Excelente! No tienes clientes inactivos.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {analytics?.churnRisk.slice(0, 5).map((risk, i) => (
+                      <div key={i} className="flex flex-col p-3 rounded-xl border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10">
+                        <div className="flex justify-between items-start mb-1">
+                          <p className="font-bold text-slate-900 dark:text-white truncate">{risk.customerName}</p>
+                          <span className="text-xs font-medium bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 px-2 py-0.5 rounded">
+                            {format(new Date(risk.lastSeen), "d MMM", { locale: es })}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          Ultimo sello por: <span className="font-medium text-slate-700 dark:text-slate-300">{risk.lastStaffName}</span>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="text-blue-500" size={20} /> Actividad Reciente
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {analytics?.recentActivity.length === 0 ? (
+                <p className="text-sm text-slate-500">No hay sellos registrados.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left">
+                    <thead className="text-xs text-slate-500 uppercase bg-slate-50 dark:bg-slate-950">
+                      <tr>
+                        <th className="px-4 py-3 rounded-tl-lg rounded-bl-lg">Fecha</th>
+                        <th className="px-4 py-3">Cliente</th>
+                        <th className="px-4 py-3 rounded-tr-lg rounded-br-lg">Atendido por</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics?.recentActivity.map((log) => (
+                        <tr key={log.id} className="border-b border-slate-100 dark:border-slate-800 last:border-0">
+                          <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
+                            {log.stampedAt ? format(new Date(log.stampedAt), "d MMM, h:mm a", { locale: es }) : "N/A"}
+                          </td>
+                          <td className="px-4 py-3 font-medium text-slate-900 dark:text-white">
+                            {log.customerName}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-xs font-medium">
+                              {log.staffName}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       )}
 
-      {/* Add Modal */}
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
         <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900">
           <DialogHeader>
             <DialogTitle>Nuevo Empleado</DialogTitle>
             <DialogDescription>
-              Asigna un nombre para identificarlo. Al guardar, se generará un Código QR.
+              Asigna un nombre. Al guardar, se generara un Codigo QR.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleAddStaff} className="space-y-4 py-4">
@@ -177,13 +378,12 @@ export default function StaffPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Show QR Modal */}
       <Dialog open={!!showQRFor} onOpenChange={() => setShowQRFor(null)}>
         <DialogContent className="sm:max-w-sm bg-white dark:bg-slate-900 text-center flex flex-col items-center">
           <DialogHeader>
             <DialogTitle className="text-center">Acceso para {showQRFor?.name}</DialogTitle>
             <DialogDescription className="text-center">
-              Pide a tu empleado que escanee este código con la cámara de su celular para iniciar sesión automáticamente.
+              Pide a tu empleado que escanee este codigo. **Es de un solo uso.**
             </DialogDescription>
           </DialogHeader>
           
@@ -196,9 +396,6 @@ export default function StaffPage() {
               />
             )}
           </div>
-          <p className="text-xs text-slate-500 max-w-[250px] mx-auto mt-2">
-            Importante: Si el empleado renuncia, asegúrate de eliminarlo para invalidar este acceso.
-          </p>
           
           <DialogFooter className="sm:justify-center mt-6 w-full">
             <Button onClick={() => setShowQRFor(null)} className="w-full">
@@ -208,7 +405,25 @@ export default function StaffPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirm Modal */}
+      <Dialog open={!!regenerateId} onOpenChange={() => setRegenerateId(null)}>
+        <DialogContent className="sm:max-w-sm bg-white dark:bg-slate-900">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-blue-500">
+              <RefreshCw size={20} /> Regenerar QR
+            </DialogTitle>
+            <DialogDescription>
+              Deseas generar un nuevo acceso? El celular anterior perdera la sesion, pero el historial se mantendra.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setRegenerateId(null)}>Cancelar</Button>
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleRegenerate} disabled={isSubmitting}>
+              Si, Regenerar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <DialogContent className="sm:max-w-sm bg-white dark:bg-slate-900">
           <DialogHeader>
@@ -216,17 +431,18 @@ export default function StaffPage() {
               <AlertTriangle size={20} /> Revocar Acceso
             </DialogTitle>
             <DialogDescription>
-              ¿Estás seguro de que quieres eliminar a este empleado? Su código QR dejará de funcionar inmediatamente y su sesión se cerrará.
+              El empleado perdera el acceso inmediatamente. **Su historial de sellos se conservara para tus analiticas.**
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4 gap-2 sm:gap-0">
             <Button variant="ghost" onClick={() => setDeleteId(null)}>Cancelar</Button>
             <Button variant="destructive" onClick={handleDelete}>
-              Sí, Revocar Acceso
+              Si, Revocar Acceso
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </div>
   );
 }

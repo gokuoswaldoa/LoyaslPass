@@ -60,6 +60,24 @@ export async function addStampToClient(customerId: string) {
   const staffId = roleInfo.staffId || null;
 
   try {
+    // COOLDOWN LOGIC: Check last stamp time
+    const lastStamps = await db.select()
+      .from(stampsLog)
+      .where(and(eq(stampsLog.customerId, customerId), eq(stampsLog.businessId, businessId)))
+      .orderBy(desc(stampsLog.stampedAt))
+      .limit(1);
+    
+    if (lastStamps.length > 0 && lastStamps[0].stampedAt) {
+      const now = new Date();
+      const lastStampTime = new Date(lastStamps[0].stampedAt);
+      const diffMs = now.getTime() - lastStampTime.getTime();
+      const diffHours = diffMs / (1000 * 60 * 60);
+
+      if (diffHours < 4) {
+        return { success: false, error: "Este cliente recibió un sello hace menos de 4 horas. Vuelve a intentar más tarde." };
+      }
+    }
+
     await db.insert(stampsLog).values({
       customerId,
       businessId: businessId,

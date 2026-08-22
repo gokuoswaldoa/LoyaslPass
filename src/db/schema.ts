@@ -142,6 +142,7 @@ export const businessStaff = pgTable("business_staff", {
   businessId: uuid("business_id").notNull().references(() => businesses.id, { onDelete: "cascade" }),
   name: varchar("name").notNull(),
   loginToken: varchar("login_token").unique(),
+  isActive: boolean("is_active").default(true),
   addedAt: timestamp("added_at").defaultNow(),
 });
 
