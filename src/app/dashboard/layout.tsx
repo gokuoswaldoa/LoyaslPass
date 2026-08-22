@@ -12,6 +12,7 @@ import { verifyClientQR, addStampToClient, getFrequentCustomers, searchCustomers
 import { getUserRoleInfo } from "@/app/actions/settings";
 import { Search, Star } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -167,10 +168,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className={`md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 ${mobileMenuOpen ? 'hidden' : ''}`}>
         <div className="flex items-center gap-2">
           <div className="w-40 h-10 relative flex items-center justify-start p-1">
-            <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
+            <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left" />
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <NotificationBell />
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -200,9 +202,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Logo Area */}
             <div className="hidden md:flex items-center justify-between p-6 border-b border-slate-100 dark:border-slate-800/50">
               <div className="h-12 relative w-40 flex items-center justify-start p-1.5 shadow-sm">
-                <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left dark:invert" />
+                <Image src="/logo/color%20definitivo%20con%20titutlo.svg" alt="LoyalPass" fill className="object-contain object-left" />
               </div>
-              <NotificationBell />
+              <div className="flex items-center gap-1">
+                <ThemeToggle />
+                <NotificationBell />
+              </div>
             </div>
 
             {/* User Profile */}
