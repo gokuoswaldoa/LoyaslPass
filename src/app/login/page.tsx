@@ -87,6 +87,16 @@ function LoginContent() {
               </Link>
             </p>
           </div>
+
+          <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-center">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">¿Eres empleado de un negocio?</p>
+            <a 
+              href="/staff/join"
+              className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 px-6 py-2.5 rounded-full transition-colors"
+            >
+              Acceso para Personal
+            </a>
+          </div>
         </div>
         
         <p className="text-center text-xs font-medium text-slate-400 dark:text-slate-500 mt-8">

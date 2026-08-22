@@ -29,7 +29,7 @@ export async function createStaff(name: string) {
     throw new Error("Unauthorized");
   }
 
-  const loginToken = crypto.randomBytes(32).toString("hex");
+  const loginToken = crypto.randomBytes(4).toString("hex").substring(0, 6).toUpperCase();
 
   const newStaff = await db.insert(businessStaff).values({
     businessId: roleInfo.businessId,
@@ -77,7 +77,7 @@ export async function regenerateStaffToken(staffId: string) {
     throw new Error("Staff not found or unauthorized");
   }
 
-  const newToken = crypto.randomBytes(32).toString("hex");
+  const newToken = crypto.randomBytes(4).toString("hex").substring(0, 6).toUpperCase();
 
   await db.update(businessStaff)
     .set({ loginToken: newToken, isActive: true })
@@ -97,7 +97,7 @@ export async function loginStaff(token: string) {
   }
 
   // Rotate token to make the scanned QR code one-time use
-  const newToken = crypto.randomBytes(32).toString("hex");
+  const newToken = crypto.randomBytes(4).toString("hex").substring(0, 6).toUpperCase();
   await db.update(businessStaff)
     .set({ loginToken: newToken })
     .where(eq(businessStaff.id, staffMember.id));

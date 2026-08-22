@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { getStaff, createStaff, deleteStaff, regenerateStaffToken, getStaffAnalytics } from "@/app/actions/staff";
@@ -396,6 +396,12 @@ export default function StaffPage() {
               />
             )}
           </div>
+          {showQRFor && (
+            <div className="mt-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg w-full text-center">
+              <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">O usa el PIN de acceso</p>
+              <p className="text-2xl font-black tracking-widest text-slate-900 dark:text-white">{showQRFor.token}</p>
+            </div>
+          )}
           
           <DialogFooter className="sm:justify-center mt-6 w-full">
             <Button onClick={() => setShowQRFor(null)} className="w-full">
