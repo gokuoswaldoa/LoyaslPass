@@ -19,6 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isTourRunning, setIsTourRunning] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [scannedCustomer, setScannedCustomer] = useState<{ id: string, name: string, stampsCount: number } | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
@@ -164,7 +165,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row">
-      <OnboardingTour setMobileMenuOpen={setMobileMenuOpen} />
+      <OnboardingTour setMobileMenuOpen={setMobileMenuOpen} setIsTourRunning={setIsTourRunning} />
       
       {/* --- MOBILE TOPBAR --- */}
       <div className={`md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 ${mobileMenuOpen ? 'hidden' : ''}`}>
@@ -190,16 +191,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <AnimatePresence>
         {userRole === "owner" && (mobileMenuOpen || (typeof window !== 'undefined' && window.innerWidth >= 768)) && (
           <motion.aside 
-            initial={{ x: -300, opacity: 0 }}
+            initial={{ x: isTourRunning ? 0 : -300, opacity: isTourRunning ? 1 : 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            exit={{ x: isTourRunning ? 0 : -300, opacity: 0 }}
+            transition={{ type: "spring", bounce: 0, duration: isTourRunning ? 0 : 0.4 }}
             className={`
               fixed md:sticky top-0 left-0 z-30
               w-[280px] h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800
               flex flex-col
               ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-              transition-transform duration-300 ease-in-out md:transition-none
+              ${isTourRunning ? "transition-none" : "transition-transform duration-300 ease-in-out md:transition-none"}
             `}
           >
             {/* Logo Area */}

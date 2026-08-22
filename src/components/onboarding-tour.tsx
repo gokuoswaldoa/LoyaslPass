@@ -5,7 +5,7 @@ import { Joyride, EventData, STATUS, Step, TooltipRenderProps } from "react-joyr
 import { usePathname } from "next/navigation";
 import { CheckCircle, X, ChevronRight, Sparkles } from "lucide-react";
 
-export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (open: boolean) => void }) {
+export function OnboardingTour({ setMobileMenuOpen, setIsTourRunning }: { setMobileMenuOpen?: (open: boolean) => void, setIsTourRunning?: (val: boolean) => void }) {
   const [run, setRun] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -19,10 +19,11 @@ export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (ope
     if (!tourCompleted) {
       const timer = setTimeout(() => {
         setRun(true);
+        setIsTourRunning?.(true);
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [pathname]);
+  }, [pathname, setIsTourRunning]);
 
   const handleJoyrideCallback = (data: EventData) => {
     const { status, type, index, action } = data;
@@ -32,14 +33,15 @@ export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (ope
       if (action === "next") {
         if (isMobile && index === 1) {
           setMobileMenuOpen?.(true);
-          setTimeout(() => setStepIndex(index + 1), 500); // Wait 500ms for Framer Motion to settle
+          // Without delay because we disabled the animation during the tour
+          setTimeout(() => setStepIndex(index + 1), 50); 
         } else {
           setStepIndex(index + 1);
         }
       } else if (action === "prev") {
         if (isMobile && index === 2) {
           setMobileMenuOpen?.(false);
-          setTimeout(() => setStepIndex(index - 1), 500);
+          setTimeout(() => setStepIndex(index - 1), 50);
         } else {
           setStepIndex(index - 1);
         }
@@ -48,6 +50,7 @@ export function OnboardingTour({ setMobileMenuOpen }: { setMobileMenuOpen?: (ope
 
     if (finishedStatuses.includes(status)) {
       setRun(false);
+      setIsTourRunning?.(false);
       if (isMobile) setMobileMenuOpen?.(false);
       localStorage.setItem("loyalpass_tour_completed", "true");
     }
