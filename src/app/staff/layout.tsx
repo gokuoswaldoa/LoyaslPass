@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "LoyalPass - Escaner",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     title: "LP Escaner",
   },
   icons: {
-    icon: "/logo/iconoEmpleado.webp",
-    apple: "/logo/iconoEmpleado.webp",
+    icon: "/logo/iconoEmpleado2.webp",
+    apple: "/logo/iconoEmpleado2.webp",
   },
 };
 
