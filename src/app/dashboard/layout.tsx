@@ -181,7 +181,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col md:flex-row">
-      <OnboardingTour setMobileMenuOpen={setMobileMenuOpen} setIsTourRunning={setIsTourRunning} />
+      {userRole === "owner" && (
+        <OnboardingTour setMobileMenuOpen={setMobileMenuOpen} setIsTourRunning={setIsTourRunning} />
+      )}
       
       {/* --- MOBILE TOPBAR --- */}
       <div className={`md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 ${mobileMenuOpen ? 'hidden' : ''}`}>

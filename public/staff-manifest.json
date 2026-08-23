@@ -4,6 +4,7 @@
   "description": "Herramienta de escaner de lealtad para empleados",
   "display": "standalone",
   "start_url": "/staff/join",
+  "scope": "/",
   "background_color": "#ffffff",
   "theme_color": "#3B82F6",
   "icons": [
