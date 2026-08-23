@@ -31,7 +31,7 @@ function StaffJoinContent() {
         if (res.success) {
           setStatus("success");
           setTimeout(() => {
-            router.push("/dashboard");
+            router.replace("/dashboard");
           }, 1500);
         } else {
           setStatus("error");
@@ -56,7 +56,7 @@ function StaffJoinContent() {
       if (res.success) {
         setStatus("success");
         setTimeout(() => {
-          router.push("/dashboard");
+          router.replace("/dashboard");
         }, 1500);
       } else {
         setStatus("error");
@@ -149,3 +149,4 @@ export default function StaffJoinPage() {
     </Suspense>
   );
 }
+
