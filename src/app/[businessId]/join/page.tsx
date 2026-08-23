@@ -1,18 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { getBusinessOnboardingData, registerCustomer } from "@/app/actions/clientFlow";
+import { getBusinessOnboardingData, registerCustomer, getCustomerNameById } from "@/app/actions/clientFlow";
 import { User, Phone, Mail, ArrowRight, Calendar } from "lucide-react";
 
 export default function JoinPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const businessId = params.businessId as string;
+  const refId = searchParams.get("ref");
 
   const [loading, setLoading] = useState(true);
   const [businessData, setBusinessData] = useState<any>(null);
+  const [referrerName, setReferrerName] = useState<string | null>(null);
   const [config, setConfig] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +40,10 @@ export default function JoinPage() {
       if (res.success) {
         setBusinessData(res.business);
         setConfig(res.config);
+        if (refId) {
+           const refName = await getCustomerNameById(refId);
+           setReferrerName(refName);
+        }
       } else {
         setError(res.error || "No pudimos cargar la información.");
       }
@@ -50,7 +57,7 @@ export default function JoinPage() {
     setError(null);
     setIsSubmitting(true);
 
-    const res = await registerCustomer(businessId, name, phone, email, birthdate);
+    const res = await registerCustomer(businessId, name, phone, email, birthdate, refId);
     if (res.success && res.walletPassId) {
       // Guardar localmente para que no se pierda al cerrar la pestaña
       localStorage.setItem(`loyalpass_wallet_${businessId}`, res.walletPassId);
@@ -103,10 +110,12 @@ export default function JoinPage() {
             <Image src={config.logoUrl || "/logo/icono.png"} alt="Logo" fill className="object-cover" />
           </div>
           <h1 className="text-3xl font-black text-white drop-shadow-sm leading-tight mb-2">
-            Únete a {businessData.name}
+            {referrerName ? `¡${referrerName} te invitó!` : `Únete a ${businessData.name}`}
           </h1>
           <p className="text-white/80 font-medium">
-            Regístrate rápido y obtén tu {config.rewardText || "recompensa gratis"} al completar {config.totalStampsRequired} sellos.
+            {referrerName 
+              ? `Regístrate y en tu primera visita a ${businessData.name} ganarás 2 sellos automáticos.`
+              : `Regístrate rápido y obtén tu ${config.rewardText || "recompensa gratis"} al completar ${config.totalStampsRequired} sellos.`}
           </p>
         </div>
 

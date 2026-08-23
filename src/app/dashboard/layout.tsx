@@ -26,6 +26,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [scanError, setScanError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [stampSuccess, setStampSuccess] = useState(false);
+  const [firstVisitBonus, setFirstVisitBonus] = useState(false);
   
   const [searchQuery, setSearchQuery] = useState("");
   const [frequentCustomers, setFrequentCustomers] = useState<any[]>([]);
@@ -147,11 +148,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     try {
       const res = await addStampToClient(scannedCustomer.id);
       if (res.success) {
-        setStampSuccess(true);
+        if (res.isFirstVisitBonus) {
+           setStampSuccess(true);
+           setFirstVisitBonus(true);
+        } else {
+           setStampSuccess(true);
+           setFirstVisitBonus(false);
+        }
         setTimeout(() => {
           setShowScanner(false);
           setScannedCustomer(null);
           setStampSuccess(false);
+          setFirstVisitBonus(false);
         }, 2000);
       } else {
         setScanError(res.error || "Error al agregar sello.");
@@ -481,8 +489,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     {stampSuccess ? (
                       <div className="flex flex-col items-center py-8">
                         <CheckCircle2 className="w-20 h-20 text-emerald-500 mb-4 animate-bounce" />
-                        <h2 className="text-2xl font-black text-slate-900 dark:text-white">¡Sello Agregado!</h2>
-                        <p className="text-slate-500 mt-2">El cliente ha sido notificado.</p>
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white">
+                             {firstVisitBonus ? "¡2 Sellos Agregados!" : "¡Sello Agregado!"}
+                          </h2>
+                          <p className="text-slate-500 mt-2 text-center">
+                             {firstVisitBonus 
+                                ? "Bono de referido aplicado. Tu amigo ha sido notificado." 
+                                : "El cliente ha sido notificado."}
+                          </p>
                       </div>
                     ) : (
                       <>

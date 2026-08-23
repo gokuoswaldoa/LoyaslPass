@@ -6,6 +6,7 @@ import Image from "next/image";
 import QRCode from "react-qr-code";
 import { getClientWalletData } from "@/app/actions/clientFlow";
 import WebPushPrompt from "@/components/WebPushPrompt";
+import InstallTutorialModal from "@/components/InstallTutorialModal";
 
 export default function ClientPassPage() {
   const params = useParams();
@@ -102,6 +103,7 @@ export default function ClientPassPage() {
   return (
     <div style={{ backgroundColor: bgColor }} className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden">
       <WebPushPrompt walletPassId={walletPassId} businessName={business.name} />
+      <InstallTutorialModal />
       
       {/* Ambient background blur */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -176,6 +178,14 @@ export default function ClientPassPage() {
         </div>
 
         <div className="flex flex-col gap-4 mt-8 w-full max-w-sm justify-center items-center">
+          <a 
+            href={`https://wa.me/?text=${encodeURIComponent(`¡Hola! Te invito a ${business.name}. Regístrate aquí y en tu primera visita te regalarán 2 sellos: https://loyasl-pass.vercel.app/${businessId}/join?ref=${customer.id}`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-4 bg-[#25D366] text-white rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-black/10"
+          >
+            Invita a un amigo y Gana
+          </a>
           <button 
             onClick={() => alert("📱 En iPhone:\n\nToca el ícono de 'Compartir' en la barra inferior (el cuadrito con la flecha hacia arriba) y selecciona 'Agregar a Inicio'. \n\nEsto guardará tu tarjeta permanentemente junto a tus apps.")}
             className="hover:scale-105 transition-transform drop-shadow-xl"

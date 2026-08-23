@@ -24,7 +24,7 @@ export async function getBusinessOnboardingData(businessId: string) {
   }
 }
 
-export async function registerCustomer(businessId: string, name: string, phone: string, email: string, birthdate: string = "") {
+export async function registerCustomer(businessId: string, name: string, phone: string, email: string, birthdate: string = "", referredBy: string | null = null) {
   if (!name) return { success: false, error: "El nombre es obligatorio" };
   if (!phone) return { success: false, error: "El número es obligatorio" };
   if (!birthdate) return { success: false, error: "La fecha de nacimiento es obligatoria" };
@@ -52,6 +52,7 @@ export async function registerCustomer(businessId: string, name: string, phone: 
       email: email || null,
       birthdate: birthdate || null,
       walletPassId,
+      referredBy: referredBy || null,
     }).returning();
 
     return { success: true, walletPassId: inserted[0].walletPassId };
@@ -84,5 +85,17 @@ export async function getClientWalletData(businessId: string, walletPassId: stri
   } catch (error) {
     console.error("Error fetching client wallet:", error);
     return { success: false, error: "Error de servidor" };
+  }
+}
+
+export async function getCustomerNameById(customerId: string) {
+  try {
+    const customerArray = await db.select().from(customers).where(eq(customers.id, customerId));
+    if (customerArray.length > 0) {
+      return customerArray[0].name;
+    }
+    return null;
+  } catch (error) {
+    return null;
   }
 }

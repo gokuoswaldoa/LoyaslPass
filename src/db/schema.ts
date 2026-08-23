@@ -127,6 +127,8 @@ export const customers = pgTable("customers", {
   birthdate: varchar("birthdate"),
   walletPassId: varchar("wallet_pass_id").unique(),
   webPushSub: text("web_push_sub"),
+  referredBy: uuid("referred_by"),
+  hasRedeemedWelcomeBonus: boolean("has_redeemed_welcome_bonus").default(false),
 });
 
 export const stampsLog = pgTable("stamps_log", {
@@ -135,6 +137,7 @@ export const stampsLog = pgTable("stamps_log", {
   businessId: uuid("business_id").references(() => businesses.id, { onDelete: "cascade" }),
   staffId: uuid("staff_id").references(() => businessStaff.id, { onDelete: "set null" }),
   stampedAt: timestamp("stamped_at").defaultNow(),
+  isReferralBonus: boolean("is_referral_bonus").default(false),
 });
 
 export const businessStaff = pgTable("business_staff", {
