@@ -379,8 +379,8 @@ export default function StaffPage() {
       </Dialog>
 
       <Dialog open={!!showQRFor} onOpenChange={() => setShowQRFor(null)}>
-        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 max-h-[90vh] overflow-y-auto p-0 border-0" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <div className="bg-emerald-500 p-6 text-white text-center rounded-t-lg relative">
+        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 max-h-[90vh] overflow-y-auto p-0 border-0">
+          <div tabIndex={0} className="bg-emerald-500 p-6 text-white text-center rounded-t-lg relative outline-none">
             <h2 className="text-2xl font-black mb-1">Acceso para {showQRFor?.name}</h2>
             <p className="text-emerald-100 text-sm font-medium">Sigue estas instrucciones con tu empleado.</p>
           </div>
