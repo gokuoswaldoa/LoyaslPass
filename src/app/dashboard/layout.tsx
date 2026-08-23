@@ -313,12 +313,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <ScanLine className="w-24 h-24 text-slate-300 dark:text-slate-700 mb-6" />
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Modo Escáner</h1>
             <p className="text-slate-500 text-lg max-w-sm mb-10">Has iniciado sesión como Empleado. Usa el botón inferior para dar sellos a los clientes.</p>
-            <button 
-              onClick={handleLogout}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
-            >
-              <LogOut size={20} /> Salir
-            </button>
           </div>
         ) : lockScreen === "trial_expired" ? (
           <div className="flex flex-col items-center justify-center h-full p-6 text-center mt-20 md:mt-40">
