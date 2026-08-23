@@ -1,0 +1,21 @@
+﻿{
+  "name": "LoyalPass - Escaner",
+  "short_name": "LoyalPass",
+  "description": "Herramienta de escaner de lealtad para empleados",
+  "display": "standalone",
+  "start_url": "/staff/join",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "icons": [
+    {
+      "src": "/logo/iconoEmpleado.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
+    },
+    {
+      "src": "/logo/iconoEmpleado.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}
