@@ -212,7 +212,7 @@ export default function StaffPage() {
                           className="flex-1"
                           onClick={() => setShowQRFor({ name: staff.name, token: staff.loginToken! })}
                         >
-                          <QrCode size={16} className="mr-2" /> Ver QR
+                          <QrCode size={16} className="mr-2" /> Ver Instrucciones
                         </Button>
                         <Button 
                           variant="outline"
@@ -379,7 +379,7 @@ export default function StaffPage() {
       </Dialog>
 
       <Dialog open={!!showQRFor} onOpenChange={() => setShowQRFor(null)}>
-        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 max-h-[90vh] overflow-y-auto p-0 border-0">
+        <DialogContent className="sm:max-w-md bg-white dark:bg-slate-900 max-h-[90vh] overflow-y-auto p-0 border-0" onOpenAutoFocus={(e) => e.preventDefault()}>
           <div className="bg-emerald-500 p-6 text-white text-center rounded-t-lg relative">
             <h2 className="text-2xl font-black mb-1">Acceso para {showQRFor?.name}</h2>
             <p className="text-emerald-100 text-sm font-medium">Sigue estas instrucciones con tu empleado.</p>
@@ -444,7 +444,7 @@ export default function StaffPage() {
         <DialogContent className="sm:max-w-sm bg-white dark:bg-slate-900">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-blue-500">
-              <RefreshCw size={20} /> Regenerar QR
+              <RefreshCw size={20} /> Regenerar Código
             </DialogTitle>
             <DialogDescription>
               Deseas generar un nuevo acceso? El celular anterior perdera la sesion, pero el historial se mantendra.
