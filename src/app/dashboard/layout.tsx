@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         setUserRole(res.role as "owner" | "staff");
         if (res.superadmin) setIsSuperAdmin(true);
 
-        // LÃ³gica de expiraciÃ³n (solo para owners)
+        // Lógica de expiración (solo para owners)
         if (res.role === "owner") {
           const now = new Date();
           if (res.businessStatus === "suspended") {
@@ -132,10 +132,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       if (res.success && res.customer) {
         setScannedCustomer(res.customer);
       } else {
-        setScanError(res.error || "CÃ³digo no vÃ¡lido.");
+        setScanError(res.error || "Código no válido.");
       }
     } catch (e) {
-      setScanError("Error de conexiÃ³n.");
+      setScanError("Error de conexión.");
     } finally {
       setIsProcessing(false);
     }
@@ -157,7 +157,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         setScanError(res.error || "Error al agregar sello.");
       }
     } catch (e) {
-      setScanError("Error de conexiÃ³n.");
+      setScanError("Error de conexión.");
     } finally {
       setIsProcessing(false);
     }
@@ -174,9 +174,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Vista General", href: "/dashboard", icon: LayoutDashboard, id: "tour-vista-general" },
     { label: "Clientes (CRM)", href: "/dashboard/crm", icon: Users, id: "tour-clientes" },
     { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone, id: "tour-marketing" },
-    { label: "DiseÃ±o de Tarjeta", href: "/dashboard/editor", icon: WalletCards, id: "tour-diseno" },
+    { label: "Diseño de Tarjeta", href: "/dashboard/editor", icon: WalletCards, id: "tour-diseno" },
     { label: "Empleados", href: "/dashboard/staff", icon: IdCard, id: "tour-empleados" },
-    { label: "ConfiguraciÃ³n", href: "/dashboard/settings", icon: Settings, id: "tour-configuracion" },
+    { label: "Configuración", href: "/dashboard/settings", icon: Settings, id: "tour-configuracion" },
   ];
 
   return (
@@ -195,17 +195,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex items-center gap-2">
           <ThemeToggle />
           {userRole === "owner" && (
-            <>
-              <NotificationBell />
-              <button 
-                id="tour-mobile-menu"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-              >
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
-            </>
-          )}
+              <>
+                <NotificationBell />
+                          <button 
+                            id="tour-mobile-menu"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                          >
+                            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                          </button>
+              </>
+            )}
         </div>
       </div>
 
@@ -251,7 +251,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Navigation */}
             <nav className="flex-1 px-4 pb-6 space-y-1.5 overflow-y-auto">
-              <p className="px-4 text-xs font-black uppercase tracking-widest text-slate-400 mb-3 mt-2">MenÃº Principal</p>
+              <p className="px-4 text-xs font-black uppercase tracking-widest text-slate-400 mb-3 mt-2">Menú Principal</p>
               {lockScreen === "none" && navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
@@ -291,7 +291,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-slate-500 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-colors font-semibold"
               >
                 <LogOut size={20} />
-                Cerrar SesiÃ³n
+                Cerrar Sesión
               </button>
             </div>
           </motion.aside>
@@ -311,8 +311,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {userRole === "staff" ? (
           <div className="flex flex-col items-center justify-center h-full p-6 text-center mt-20 md:mt-40">
             <ScanLine className="w-24 h-24 text-slate-300 dark:text-slate-700 mb-6" />
-            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Modo EscÃ¡ner</h1>
-            <p className="text-slate-500 text-lg max-w-sm mb-10">Has iniciado sesiÃ³n como Empleado. Usa el botÃ³n inferior para dar sellos a los clientes.</p>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Modo Escáner</h1>
+            <p className="text-slate-500 text-lg max-w-sm mb-10">Has iniciado sesión como Empleado. Usa el botón inferior para dar sellos a los clientes.</p>
             <button 
               onClick={handleLogout}
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors"
@@ -327,7 +327,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Tu prueba ha finalizado</h1>
             <p className="text-slate-500 text-lg max-w-md mb-10">
-              Si decides continuar con nuestros servicios para impulsar tus ventas, por favor contacta a Oswaldo directamente vÃ­a telefÃ³nica para activar tu plan.
+              Si decides continuar con nuestros servicios para impulsar tus ventas, por favor contacta a Oswaldo directamente vía telefónica para activar tu plan.
             </p>
             <a href="https://wa.me/5211234567890" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-colors">
               Contactar por WhatsApp
@@ -340,7 +340,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Mensualidad terminada</h1>
             <p className="text-slate-500 text-lg max-w-md mb-10">
-              Â¿Quieres renovar tu plan? Contacta a soporte para reactivar tu cuenta inmediatamente y seguir premiando a tus clientes.
+              ¿Quieres renovar tu plan? Contacta a soporte para reactivar tu cuenta inmediatamente y seguir premiando a tus clientes.
             </p>
             <a href="https://wa.me/5211234567890" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-amber-500 text-white font-bold hover:bg-amber-600 transition-colors">
               Renovar Plan
@@ -353,7 +353,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Cuenta Suspendida</h1>
             <p className="text-slate-500 text-lg max-w-md mb-10">
-              Tu cuenta ha sido suspendida por falta de pago o incumplimiento de tÃ©rminos. Por favor contacta a soporte para mÃ¡s detalles.
+              Tu cuenta ha sido suspendida por falta de pago o incumplimiento de términos. Por favor contacta a soporte para más detalles.
             </p>
           </div>
         ) : (
@@ -432,7 +432,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                         <input 
                           type="text" 
-                          placeholder="Nombre o TelÃ©fono" 
+                          placeholder="Nombre o Teléfono" 
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-medium focus:outline-none focus:border-emerald-500 transition-colors"
@@ -449,7 +449,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                               <div key={c.id} onClick={() => setScannedCustomer(c)} className="p-3 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
                                 <div>
                                   <p className="font-bold text-slate-900 dark:text-white text-sm">{c.name}</p>
-                                  <p className="text-xs text-slate-500">{c.phone || "Sin telÃ©fono"}</p>
+                                  <p className="text-xs text-slate-500">{c.phone || "Sin teléfono"}</p>
                                 </div>
                                 <div className="bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded text-xs font-bold">
                                   {c.stampsCount} sellos
@@ -469,7 +469,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                               <div key={c.id} onClick={() => setScannedCustomer(c)} className="p-3 flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
                                 <div>
                                   <p className="font-bold text-slate-900 dark:text-white text-sm">{c.name}</p>
-                                  <p className="text-xs text-slate-500">{c.phone || "Sin telÃ©fono"}</p>
+                                  <p className="text-xs text-slate-500">{c.phone || "Sin teléfono"}</p>
                                 </div>
                                 <div className="bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 px-2 py-1 rounded text-xs font-bold">
                                   {c.stampsCount} sellos
@@ -487,7 +487,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     {stampSuccess ? (
                       <div className="flex flex-col items-center py-8">
                         <CheckCircle2 className="w-20 h-20 text-emerald-500 mb-4 animate-bounce" />
-                        <h2 className="text-2xl font-black text-slate-900 dark:text-white">Â¡Sello Agregado!</h2>
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white">¡Sello Agregado!</h2>
                         <p className="text-slate-500 mt-2">El cliente ha sido notificado.</p>
                       </div>
                     ) : (
@@ -531,4 +531,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-
