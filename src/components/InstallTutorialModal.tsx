@@ -9,9 +9,14 @@ export default function InstallTutorialModal() {
   const [os, setOs] = useState<"ios" | "android" | "other">("ios");
 
   useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("openTutorial", handleOpen);
+
     // Only show if not in standalone (installed) mode
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
-    if (!isStandalone) {
+    const hasSeenTutorial = localStorage.getItem("tutorialSeen") === "true";
+    
+    if (!isStandalone && !hasSeenTutorial) {
       // Small delay to not be too aggressive
       const timer = setTimeout(() => setIsOpen(true), 1500);
       
@@ -21,9 +26,19 @@ export default function InstallTutorialModal() {
       } else if (/android/.test(userAgent)) {
         setOs("android");
       }
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("openTutorial", handleOpen);
+      };
     }
+    return () => window.removeEventListener("openTutorial", handleOpen);
   }, []);
+
+  const closeTutorial = () => {
+    localStorage.setItem("tutorialSeen", "true");
+    setIsOpen(false);
+  };
+
 
   if (!isOpen) return null;
 
@@ -32,7 +47,7 @@ export default function InstallTutorialModal() {
       <div className="bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-sm max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="p-6 relative">
           <button 
-            onClick={() => setIsOpen(false)}
+            onClick={() => closeTutorial()}
             className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-slate-800 dark:hover:text-white"
           >
             <X size={20} />
@@ -120,7 +135,7 @@ export default function InstallTutorialModal() {
           )}
 
           <button 
-            onClick={() => setIsOpen(false)}
+            onClick={() => closeTutorial()}
             className="w-full mt-6 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-bold hover:scale-[1.02] transition-transform"
           >
             Entendido, lo haré

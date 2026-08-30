@@ -187,7 +187,7 @@ export default function ClientPassPage() {
             Invita a un amigo y Gana
           </a>
           <button 
-            onClick={() => alert("📱 En iPhone:\n\nToca el ícono de 'Compartir' en la barra inferior (el cuadrito con la flecha hacia arriba) y selecciona 'Agregar a Inicio'. \n\nEsto guardará tu tarjeta permanentemente junto a tus apps.")}
+            onClick={() => window.dispatchEvent(new Event("openTutorial"))}
             className="hover:scale-105 transition-transform drop-shadow-xl"
           >
             <Image 
@@ -210,6 +210,13 @@ export default function ClientPassPage() {
               height={60} 
               className="h-14 w-auto" 
             />
+          </button>
+          
+          <button 
+            onClick={() => window.dispatchEvent(new Event("openTutorial"))}
+            className="text-white/70 text-sm font-bold underline mt-2 hover:text-white transition-colors"
+          >
+            Ver tutorial de instalación
           </button>
         </div>
 
