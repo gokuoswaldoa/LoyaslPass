@@ -342,11 +342,11 @@ export default function LandingPage() {
             className="flex flex-col items-center justify-center relative"
           >
             <Image 
-              src="/imagenes-pasos/paso2.png" 
+              src="/material/pantalla-cliente.jpg" 
               alt="Vista de la tarjeta en el celular" 
               width={600} 
               height={800} 
-              className="w-full max-w-md lg:max-w-xl object-contain mb-8 z-10 relative drop-shadow-2xl"
+              className="w-full max-w-md lg:max-w-xl object-cover rounded-[3rem] mb-8 z-10 relative shadow-2xl"
             />
             
             <div className="flex flex-row items-center justify-center gap-4 md:gap-6 z-10 relative">
