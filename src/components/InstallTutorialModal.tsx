@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function InstallTutorialModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [os, setOs] = useState<"ios" | "android" | "other">("other");
+  const [os, setOs] = useState<"ios" | "android" | "other">("ios");
 
   useEffect(() => {
     // Only show if not in standalone (installed) mode
