@@ -51,12 +51,11 @@ export default function InstallTutorialModal() {
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
                 <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">1</div>
-                <p>Toca el ícono de <strong>Compartir</strong> en la barra inferior de Safari.</p>
+                <p>Toca el ícono de <strong>Compartir</strong> (o menú) en la barra inferior.</p>
               </div>
               
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl h-40 flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700">
-                {/* PLACEHOLDER CAPTURA IOS 1 */}
-                <span className="text-slate-400 text-sm font-bold">Captura iOS 1</span>
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative h-48">
+                <Image src="/tutorial/ios-step1.png" alt="Paso 1 iOS" fill className="object-contain" />
               </div>
 
               <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
@@ -64,9 +63,8 @@ export default function InstallTutorialModal() {
                 <p>Desliza hacia abajo y selecciona <strong>Agregar a Inicio</strong>.</p>
               </div>
 
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl h-40 flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700">
-                {/* PLACEHOLDER CAPTURA IOS 2 */}
-                <span className="text-slate-400 text-sm font-bold">Captura iOS 2</span>
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative h-48">
+                <Image src="/tutorial/ios-step2.webp" alt="Paso 2 iOS" fill className="object-cover" />
               </div>
             </div>
           ) : (
