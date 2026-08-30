@@ -342,7 +342,7 @@ export default function LandingPage() {
             className="flex flex-col items-center justify-center relative"
           >
             <Image 
-              src="/material/pantalla%20cliente.png" 
+              src="/imagenes-pasos/paso2.png" 
               alt="Vista de la tarjeta en el celular" 
               width={600} 
               height={800} 
