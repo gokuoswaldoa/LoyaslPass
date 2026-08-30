@@ -435,7 +435,13 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">Planes simples y transparentes</h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">Pruébalo gratis por 14 días. Escala tu negocio con el plan que mejor se adapte a ti.</p>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-8">Pruébalo gratis por 14 días. Escala tu negocio con el plan que mejor se adapte a ti.</p>
+            
+            {/* GLOBAL BADGE */}
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-bold text-sm md:text-base border border-emerald-100 dark:border-emerald-800/50 shadow-sm">
+              <Zap className="w-5 h-5" />
+              <span>Todos nuestros planes incluyen: <strong className="font-extrabold text-emerald-800 dark:text-emerald-300">Tarjetas digitales y Notificaciones push ilimitadas</strong> sin costo extra.</span>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto py-8">
@@ -449,28 +455,21 @@ export default function LandingPage() {
                 <span className="text-4xl font-extrabold text-slate-900 dark:text-white">$399</span>
                 <span className="text-slate-500">/mes</span>
               </div>
-              <div className="text-sm text-slate-500 font-medium mb-6">o $13.30 al día</div>
-
-              <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-lg text-sm font-semibold mb-2 w-fit">
-                <Users className="w-4 h-4" /> Tarjetas ilimitadas ∞
-              </div>
-              <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-lg text-sm font-semibold mb-8 w-fit">
-                <Zap className="w-4 h-4" /> Notificaciones ilimitadas
-              </div>
+              <div className="text-sm text-slate-500 font-medium mb-8">o $13.30 al día</div>
 
               <div className="h-px bg-slate-200 dark:bg-white/10 mb-8 shrink-0" />
 
               <ul className="space-y-4 mb-8 flex-grow">
                 {[
-                  "1 programa de lealtad con tu logo y tus colores",
-                  "Notificaciones ilimitadas al celular de tus clientes",
-                  "Zona de notificación de 100 m incluida",
-                  "Panel: quién volvió, cuándo y cuánto compró",
-                  "Soporte estándar"
+                  "1 sucursal y 1 programa de lealtad con tus colores",
+                  "Manejo de roles (Administrador y Empleados)",
+                  "Panel de análisis de audiencia (descubre quién volvió, cuándo y cuánto compró)",
+                  "1 Zona de notificación automática (radio de 100m)",
+                  "Soporte directo"
                 ].map((feat, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="text-sm">{feat}</span>
+                    <span className="text-sm font-medium">{feat}</span>
                   </li>
                 ))}
               </ul>
@@ -492,32 +491,23 @@ export default function LandingPage() {
                 <span className="text-4xl font-extrabold text-white">$799</span>
                 <span className="text-slate-400">/mes</span>
               </div>
-              <div className="text-sm text-emerald-400 font-medium mb-6">o $26.63 al día</div>
-
-              <div className="flex items-center gap-2 bg-emerald-500/20 text-emerald-300 px-3 py-1.5 rounded-lg text-sm font-semibold mb-2 w-fit">
-                <Users className="w-4 h-4" /> Tarjetas ilimitadas ∞
-              </div>
-              <div className="flex items-center gap-2 bg-emerald-500/20 text-emerald-300 px-3 py-1.5 rounded-lg text-sm font-semibold mb-8 w-fit">
-                <Zap className="w-4 h-4" /> Notificaciones ilimitadas
-              </div>
+              <div className="text-sm text-emerald-400 font-medium mb-8">o $26.63 al día</div>
 
               <div className="h-px bg-white/10 mb-8 shrink-0" />
 
               <ul className="space-y-4 mb-8 flex-grow">
-                <li className="flex items-start gap-3 text-slate-200 font-medium pb-2">
+                <li className="flex items-start gap-3 text-emerald-300 font-bold pb-2">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                   <span className="text-sm">Todo lo del plan Básico, más:</span>
                 </li>
                 {[
-                  "3 sucursales y 3 programas de lealtad",
-                  "3 personas del equipo",
-                  "Zona de notificación en cada local",
-                  "Números y mensajes por local o por grupo",
-                  "Soporte prioritario"
+                  "Hasta 3 sucursales y 3 programas de lealtad",
+                  "Zonas de notificación independientes para cada local",
+                  "Campañas de cumpleaños automáticas"
                 ].map((feat, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-300">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="text-sm">{feat}</span>
+                    <span className="text-sm font-medium">{feat}</span>
                   </li>
                 ))}
               </ul>
@@ -536,52 +526,28 @@ export default function LandingPage() {
                 <span className="text-4xl font-extrabold text-slate-900 dark:text-white">$1,630</span>
                 <span className="text-slate-500">/mes</span>
               </div>
-              <div className="text-sm text-slate-500 font-medium mb-6">o $54.33 al día</div>
-
-              <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-lg text-sm font-semibold mb-2 w-fit">
-                <Users className="w-4 h-4" /> Tarjetas ilimitadas ∞
-              </div>
-              <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1.5 rounded-lg text-sm font-semibold mb-8 w-fit">
-                <Zap className="w-4 h-4" /> Notificaciones ilimitadas
-              </div>
+              <div className="text-sm text-slate-500 font-medium mb-8">o $54.33 al día</div>
 
               <div className="h-px bg-slate-200 dark:bg-white/10 mb-8 shrink-0" />
 
               <div className="flex-grow flex flex-col">
                 <ul className="space-y-4 mb-6">
-                  <li className="flex items-start gap-3 text-slate-900 dark:text-white font-medium pb-2">
+                  <li className="flex items-start gap-3 text-slate-900 dark:text-white font-bold pb-2">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
                     <span className="text-sm">Todo lo del plan Pro, más:</span>
                   </li>
                   {[
-                    "Programas de lealtad ilimitados",
-                    "Sucursales ilimitadas",
-                    "Staff ilimitado",
+                    "Sucursales y programas de lealtad ilimitados",
                     "Zonas de notificación ilimitadas",
-                    "Exportación total de tus datos"
+                    "Estrategias automáticas con IA (sugerencias de notificaciones)",
+                    "Onboarding y configuración personalizada 1 a 1"
                   ].map((feat, i) => (
                     <li key={i} className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="text-sm">{feat}</span>
+                      <span className="text-sm font-medium">{feat}</span>
                     </li>
                   ))}
                 </ul>
-
-                <div className="bg-orange-50 dark:bg-orange-950/30 rounded-xl p-4 mb-8 border border-orange-100 dark:border-orange-900/50 mt-auto">
-                  <div className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-3">Además incluye</div>
-                  <ul className="space-y-2">
-                    {[
-                      "Campañas de cumpleaños automáticas",
-                      "Análisis de audiencias",
-                      "Estrategias automáticas con IA: sugerencias de notificación"
-                    ].map((feat, i) => (
-                      <li key={i} className="flex items-start gap-2 text-slate-700 dark:text-slate-300">
-                        <Crown className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
-                        <span className="text-xs font-medium">{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
               </div>
 
               <Link href="/dashboard" className="mt-auto block w-full py-4 text-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
