@@ -29,7 +29,7 @@ export default function InstallTutorialModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+      <div className="bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-sm max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="p-6 relative">
           <button 
             onClick={() => setIsOpen(false)}
@@ -48,24 +48,52 @@ export default function InstallTutorialModal() {
           </div>
 
           {os === "ios" ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
-                <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">1</div>
-                <p>Toca el ícono de <strong>Compartir</strong> (o menú) en la barra inferior.</p>
-              </div>
+            <div className="space-y-6">
               
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative h-48">
-                <Image src="/tutorial/ios-step1.png" alt="Paso 1 iOS" fill className="object-contain" />
+              {/* Paso 1 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">1</div>
+                  <p>Presiona los <strong>3 puntos</strong> en tu navegador.</p>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
+                  <Image src="/tutorial/ios-step1.png" alt="Paso 1 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                </div>
               </div>
 
-              <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
-                <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">2</div>
-                <p>Desliza hacia abajo y selecciona <strong>Agregar a Inicio</strong>.</p>
+              {/* Paso 2 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">2</div>
+                  <p>Presiona el botón de <strong>Compartir (Share)</strong>.</p>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
+                  <Image src="/tutorial/ios-step2-share.webp" alt="Paso 2 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                </div>
               </div>
 
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700 relative h-48">
-                <Image src="/tutorial/ios-step2.webp" alt="Paso 2 iOS" fill className="object-cover" />
+              {/* Paso 3 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">3</div>
+                  <p>Presiona el botón de <strong>Más opciones (View More)</strong>.</p>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
+                  <Image src="/tutorial/ios-step3-more.webp" alt="Paso 3 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                </div>
               </div>
+
+              {/* Paso 4 */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-slate-700 dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">4</div>
+                  <p>Selecciona <strong>Agregar a Inicio (Add to Home Screen)</strong>.</p>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
+                  <Image src="/tutorial/ios-step4.webp" alt="Paso 4 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                </div>
+              </div>
+
             </div>
           ) : (
             <div className="space-y-4">
