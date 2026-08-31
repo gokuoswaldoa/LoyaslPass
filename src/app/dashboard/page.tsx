@@ -57,6 +57,7 @@ export default function DashboardPage() {
           <p className="text-slate-600 dark:text-slate-400 mt-2 font-medium text-lg">
             Aquí está el pulso de tu negocio el día de hoy.
           </p>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("openTutorial", { detail: { title: "Instala tu Dashboard", subtitle: "Agrega tu panel a la pantalla de inicio para administrar todo rápidamente como una app.", blocking: false, storageKey: "dashboardTutorialSeen" } }))} className="text-emerald-600 dark:text-emerald-400 text-sm font-bold underline mt-2 hover:opacity-80 transition-opacity">¿No sabes cómo instalar la app? Ver tutorial</button>
         </div>
         <div className="flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm w-fit">
           <button 
