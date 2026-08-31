@@ -61,7 +61,7 @@ export function OnboardingTour({ setMobileMenuOpen, setIsTourRunning }: { setMob
             title: "Instala tu Dashboard",
             subtitle: "Agrega tu panel a la pantalla de inicio para administrar todo rpidamente como una app.",
             blocking: false,
-            storageKey: "dashboardTutorialSeen"
+            storageKey: "dashboardTutorialSeen", variant: "dashboard"
           }
         }));
       }, 500);

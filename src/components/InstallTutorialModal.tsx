@@ -11,7 +11,8 @@ export default function InstallTutorialModal() {
     title: "Guarda tu Tarjeta",
     subtitle: "Agrega esta tarjeta a la pantalla de inicio de tu celular para no perderla nunca y abrirla rpido.",
     blocking: false,
-    storageKey: "tutorialSeen"
+    storageKey: "tutorialSeen",
+    variant: "client"
   });
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function InstallTutorialModal() {
                   <p>Presiona los <strong>3 puntos</strong> en tu navegador.</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
-                  <Image src="/tutorial/ios-step1.png" alt="Paso 1 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                  <Image src={config.variant === "client" ? "/tutorial/ios-step1.png" : "/tutorial/dashboard-ios-step1.webp"} alt="Paso 1 iOS" width={400} height={300} className="w-full h-auto object-cover" />
                 </div>
               </div>
 
@@ -97,7 +98,7 @@ export default function InstallTutorialModal() {
                   <p>Presiona el botón de <strong>Compartir (Share)</strong>.</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
-                  <Image src="/tutorial/ios-step2-share.webp" alt="Paso 2 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                  <Image src={config.variant === "client" ? "/tutorial/ios-step2-share.webp" : "/tutorial/dashboard-ios-step2.webp"} alt="Paso 2 iOS" width={400} height={300} className="w-full h-auto object-cover" />
                 </div>
               </div>
 
@@ -108,7 +109,7 @@ export default function InstallTutorialModal() {
                   <p>Presiona el botón de <strong>Más opciones (View More)</strong>.</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
-                  <Image src="/tutorial/ios-step3-more.webp" alt="Paso 3 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                  <Image src={config.variant === "client" ? "/tutorial/ios-step3-more.webp" : "/tutorial/dashboard-ios-step3.webp"} alt="Paso 3 iOS" width={400} height={300} className="w-full h-auto object-cover" />
                 </div>
               </div>
 
@@ -119,7 +120,7 @@ export default function InstallTutorialModal() {
                   <p>Selecciona <strong>Agregar a Inicio (Add to Home Screen)</strong>.</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 dark:border-slate-800">
-                  <Image src="/tutorial/ios-step4.webp" alt="Paso 4 iOS" width={400} height={300} className="w-full h-auto object-cover" />
+                  <Image src={config.variant === "client" ? "/tutorial/ios-step4.webp" : "/tutorial/dashboard-ios-step4.webp"} alt="Paso 4 iOS" width={400} height={300} className="w-full h-auto object-cover" />
                 </div>
               </div>
 
