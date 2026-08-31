@@ -98,13 +98,12 @@ export default function WebPushPrompt({ walletPassId, businessName }: { walletPa
       <div 
         className="relative bg-white/20 backdrop-blur-xl border border-white/30 p-8 flex flex-col items-center justify-center text-center shadow-2xl overflow-hidden"
         style={{
-          borderRadius: "50% 50% 50% 0", // Teardrop / Gota de agua effect
+          borderRadius: "50%",
           width: "280px",
           height: "280px",
-          transform: "rotate(45deg)", // Rotate the teardrop
         }}
       >
-        <div style={{ transform: "rotate(-45deg)" }} className="flex flex-col items-center">
+        <div className="flex flex-col items-center">
           <div className="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center mb-3">
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
