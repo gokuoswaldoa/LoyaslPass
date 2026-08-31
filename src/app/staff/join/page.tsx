@@ -30,7 +30,7 @@ function StaffJoinContent() {
         alert("Antes de ingresar tu código de acceso es necesario añadir el acceso directo a tu pantalla de inicio.");
         window.dispatchEvent(new CustomEvent("openTutorial", {
           detail: {
-            title: "Instala tu Portal",
+            title: "Guarda tu acceso",
             subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
             blocking: true,
             storageKey: "staffTutorialSeen"
@@ -123,6 +123,23 @@ function StaffJoinContent() {
               <Button type="submit" disabled={isSubmitting || pin.length !== 6} className="w-full bg-blue-500 hover:bg-blue-600 h-12 text-md">
                 {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : "Entrar al Escaner"}
               </Button>
+
+              <button 
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("openTutorial", {
+                    detail: {
+                      title: "Guarda tu acceso",
+                      subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
+                      blocking: false,
+                      storageKey: "staffTutorialSeen"
+                    }
+                  }));
+                }}
+                className="text-slate-500 text-xs font-bold underline mt-4 hover:text-slate-700 transition-colors w-full text-center"
+              >
+                ¿No sabes cómo instalar la app? Ver tutorial
+              </button>
             </form>
           )}
 
