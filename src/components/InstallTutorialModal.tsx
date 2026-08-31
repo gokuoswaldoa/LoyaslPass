@@ -112,7 +112,7 @@ export default function InstallTutorialModal({ defaultVariant = "client" }: { de
             </button>
           )}
           
-          <div className="text-center mb-6 mt-2">
+          <div className="text-center mb-6 mt-10 px-4">
             <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{config.title}</h2>
             <p className="text-slate-500 text-sm">{config.subtitle}</p>
           </div>
