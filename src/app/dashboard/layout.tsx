@@ -309,7 +309,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* --- MAIN CONTENT --- */}
       <main className="flex-1 relative pb-24 md:pb-0 min-h-screen">
-        <InstallTutorialModal />
+        <InstallTutorialModal defaultVariant="dashboard" />
         {/* Overlay for mobile menu */}
         {mobileMenuOpen && (
           <div 

@@ -30,7 +30,7 @@ function StaffJoinContent() {
         alert("Antes de ingresar tu código de acceso es necesario añadir el acceso directo a tu pantalla de inicio.");
         window.dispatchEvent(new CustomEvent("openTutorial", {
           detail: {
-            title: "Guarda tu acceso",
+            title: "Guarda tu scanner",
             subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
             blocking: true,
             storageKey: "staffTutorialSeen", variant: "staff"
@@ -91,7 +91,7 @@ function StaffJoinContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-      <InstallTutorialModal />
+      <InstallTutorialModal defaultVariant="staff" />
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">LoyalPass</h1>
         <p className="text-slate-500 font-medium">Portal de Empleados</p>
@@ -129,7 +129,7 @@ function StaffJoinContent() {
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent("openTutorial", {
                     detail: {
-                      title: "Guarda tu acceso",
+                      title: "Guarda tu scanner",
                       subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
                       blocking: false,
                       storageKey: "staffTutorialSeen", variant: "staff"

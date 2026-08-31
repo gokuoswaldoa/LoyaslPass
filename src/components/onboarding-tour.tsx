@@ -58,7 +58,7 @@ export function OnboardingTour({ setMobileMenuOpen, setIsTourRunning }: { setMob
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent("openTutorial", {
           detail: {
-            title: "Instala tu Dashboard",
+            title: "Guarda la app en tu inicio",
             subtitle: "Agrega tu panel a la pantalla de inicio para administrar todo rpidamente como una app.",
             blocking: false,
             storageKey: "dashboardTutorialSeen", variant: "dashboard"

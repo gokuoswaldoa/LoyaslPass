@@ -4,16 +4,38 @@ import { useState, useEffect } from "react";
 import { X, Apple, Smartphone } from "lucide-react";
 import Image from "next/image";
 
-export default function InstallTutorialModal() {
+export default function InstallTutorialModal({ defaultVariant = "client" }: { defaultVariant?: "client" | "dashboard" | "staff" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [os, setOs] = useState<"ios" | "android" | "other">("ios");
-  const [config, setConfig] = useState({
-    title: "Guarda tu Tarjeta",
-    subtitle: "Agrega esta tarjeta a la pantalla de inicio de tu celular para no perderla nunca y abrirla rpido.",
-    blocking: false,
-    storageKey: "tutorialSeen",
-    variant: "client" as "client" | "dashboard" | "staff"
-  });
+  const getDefaults = () => {
+    if (defaultVariant === "dashboard") {
+      return {
+        title: "Guarda la app en tu inicio",
+        subtitle: "Agrega tu panel a la pantalla de inicio para administrar todo rápidamente como una app.",
+        blocking: false,
+        storageKey: "dashboardTutorialSeen",
+        variant: "dashboard" as const
+      };
+    }
+    if (defaultVariant === "staff") {
+      return {
+        title: "Guarda tu scanner",
+        subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
+        blocking: false, // We'll rely on the event to set blocking: true when needed
+        storageKey: "staffTutorialSeen",
+        variant: "staff" as const
+      };
+    }
+    return {
+      title: "Guarda tu Tarjeta",
+      subtitle: "Agrega esta tarjeta a la pantalla de inicio de tu celular para no perderla nunca y abrirla rápido.",
+      blocking: false,
+      storageKey: "tutorialSeen",
+      variant: "client" as const
+    };
+  };
+
+  const [config, setConfig] = useState(getDefaults());
 
   const getImagePath = (step: number, action: string) => {
     if (config.variant === "dashboard") {
