@@ -113,12 +113,8 @@ export default function InstallTutorialModal({ defaultVariant = "client" }: { de
           )}
           
           <div className="text-center mb-6 mt-2">
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
-              Guarda tu Tarjeta
-            </h2>
-            <p className="text-slate-500 text-sm">
-              Agrega esta tarjeta a la pantalla de inicio de tu celular para no perderla nunca y abrirla rápido.
-            </p>
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{config.title}</h2>
+            <p className="text-slate-500 text-sm">{config.subtitle}</p>
           </div>
 
           {os === "ios" ? (
