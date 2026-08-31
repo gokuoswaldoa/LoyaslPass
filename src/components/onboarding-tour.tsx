@@ -53,6 +53,18 @@ export function OnboardingTour({ setMobileMenuOpen, setIsTourRunning }: { setMob
       setIsTourRunning?.(false);
       if (isMobile) setMobileMenuOpen?.(false);
       localStorage.setItem("loyalpass_tour_completed", "true");
+      
+      // Mostrar tutorial de instalacion al terminar el tour (o skipear)
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("openTutorial", {
+          detail: {
+            title: "Instala tu Dashboard",
+            subtitle: "Agrega tu panel a la pantalla de inicio para administrar todo rpidamente como una app.",
+            blocking: false,
+            storageKey: "dashboardTutorialSeen"
+          }
+        }));
+      }, 500);
     }
   };
 

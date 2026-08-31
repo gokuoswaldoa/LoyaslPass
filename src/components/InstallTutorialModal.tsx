@@ -7,16 +7,28 @@ import Image from "next/image";
 export default function InstallTutorialModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [os, setOs] = useState<"ios" | "android" | "other">("ios");
+  const [config, setConfig] = useState({
+    title: "Guarda tu Tarjeta",
+    subtitle: "Agrega esta tarjeta a la pantalla de inicio de tu celular para no perderla nunca y abrirla rpido.",
+    blocking: false,
+    storageKey: "tutorialSeen"
+  });
 
   useEffect(() => {
-    const handleOpen = () => setIsOpen(true);
+    const handleOpen = (e: any) => {
+      if (e.detail) {
+        setConfig(prev => ({ ...prev, ...e.detail }));
+      }
+      setIsOpen(true);
+    };
     window.addEventListener("openTutorial", handleOpen);
 
-    // Only show if not in standalone (installed) mode
+    // Only auto-show for customers by default if no params
+    // Let's rely on the pages to trigger it, except for the customer pass which we trigger here
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     const hasSeenTutorial = localStorage.getItem("tutorialSeen") === "true";
     
-    if (!isStandalone && !hasSeenTutorial) {
+    if (!isStandalone && !hasSeenTutorial && window.location.pathname.includes('/pass/')) {
       // Small delay to not be too aggressive
       const timer = setTimeout(() => setIsOpen(true), 1500);
       
@@ -35,7 +47,7 @@ export default function InstallTutorialModal() {
   }, []);
 
   const closeTutorial = () => {
-    localStorage.setItem("tutorialSeen", "true");
+    localStorage.setItem(config.storageKey, "true");
     setIsOpen(false);
   };
 
@@ -46,12 +58,14 @@ export default function InstallTutorialModal() {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-sm max-h-[90vh] overflow-y-auto shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="p-6 relative">
-          <button 
-            onClick={() => closeTutorial()}
-            className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-slate-800 dark:hover:text-white"
-          >
-            <X size={20} />
-          </button>
+          {!config.blocking && (
+            <button 
+              onClick={() => closeTutorial()}
+              className="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 hover:text-slate-800 dark:hover:text-white"
+            >
+              <X size={20} />
+            </button>
+          )}
           
           <div className="text-center mb-6 mt-2">
             <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">

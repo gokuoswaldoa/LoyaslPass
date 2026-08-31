@@ -15,6 +15,7 @@ import { Search, Star } from "lucide-react";
 import { NotificationBell } from "@/components/notification-bell";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { OnboardingTour } from "@/components/onboarding-tour";
+import InstallTutorialModal from "@/components/InstallTutorialModal";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -308,6 +309,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* --- MAIN CONTENT --- */}
       <main className="flex-1 relative pb-24 md:pb-0 min-h-screen">
+        <InstallTutorialModal />
         {/* Overlay for mobile menu */}
         {mobileMenuOpen && (
           <div 

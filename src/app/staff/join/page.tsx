@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { Loader2, AlertTriangle, CheckCircle2, UserCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import InstallTutorialModal from "@/components/InstallTutorialModal";
 
 function StaffJoinContent() {
   const searchParams = useSearchParams();
@@ -20,6 +21,24 @@ function StaffJoinContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    // Check PWA tutorial for staff
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    const hasSeenTutorial = localStorage.getItem("staffTutorialSeen") === "true";
+    
+    if (!isStandalone && !hasSeenTutorial) {
+      setTimeout(() => {
+        alert("Antes de ingresar tu código de acceso es necesario añadir el acceso directo a tu pantalla de inicio.");
+        window.dispatchEvent(new CustomEvent("openTutorial", {
+          detail: {
+            title: "Instala tu Portal",
+            subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
+            blocking: true,
+            storageKey: "staffTutorialSeen"
+          }
+        }));
+      }, 500);
+    }
+
     if (!token) {
       setStatus("manual");
       return;
@@ -72,6 +91,7 @@ function StaffJoinContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
+      <InstallTutorialModal />
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">LoyalPass</h1>
         <p className="text-slate-500 font-medium">Portal de Empleados</p>
