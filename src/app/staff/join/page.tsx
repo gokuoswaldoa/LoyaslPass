@@ -33,7 +33,7 @@ function StaffJoinContent() {
             title: "Guarda tu acceso",
             subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
             blocking: true,
-            storageKey: "staffTutorialSeen", variant: "dashboard"
+            storageKey: "staffTutorialSeen", variant: "staff"
           }
         }));
       }, 500);
@@ -132,7 +132,7 @@ function StaffJoinContent() {
                       title: "Guarda tu acceso",
                       subtitle: "Agrega el portal de empleados a tu pantalla de inicio para escanear más rápido.",
                       blocking: false,
-                      storageKey: "staffTutorialSeen", variant: "dashboard"
+                      storageKey: "staffTutorialSeen", variant: "staff"
                     }
                   }));
                 }}
