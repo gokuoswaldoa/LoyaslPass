@@ -186,6 +186,7 @@ export default function ClientPassPage() {
           >
             Invita a un amigo y Gana
           </a>
+          {/* TODO: Integración real con Apple Wallet. Pendiente hasta tener cuenta de desarrollador iOS.
           <button 
             onClick={() => window.dispatchEvent(new Event("openTutorial"))}
             className="hover:scale-105 transition-transform drop-shadow-xl"
@@ -198,6 +199,7 @@ export default function ClientPassPage() {
               className="h-14 w-auto" 
             />
           </button>
+          */}
           
           <button 
             onClick={() => window.open(`/api/wallet/google/${walletPassId}`, '_blank')}
