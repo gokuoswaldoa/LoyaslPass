@@ -93,10 +93,16 @@ export function OnboardingTour({ setMobileMenuOpen, setIsTourRunning }: { setMob
       content: "Tu base de datos de clientes. Observa cuántas visitas tienen, dales sellos manualmente y averigua quiénes han dejado de venir.",
       placement: isMobile ? "bottom" : "right",
     },
-    {
+        {
       target: "#tour-marketing",
       title: "Atrae a tus Clientes",
-      content: "Envía notificaciones push directamente al celular de tus clientes (Ej: '¡Hoy 2x1 en toda la tienda!') para que regresen más seguido.",
+      content: "Envía notificaciones push directamente al celular de tus clientes (Ej: '¿Hoy 2x1 en toda la tienda!') para que regresen más seguido.",
+      placement: isMobile ? "bottom" : "right",
+    },
+    {
+      target: "#tour-empleados",
+      title: "Tu Equipo",
+      content: "Agrega empleados para que puedan escanear las tarjetas de los clientes desde sus propios celulares sin tener acceso a la información de tu negocio.",
       placement: isMobile ? "bottom" : "right",
     },
     {
