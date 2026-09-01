@@ -1,12 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import { getPassConfig, savePassConfig } from "@/app/actions/editor";
 import { getBusinessIcon } from "@/app/onboarding/utils";
-import { Save, Upload, CheckCircle2, Apple, Ticket, Gift, Coffee, Utensils, Cake, Wine, Scissors, Flower2, ShoppingBag, Dumbbell, PawPrint, Sparkles } from "lucide-react";
+import { Save, Upload, CheckCircle2, Apple, Ticket, Gift, ChevronDown, Coffee, Utensils, Cake, Wine, Scissors, Flower2, ShoppingBag, Dumbbell, PawPrint, Sparkles } from "lucide-react";
 import Image from "next/image";
-
-// Predefined Themes for the Wallet Pass
 
 const BUSINESS_TYPES = [
   { id: "cafeteria", label: "Cafetería", icon: Coffee },
@@ -34,6 +32,7 @@ export default function EditorPage() {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [businessName, setBusinessName] = useState("Mi Negocio");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const [config, setConfig] = useState({
     styleTheme: "emerald",
@@ -194,35 +193,56 @@ export default function EditorPage() {
 
           <hr className="border-slate-100 dark:border-slate-800" />
 
-          
-          <hr className="border-slate-100 dark:border-slate-800" />
-
-          {/* Business Type Selection */}
+          {/* Business Type Selection (Dropdown) */}
           <div>
             <label className="block text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-3">
               Giro del Negocio
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {BUSINESS_TYPES.map((opt) => (
-                <button
-                  key={opt.id}
-                  onClick={() => setConfig({ ...config, businessType: opt.id })}
-                  className={`flex items-center p-3 rounded-xl border-2 transition-all duration-200 text-left ${
-                    config.businessType === opt.id
-                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10"
-                      : "border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:border-emerald-200 dark:hover:border-emerald-800"
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 transition-colors ${
-                    config.businessType === opt.id ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
-                  }`}>
-                    <opt.icon className="w-4 h-4" />
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:outline-none transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center">
+                    <PreviewIcon className="w-4 h-4" />
                   </div>
-                  <span className={`text-sm font-semibold ${config.businessType === opt.id ? "text-emerald-700 dark:text-emerald-400" : "text-slate-700 dark:text-slate-300"}`}>
-                    {opt.label}
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    {BUSINESS_TYPES.find(b => b.id === config.businessType)?.label || "Otro giro distinto"}
                   </span>
-                </button>
-              ))}
+                </div>
+                <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden max-h-64 overflow-y-auto">
+                  <div className="grid grid-cols-1 gap-1 p-2">
+                    {BUSINESS_TYPES.map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setConfig({ ...config, businessType: opt.id });
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`flex items-center p-3 rounded-lg transition-colors text-left ${
+                          config.businessType === opt.id
+                            ? "bg-emerald-50 dark:bg-emerald-500/10"
+                            : "hover:bg-slate-50 dark:hover:bg-slate-800"
+                        }`}
+                      >
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${
+                          config.businessType === opt.id ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400"
+                        }`}>
+                          <opt.icon className="w-4 h-4" />
+                        </div>
+                        <span className={`text-sm font-semibold ${config.businessType === opt.id ? "text-emerald-700 dark:text-emerald-400" : "text-slate-700 dark:text-slate-300"}`}>
+                          {opt.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -291,23 +311,6 @@ export default function EditorPage() {
               </div>
             </div>
           </div>
-
-          {/* Save Button */}
-          <button 
-            onClick={handleSave}
-            disabled={saving}
-            className={`mt-4 w-full py-4 rounded-xl font-black text-lg text-white flex items-center justify-center gap-2 transition-all ${
-              saveSuccess ? 'bg-emerald-500' : 'bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100'
-            }`}
-          >
-            {saving ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-current"></div>
-            ) : saveSuccess ? (
-              <><CheckCircle2 className="w-5 h-5" /> Guardado Correctamente</>
-            ) : (
-              <><Save className="w-5 h-5" /> Guardar Cambios</>
-            )}
-          </button>
 
         </div>
       </div>
@@ -381,6 +384,26 @@ export default function EditorPage() {
             </div>
 
           </div>
+
+          {/* Save Button Moved Below Preview */}
+          <div className="w-full max-w-[320px] mt-8 mb-4">
+            <button 
+              onClick={handleSave}
+              disabled={saving}
+              className={`w-full py-4 rounded-xl font-black text-lg text-white flex items-center justify-center gap-2 transition-all shadow-xl hover:scale-[1.02] active:scale-[0.98] ${
+                saveSuccess ? 'bg-emerald-500' : 'bg-emerald-500 hover:bg-emerald-600'
+              }`}
+            >
+              {saving ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+              ) : saveSuccess ? (
+                <><CheckCircle2 className="w-5 h-5" /> Guardado Correctamente</>
+              ) : (
+                <><Save className="w-5 h-5" /> Guardar Cambios</>
+              )}
+            </button>
+          </div>
+
         </div>
       </div>
 
