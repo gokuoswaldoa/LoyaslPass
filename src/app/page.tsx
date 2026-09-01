@@ -441,7 +441,7 @@ export default function LandingPage() {
             
             {/* GLOBAL BADGE */}
             <div className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-medium text-sm md:text-base border border-emerald-100 dark:border-emerald-800/50 shadow-sm text-center">
-              <span>Todos nuestros planes incluyen: <strong className="font-extrabold text-emerald-800 dark:text-emerald-300">Tarjetas digitales y Notificaciones push ilimitadas</strong> sin costo extra.</span>
+              <span>✨ Todos nuestros planes incluyen: <strong className="font-extrabold text-emerald-800 dark:text-emerald-300">Creación de tarjetas digitales y envío de mensajes ilimitados sin costo extra.</strong></span>
             </div>
           </div>
 
@@ -462,11 +462,10 @@ export default function LandingPage() {
 
               <ul className="space-y-4 mb-8 flex-grow">
                 {[
-                  "1 sucursal y 1 programa de lealtad con tus colores",
-                  "Manejo de roles (Administrador y Empleados)",
-                  "Panel de análisis de audiencia (descubre quién volvió, cuándo y cuánto compró)",
-                  "1 Zona de notificación automática (radio de 100m)",
-                  "Soporte directo"
+                  "1 sucursal y 1 programa de lealtad con los colores de tu marca",
+                  "Cuentas separadas para el dueño y los empleados",
+                  "Estadísticas fáciles: descubre quién vuelve, cuándo y cuánto gasta",
+                  "Mensaje automático al celular de tu cliente si pasa a menos de 100 metros de tu local"
                 ].map((feat, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
@@ -502,9 +501,9 @@ export default function LandingPage() {
                   <span className="text-sm">Todo lo del plan Básico, más:</span>
                 </li>
                 {[
-                  "Hasta 3 sucursales y 3 programas de lealtad",
-                  "Zonas de notificación independientes para cada local",
-                  "Campañas de cumpleaños automáticas"
+                  "Hasta 3 sucursales y 3 programas de lealtad distintos",
+                  "Mensajes automáticos por cercanía (100m) para cada una de tus 3 sucursales",
+                  "Felicitaciones automáticas de cumpleaños para tus clientes"
                 ].map((feat, i) => (
                   <li key={i} className="flex items-start gap-3 text-slate-300">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
@@ -539,9 +538,9 @@ export default function LandingPage() {
                   </li>
                   {[
                     "Sucursales y programas de lealtad ilimitados",
-                    "Zonas de notificación ilimitadas",
-                    "Estrategias automáticas con IA (sugerencias de notificaciones)",
-                    "Onboarding y configuración personalizada 1 a 1"
+                    "Mensajes automáticos por cercanía en todas tus sucursales (sin límite)",
+                    "Asistente Inteligente que redacta por ti los mejores mensajes de venta",
+                    "Servicio VIP: Nosotros configuramos todo tu sistema en una videollamada 1 a 1"
                   ].map((feat, i) => (
                     <li key={i} className="flex items-start gap-3 text-slate-600 dark:text-slate-300">
                       <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
@@ -557,6 +556,14 @@ export default function LandingPage() {
             </div>
 
           </div>
+
+          {/* SOPORTE GLOBAL INFO (NUEVO ELEMENTO DEBAJO) */}
+          <div className="max-w-3xl mx-auto mt-4 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30 rounded-2xl p-6 text-center">
+            <p className="text-slate-700 dark:text-slate-300 font-medium">
+              <strong className="text-emerald-700 dark:text-emerald-400">¿Tienes dudas? No estás solo.</strong> Todos los planes incluyen soporte directo vía WhatsApp y Email para ayudarte en cualquier momento.
+            </p>
+          </div>
+          
         </div>
       </section>
 
