@@ -441,7 +441,7 @@ export default function LandingPage() {
             
             {/* GLOBAL BADGE */}
             <div className="inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-medium text-sm md:text-base border border-emerald-100 dark:border-emerald-800/50 shadow-sm text-center">
-              <span>✨ Todos nuestros planes incluyen: <strong className="font-extrabold text-emerald-800 dark:text-emerald-300">Creación de tarjetas digitales y envío de mensajes ilimitados sin costo extra.</strong></span>
+              <span>Todos nuestros planes incluyen: <strong className="font-extrabold text-emerald-800 dark:text-emerald-300">Creación de tarjetas digitales y envío de mensajes ilimitados sin costo extra.</strong></span>
             </div>
           </div>
 
