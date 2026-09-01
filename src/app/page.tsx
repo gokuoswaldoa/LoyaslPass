@@ -597,13 +597,13 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Sesión de Configuración</h3>
-                  <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">15 minutos, uno a uno</p>
+                  <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">30 minutos, uno a uno</p>
                 </div>
               </div>
               <p className="text-slate-600 dark:text-slate-400 mb-8 flex-grow">
                 Agenda una videollamada corta. Te llevamos de la mano en la plataforma y terminamos la reunión con tu primer programa de lealtad funcionando.
               </p>
-              <a href="https://wa.me/527772872685?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20videollamada%20gratis%20de%2015%20minutos%20para%20configurar%20mi%20programa%20de%20lealtad." target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2">
+              <a href="https://calendly.com/gokuoswaldoa13/30min" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors shadow-lg flex items-center justify-center gap-2">
                 Agendar llamada gratis <ArrowRight className="w-4 h-4" />
               </a>
             </motion.div>
