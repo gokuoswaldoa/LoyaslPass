@@ -32,10 +32,21 @@ export default function MarketingPage() {
     if ("geolocation" in navigator) {
       setLocationLoading(true);
       navigator.geolocation.getCurrentPosition(async (position) => {
-        const res = await updateBusinessLocation(position.coords.latitude.toString(), position.coords.longitude.toString());
+        const lat = position.coords.latitude.toString();
+        const lon = position.coords.longitude.toString();
+        
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+          const data = await response.json();
+          if (data && data.display_name) {
+            setAddress(data.display_name);
+          }
+        } catch(e) {}
+
+        const res = await updateBusinessLocation(lat, lon);
         setLocationLoading(false);
         if (res.success) {
-          alert("¡Ubicación GPS guardada! Tus clientes recibirán alertas al pasar cerca.");
+          alert("¡Ubicación GPS guardada! Asegúrate de que tus clientes tengan activado 'Actualizaciones y lugares cercanos' en Google Wallet.");
         } else {
           alert("Error al guardar la ubicación");
         }
@@ -77,6 +88,16 @@ export default function MarketingPage() {
       if (resConfig.success) {
         if (resConfig.businessName) setBusinessName(resConfig.businessName);
         if (resConfig.config?.logoUrl) setLogoUrl(resConfig.config.logoUrl);
+        if (resConfig.config?.latitude && resConfig.config?.longitude) {
+          // Reverse geocode existing coords
+          try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${resConfig.config.latitude}&lon=${resConfig.config.longitude}`);
+            const data = await response.json();
+            if (data && data.display_name) {
+              setAddress(data.display_name);
+            }
+          } catch(e) {}
+        }
       }
       
       const resCustomers = await getCustomers();
