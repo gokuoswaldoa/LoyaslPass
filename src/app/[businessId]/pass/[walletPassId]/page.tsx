@@ -7,6 +7,7 @@ import QRCode from "react-qr-code";
 import { getClientWalletData } from "@/app/actions/clientFlow";
 import WebPushPrompt from "@/components/WebPushPrompt";
 import InstallTutorialModal from "@/components/InstallTutorialModal";
+import { getBusinessIcon } from "@/app/onboarding/utils";
 
 export default function ClientPassPage() {
   const params = useParams();
@@ -69,6 +70,7 @@ export default function ClientPassPage() {
 
   // Generamos los huecos para sellos
   const renderStamps = () => {
+    const Icon = getBusinessIcon(config.businessType || "otro");
     const stamps = [];
     for (let i = 0; i < config.totalStampsRequired; i++) {
       const isStamped = i < stampsCount;
@@ -88,9 +90,7 @@ export default function ClientPassPage() {
           `}
         >
           {isStamped ? (
-            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-            </svg>
+            <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-black" strokeWidth={2.5} />
           ) : (
             <span className="text-white/30 font-black text-sm sm:text-base">{i + 1}</span>
           )}

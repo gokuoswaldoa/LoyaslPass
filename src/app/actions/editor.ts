@@ -66,6 +66,7 @@ export async function savePassConfig(data: any) {
         totalStampsRequired: data.totalStampsRequired,
         rewardText: data.rewardText,
         logoUrl: data.logoUrl,
+        businessType: data.businessType,
       })
       .where(eq(passesConfig.businessId, business.id));
 

@@ -2,10 +2,25 @@
 
 import { useState, useEffect, useRef } from "react";
 import { getPassConfig, savePassConfig } from "@/app/actions/editor";
-import { Save, Upload, CheckCircle2, Apple, Ticket, Gift } from "lucide-react";
+import { getBusinessIcon } from "@/app/onboarding/utils";
+import { Save, Upload, CheckCircle2, Apple, Ticket, Gift, Coffee, Utensils, Cake, Wine, Scissors, Flower2, ShoppingBag, Dumbbell, PawPrint, Sparkles } from "lucide-react";
 import Image from "next/image";
 
 // Predefined Themes for the Wallet Pass
+
+const BUSINESS_TYPES = [
+  { id: "cafeteria", label: "Cafetería", icon: Coffee },
+  { id: "restaurante", label: "Restaurante", icon: Utensils },
+  { id: "panaderia", label: "Panadería y postres", icon: Cake },
+  { id: "bar", label: "Bar y bebidas", icon: Wine },
+  { id: "salon", label: "Salón y barbería", icon: Scissors },
+  { id: "belleza", label: "Belleza y spa", icon: Flower2 },
+  { id: "tienda", label: "Tienda y boutique", icon: ShoppingBag },
+  { id: "fitness", label: "Fitness y bienestar", icon: Dumbbell },
+  { id: "mascotas", label: "Mascotas", icon: PawPrint },
+  { id: "otro", label: "Otro giro distinto", icon: Sparkles },
+];
+
 const THEMES = [
   { id: "emerald", name: "Esmeralda", classes: "bg-[#10B981]" },
   { id: "midnight", name: "Midnight", classes: "bg-[#1E293B]" },
@@ -27,6 +42,7 @@ export default function EditorPage() {
     totalStampsRequired: 8,
     rewardText: "¡Premio Gratis!",
     logoUrl: "/logo/icono.png",
+    businessType: "otro",
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -43,6 +59,7 @@ export default function EditorPage() {
           totalStampsRequired: res.config.totalStampsRequired || 8,
           rewardText: res.config.rewardText || "¡Premio Gratis!",
           logoUrl: res.config.logoUrl || "/logo/icono.png",
+          businessType: res.config.businessType || "otro",
         });
       }
       setLoading(false);
@@ -116,6 +133,8 @@ export default function EditorPage() {
     );
   }
 
+  const PreviewIcon = getBusinessIcon(config.businessType);
+
   return (
     <div className="p-6 md:p-10 pb-32 w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-10">
       
@@ -171,6 +190,40 @@ export default function EditorPage() {
               placeholder="Ej. Mi Cafetería"
               className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500 focus:outline-none font-medium text-slate-900 dark:text-white"
             />
+          </div>
+
+          <hr className="border-slate-100 dark:border-slate-800" />
+
+          
+          <hr className="border-slate-100 dark:border-slate-800" />
+
+          {/* Business Type Selection */}
+          <div>
+            <label className="block text-sm font-bold text-slate-900 dark:text-white uppercase tracking-widest mb-3">
+              Giro del Negocio
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {BUSINESS_TYPES.map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => setConfig({ ...config, businessType: opt.id })}
+                  className={`flex items-center p-3 rounded-xl border-2 transition-all duration-200 text-left ${
+                    config.businessType === opt.id
+                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10"
+                      : "border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:border-emerald-200 dark:hover:border-emerald-800"
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 transition-colors ${
+                    config.businessType === opt.id ? "bg-emerald-500 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                  }`}>
+                    <opt.icon className="w-4 h-4" />
+                  </div>
+                  <span className={`text-sm font-semibold ${config.businessType === opt.id ? "text-emerald-700 dark:text-emerald-400" : "text-slate-700 dark:text-slate-300"}`}>
+                    {opt.label}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <hr className="border-slate-100 dark:border-slate-800" />
@@ -310,7 +363,7 @@ export default function EditorPage() {
                         {/* Simular 2 sellos estampados */}
                         {i < 2 ? (
                           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center animate-bounce shadow-lg">
-                            <Ticket className={`w-4 h-4 text-slate-900`} />
+                            <PreviewIcon className={`w-4 h-4 text-slate-900`} />
                           </div>
                         ) : null}
                       </div>
