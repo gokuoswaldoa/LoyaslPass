@@ -47,10 +47,39 @@ export default function BusinessQR({ businessId }: BusinessQRProps) {
         ctx.drawImage(img, 20, 20);
         
         const pngFile = canvas.toDataURL("image/png");
-        const downloadLink = document.createElement("a");
-        downloadLink.download = `QR_Registro_LoyalPass.png`;
-        downloadLink.href = pngFile;
-        downloadLink.click();
+        
+        // Convert to blob for mobile support (Web Share API)
+        fetch(pngFile)
+          .then(res => res.blob())
+          .then(async (blob) => {
+            const file = new File([blob], "QR_LoyalPass.png", { type: "image/png" });
+            
+            // Check if Web Share API with files is supported (mostly mobile/PWAs)
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+              try {
+                await navigator.share({
+                  files: [file],
+                  title: 'QR de Registro - LoyalPass',
+                });
+              } catch (error) {
+                console.error("Error compartiendo:", error);
+                // Fallback to manual download if share fails (e.g. user cancelled)
+                triggerFallbackDownload(pngFile);
+              }
+            } else {
+              // Fallback for Desktop browsers
+              triggerFallbackDownload(pngFile);
+            }
+          });
+          
+        const triggerFallbackDownload = (url: string) => {
+          const downloadLink = document.createElement("a");
+          downloadLink.download = "QR_Registro_LoyalPass.png";
+          downloadLink.href = url;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        };
       }
     };
     
