@@ -32,19 +32,60 @@ export default function BusinessQR({ businessId }: BusinessQRProps) {
     const svg = document.getElementById("qr-code-svg");
     if (!svg) return;
     
-    const svgData = new XMLSerializer().serializeToString(svg);
+    let svgData = new XMLSerializer().serializeToString(svg);
+    // Force higher resolution for the SVG
+    svgData = svgData.replace(/width="150"/, 'width="600"').replace(/height="150"/, 'height="600"');
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const img = new window.Image();
     
     img.onload = () => {
-      // Add padding and white background
-      canvas.width = img.width + 40;
-      canvas.height = img.height + 40;
+      canvas.width = 1080;
+      canvas.height = 1080;
+      
       if(ctx) {
+        // 1. Draw Background Gradient
+        const gradient = ctx.createLinearGradient(0, 0, 1080, 1080);
+        gradient.addColorStop(0, '#10b981'); // Emerald 500
+        gradient.addColorStop(1, '#064e3b'); // Emerald 900
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 1080, 1080);
+        
+        // 2. Add Top Text
         ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 20, 20);
+        ctx.textAlign = "center";
+        ctx.font = "bold 80px system-ui, -apple-system, sans-serif";
+        ctx.fillText("¡Únete a nuestro", 540, 160);
+        ctx.fillText("Programa de Lealtad!", 540, 250);
+        
+        // 3. Draw white container for QR (safe rounded rect)
+        ctx.fillStyle = "white";
+        const boxSize = 680;
+        const boxX = (1080 - boxSize) / 2;
+        const boxY = 300;
+        const r = 40;
+        
+        ctx.beginPath();
+        ctx.moveTo(boxX + r, boxY);
+        ctx.lineTo(boxX + boxSize - r, boxY);
+        ctx.quadraticCurveTo(boxX + boxSize, boxY, boxX + boxSize, boxY + r);
+        ctx.lineTo(boxX + boxSize, boxY + boxSize - r);
+        ctx.quadraticCurveTo(boxX + boxSize, boxY + boxSize, boxX + boxSize - r, boxY + boxSize);
+        ctx.lineTo(boxX + r, boxY + boxSize);
+        ctx.quadraticCurveTo(boxX, boxY + boxSize, boxX, boxY + boxSize - r);
+        ctx.lineTo(boxX, boxY + r);
+        ctx.quadraticCurveTo(boxX, boxY, boxX + r, boxY);
+        ctx.closePath();
+        ctx.fill();
+        
+        // 4. Draw QR Code
+        ctx.drawImage(img, boxX + 40, boxY + 40, 600, 600);
+        
+        // 5. Add Bottom Text
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.font = "500 40px system-ui, -apple-system, sans-serif";
+        ctx.fillText("Escanea con la cámara de tu celular", 540, 1040);
         
         const pngFile = canvas.toDataURL("image/png");
         
