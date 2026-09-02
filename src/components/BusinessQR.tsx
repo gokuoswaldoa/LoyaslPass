@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { Copy, ExternalLink, Check } from "lucide-react";
+import { Copy, ExternalLink, Check, Download } from "lucide-react";
 import Link from "next/link";
 
 interface BusinessQRProps {
@@ -28,12 +28,41 @@ export default function BusinessQR({ businessId }: BusinessQRProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownload = () => {
+    const svg = document.getElementById("qr-code-svg");
+    if (!svg) return;
+    
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new window.Image();
+    
+    img.onload = () => {
+      // Add padding and white background
+      canvas.width = img.width + 40;
+      canvas.height = img.height + 40;
+      if(ctx) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 20, 20);
+        
+        const pngFile = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.download = `QR_Registro_LoyalPass.png`;
+        downloadLink.href = pngFile;
+        downloadLink.click();
+      }
+    };
+    
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+  };
+
   if (!qrUrl) return null;
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 shadow-sm flex flex-col md:flex-row gap-6 items-center">
       <div className="bg-slate-50 dark:bg-white p-4 rounded-2xl shadow-inner shrink-0">
-        <QRCode value={qrUrl} size={150} level="H" />
+        <QRCode id="qr-code-svg" value={qrUrl} size={150} level="H" />
       </div>
       
       <div className="flex-1 text-center md:text-left">
@@ -51,6 +80,14 @@ export default function BusinessQR({ businessId }: BusinessQRProps) {
           >
             {copied ? <Check size={18} className="text-emerald-500"/> : <Copy size={18} />}
             {copied ? "Copiado" : "Copiar Link"}
+          </button>
+          
+          <button 
+            onClick={handleDownload}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 hover:bg-emerald-200 dark:hover:bg-emerald-800/50 text-emerald-700 dark:text-emerald-400 rounded-xl font-bold transition-colors"
+          >
+            <Download size={18} />
+            Descargar QR
           </button>
           
           <Link 
