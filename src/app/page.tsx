@@ -153,7 +153,7 @@ export default function LandingPage() {
               transition={{ ...springConfig, delay: 0.2 }}
               className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed"
             >
-              Crea tu tarjeta de lealtad en 30 segundos. Sin apps para descargar, vive directo en el Apple y Google Wallet de tus clientes.
+              Crea tu tarjeta de lealtad en 30 segundos. Sin apps para descargar, vive directo en el Google Wallet de tus clientes.
             </motion.p>
 
             <motion.div
